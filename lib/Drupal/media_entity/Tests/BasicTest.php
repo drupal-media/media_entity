@@ -51,7 +51,6 @@ class BasicTest extends WebTestBase {
     return $bundle;
   }
 
-
   /**
    * Tests creating a media bundle programmatically.
    */
@@ -60,6 +59,23 @@ class BasicTest extends WebTestBase {
 
     $bundle_exists = (bool) entity_load('media_bundle', $bundle->id());
     $this->assertTrue($bundle_exists, 'The new media bundle has been created in the database.');
+  }
+
+  /**
+   * Tests creating a media entity programmatically.
+   */
+  public function testMediaEntityCreation() {
+    $media = entity_create('media', array(
+      'bundle' => 'default',
+      'name' => 'Unnamed',
+    ));
+    $media->save();
+
+    $media_not_exist = (bool) entity_load('media', rand(1000, 9999));
+    $this->assertFalse($media_not_exist, 'The media entity does not exist.');
+
+    $media_exists = (bool) entity_load('media', $media->id());
+    $this->assertTrue($media_exists, 'The new media entity has been created in the database.');
   }
 
 }
