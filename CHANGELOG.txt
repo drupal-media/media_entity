@@ -1,2 +1,3 @@
 Media entity 8.x-1.x-dev
 --------------------------------------------------
+- Issue #2099735 by slashrsm: Create basic entity type definition.

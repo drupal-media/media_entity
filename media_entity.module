@@ -1,0 +1,31 @@
+<?php
+
+
+/**
+ * Implements hook_permission().
+ */
+function media_entity_permission() {
+  $perms = array(
+    'administer media' => array(
+      'title' => t('Administer media'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  return $perms;
+}
+
+/**
+ * Entity URI callback.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $media
+ *   A media entity.
+ *
+ * @return array
+ *   An array with 'path' as the key and the path to the media as its value.
+ */
+function media_entity_uri(\Drupal\Core\Entity\EntityInterface $media) {
+  return array(
+    'path' => 'media/' . $media->id(),
+  );
+}
