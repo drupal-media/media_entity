@@ -44,7 +44,7 @@ class MediaBundleFormController extends EntityFormController {
       '#maxlength' => 32,
       '#disabled' => FALSE,// @todo not always
       '#machine_name' => array(
-        'exists' => array('MediaBundle', 'exists'),
+        'exists' => array('\Drupal\media_entity\Entity\MediaBundle', 'exists'),
         'source' => array('label'),
       ),
       '#description' => t('A unique machine-readable name for this media bundle.'),

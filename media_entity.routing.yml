@@ -38,14 +38,14 @@ media.overview_bundles:
     _permission: 'administer media'
 
 media.bundle_add:
-  path: '/admin/structure/media/bundle/add'
+  path: '/admin/structure/media/bundles/add'
   defaults:
     _entity_form: 'media_bundle.add'
   requirements:
     _permission: 'administer media'
 
 media.bundle_edit:
-  path: '/admin/structure/media/bundles/{media_bundle}'
+  path: '/admin/structure/media/bundles/manage/{media_bundle}'
   defaults:
     _entity_form: 'media_bundle.edit'
   requirements:

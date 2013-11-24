@@ -24,7 +24,7 @@ use Drupal\media_entity\MediaInterface;
  *     "form" = {
  *       "add" = "Drupal\media_entity\MediaBundleFormController",
  *       "edit" = "Drupal\media_entity\MediaBundleFormController",
- *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteConfirm"
+ *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteForm"
  *     },
  *     "list" = "Drupal\media_entity\MediaBundleListController",
  *   },
