@@ -6,7 +6,7 @@ media.view:
   requirements:
     _entity_access: 'media.view'
 
-node.type_edit:
+media.bundle_edit:
   path: '/admin/structure/media/bundles/{media_bundle}'
   defaults:
     _entity_form: 'media_bundle.edit'
