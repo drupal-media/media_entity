@@ -21,7 +21,7 @@ use Drupal\media_entity\MediaInterface;
  *   module = "media_entity",
  *   controllers = {
  *     "storage" = "Drupal\Core\Entity\FieldableDatabaseStorageController",
- *     "view_builder" = "Drupal\Core\Entit\EntityViewBuilder",
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "access" = "Drupal\Core\Entity\EntityAccessController",
  *     "form" = {
  *       "default" = "Drupal\Core\Entity\ContentEntityFormController",
