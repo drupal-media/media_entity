@@ -22,7 +22,7 @@ use Drupal\media_entity\MediaInterface;
  *   controllers = {
  *     "storage" = "Drupal\Core\Entity\FieldableDatabaseStorageController",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "access" = "Drupal\Core\Entity\EntityAccessController",
+ *     "access" = "Drupal\media_entity\MediaAccessController",
  *     "form" = {
  *       "default" = "Drupal\Core\Entity\ContentEntityFormController",
  *       "delete" = "Drupal\Core\Entity\ContentEntityConfirmFormBase",
