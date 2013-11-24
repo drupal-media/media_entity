@@ -14,6 +14,14 @@ media.add:
   requirements:
     _entity_create_access: 'media:{media_bundle}'
 
+media.edit:
+  path: '/media/{media}/edit'
+  defaults:
+    _entity_form: 'media.edit'
+  requirements:
+    _entity_access: 'media.update'
+
+
 media.bundle_edit:
   path: '/admin/structure/media/bundles/{media_bundle}'
   defaults:
