@@ -32,8 +32,8 @@ use Drupal\media_entity\MediaInterface;
  *   config_prefix = "media.bundle",
  *   bundle_of = "media",
  *   entity_keys = {
- *     "id" = "bundle",
- *     "label" = "name",
+ *     "id" = "id",
+ *     "label" = "label",
  *     "uuid" = "uuid"
  *   },
  *   links = {
