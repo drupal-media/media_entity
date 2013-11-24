@@ -78,4 +78,28 @@ class BasicTest extends WebTestBase {
     $this->assertTrue($media_exists, 'The new media entity has been created in the database.');
   }
 
+  /**
+   * Runs basic tests for media_access function.
+   */
+  public function testMediaAccess() {
+    $media = entity_create('media', array(
+      'bundle' => 'default',
+      'name' => 'Unnamed',
+    ));
+    $media->save();
+
+    // Ensures user without 'view media' permission can't access media pages.
+    $web_user1 = $this->drupalCreateUser();
+    $this->drupalLogin($web_user1);
+    $this->drupalGet('media/'.$media->id());
+    $this->assertResponse(403);
+
+    // Ensures user with 'view media' permission can access media pages.
+    $web_user2 = $this->drupalCreateUser(array('view media'));
+    $this->drupalLogin($web_user2);
+    $this->drupalGet('media/'.$media->id());
+    $this->assertResponse(200);
+
+  }
+
 }
