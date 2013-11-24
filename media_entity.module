@@ -16,6 +16,49 @@ function media_entity_permission() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function media_entity_menu() {
+  $items['media/%media_entity'] = array(
+    'title callback' => 'media_entity_page_title',
+    'title arguments' => array(1),
+    'route_name' => 'media.view',
+  );
+  return $items;
+}
+
+/**
+ * Loads a media entity from the database.
+ *
+ * @param int $mid
+ *   The media ID.
+ * @param bool $reset
+ *   (optional) Whether to reset the media_load_multiple() cache. Defaults to
+ *   FALSE.
+ *
+ * @return \Drupal\media_entity\MediaInterface|null
+ *   A fully-populated media entity, or NULL if the media is not found.
+ */
+function media_entity_load($nid = NULL, $reset = FALSE) {
+  return entity_load('media', $nid, $reset);
+}
+
+/**
+ * Title callback: Displays the media's title.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $media
+ *   The media entity.
+ *
+ * @return
+ *   An unsanitized string that is the name of the media.
+ *
+ * @see media_entity_menu()
+ */
+function media_entity_page_title(\Drupal\Core\Entity\EntityInterface $media) {
+  return $media->label();
+}
+
+/**
  * Entity URI callback.
  *
  * @param \Drupal\Core\Entity\EntityInterface $media

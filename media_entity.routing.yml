@@ -6,6 +6,14 @@ media.view:
   requirements:
     _entity_access: 'media.view'
 
+media.add:
+  path: '/media/add/{media_bundle}'
+  defaults:
+    _content: '\Drupal\media_entity\Controller\MediaController::add'
+    _title_callback: '\Drupal\media_entity\Controller\MediaController::addPageTitle'
+  requirements:
+    _entity_create_access: 'media:{media_bundle}'
+
 media.bundle_edit:
   path: '/admin/structure/media/bundles/{media_bundle}'
   defaults:

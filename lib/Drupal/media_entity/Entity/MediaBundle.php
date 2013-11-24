@@ -10,6 +10,7 @@ namespace Drupal\media_entity\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageControllerInterface;
 use Drupal\media_entity\MediaBundleInterface;
+use Drupal\media_entity\MediaInterface;
 
 /**
  * Defines the Media bundle configuration entity.
@@ -116,6 +117,11 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
     foreach ($entities as $entity) {
       entity_invoke_bundle_hook('delete', 'media', $entity->id());
     }
+  }
+
+  public static function getLabel(MediaInterface $media) {
+    $bundle = entity_load('media_bundle', $media->bundle());
+    return $bundle ? $bundle->label() : FALSE;
   }
 
 }
