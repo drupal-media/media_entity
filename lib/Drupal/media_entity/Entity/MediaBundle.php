@@ -10,8 +10,6 @@ namespace Drupal\media_entity\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageControllerInterface;
 use Drupal\media_entity\MediaBundleInterface;
-use Drupal\Core\Entity\Annotation\EntityType;
-use Drupal\Core\Annotation\Translation;
 
 /**
  * Defines the Media bundle configuration entity.
@@ -21,16 +19,16 @@ use Drupal\Core\Annotation\Translation;
  *   label = @Translation("Content type"),
  *   controllers = {
  *     "storage" = "Drupal\Core\Config\Entity\ConfigStorageController",
- *     "access" = "Drupal\media_entity\MediaBundleAccessController",
+ *     "access" = "Drupal\Core\Entity\EntityAccessController",
  *     "form" = {
  *       "add" = "Drupal\media_entity\MediaBundleFormController",
  *       "edit" = "Drupal\media_entity\MediaBundleFormController",
  *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteConfirm"
  *     },
- *     "list" = "Drupal\media_entity\MediaBundleListController",
+ *     "list" = "Drupal\Core\Config\Entity\ConfigEntityListController",
  *   },
- *   admin_permission = "administer media bundles",
- *   config_prefix = "media_entity.bundle",
+ *   admin_permission = "administer media",
+ *   config_prefix = "media.bundle",
  *   bundle_of = "media",
  *   entity_keys = {
  *     "id" = "bundle",
@@ -38,83 +36,46 @@ use Drupal\Core\Annotation\Translation;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "edit-form" = "media_entity.type_edit"
+ *     "edit-form" = "media.bundle_edit"
  *   }
  * )
  */
 class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
 
   /**
-   * The machine name of this node type.
+   * The machine name of this media bundle.
    *
    * @var string
-   *
-   * @todo Rename to $id.
    */
-  public $bundle;
+  public $id;
 
   /**
-   * The UUID of the node type.
+   * The UUID of the media bundle.
    *
    * @var string
    */
   public $uuid;
 
   /**
-   * The human-readable name of the node type.
+   * The human-readable name of the media bundle.
    *
    * @var string
-   *
-   * @todo Rename to $label.
    */
-  public $name;
+  public $label;
 
   /**
-   * A brief description of this node type.
+   * A brief description of this media bundle.
    *
    * @var string
    */
   public $description;
 
-  /**
-   * Help information shown to the user when creating a Node of this type.
-   *
-   * @var string
-   */
-  public $help;
-
-  /**
-   * Module-specific settings for this node type, keyed by module name.
-   *
-   * @var array
-   *
-   * @todo Pluginify.
-   */
-  public $settings = array();
 
   /**
    * {@inheritdoc}
    */
   public function id() {
-    return $this->bundle;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getModuleSettings($module) {
-    if (isset($this->settings[$module]) && is_array($this->settings[$module])) {
-      return $this->settings[$module];
-    }
-    return array();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isLocked() {
-    $locked = \Drupal::state()->get('media_entity.bundle.locked');
-    return isset($locked[$this->id()]) ? $locked[$this->id()] : FALSE;
+    return $this->id;
   }
 
   /**
@@ -124,21 +85,22 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
     parent::postSave($storage_controller, $update);
 
     if (!$update) {
-      // Clear the node type cache, so the new type appears.
+      // Clear the media bundle cache, so the new bundle appears.
       \Drupal::cache()->deleteTags(array('media_bundles' => TRUE));
 
       entity_invoke_bundle_hook('create', 'media', $this->id());
     }
     elseif ($this->getOriginalID() != $this->id()) {
-      // Clear the node type cache to reflect the rename.
+      // Clear the media bundle cache to reflect the rename.
       \Drupal::cache()->deleteTags(array('media_bundles' => TRUE));
 
-      // @todo update existing media entities.
+      // Update bundle id with corresponding media.
+      \Drupal::entityManager()->getStorageController('media')->renameBundle($this->getOriginalId(), $this->id());
 
       entity_invoke_bundle_hook('rename', 'media', $this->getOriginalID(), $this->id());
     }
     else {
-      // Invalidate the cache tag of the updated node type only.
+      // Invalidate the cache tag of the updated media bundle only.
       cache()->invalidateTags(array('media_bundle' => $this->id()));
     }
   }

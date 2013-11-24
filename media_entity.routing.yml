@@ -5,3 +5,10 @@ media.view:
     _title_callback: '\Drupal\media_entity\Controller\MediaController::pageTitle'
   requirements:
     _entity_access: 'media.view'
+
+node.type_edit:
+  path: '/admin/structure/media/bundles/{media_bundle}'
+  defaults:
+    _entity_form: 'media_bundle.edit'
+  requirements:
+    _permission: 'administer media'
