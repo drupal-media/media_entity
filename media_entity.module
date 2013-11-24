@@ -10,6 +10,18 @@ function media_entity_permission() {
       'title' => t('Administer media'),
       'restrict access' => TRUE,
     ),
+    'view media' => array(
+      'title' => t('View media'),
+    ),
+    'update media' => array(
+      'title' => t('Update media'),
+    ),
+    'delete media' => array(
+      'title' => t('Delete media'),
+    ),
+    'create media' => array(
+      'title' => t('Create media'),
+    ),
   );
 
   return $perms;

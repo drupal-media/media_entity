@@ -1,0 +1,29 @@
+id: media.image.field_image
+uuid: ba037f34-e112-4298-8408-8c8d1dc68b7f
+field_name: field_image
+field_uuid: acc3afe4-9975-4cc0-a700-ef498406f5dc
+entity_type: media
+bundle: image
+label: Image
+description: ''
+required: true
+default_value: {  }
+default_value_function: ''
+settings:
+  file_directory: field/image
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  title_field: ''
+  alt_field_required: 0
+  title_field_required: 0
+  default_image:
+    fid: null
+    alt: ''
+    title: ''
+    width: null
+    height: null
+status: 1
+langcode: und

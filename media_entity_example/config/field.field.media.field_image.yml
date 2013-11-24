@@ -1,0 +1,36 @@
+id: media.field_image
+uuid: acc3afe4-9975-4cc0-a700-ef498406f5dc
+name: field_image
+entity_type: media
+type: image
+module: image
+active: '1'
+settings:
+  uri_scheme: public
+  default_image:
+    fid: null
+    alt: ''
+    title: ''
+    width: null
+    height: null
+  column_groups:
+    file:
+      label: File
+      columns:
+        - target_id
+        - width
+        - height
+    alt:
+      label: Alt
+      translatable: true
+    title:
+      label: Title
+      translatable: true
+locked: '0'
+cardinality: '1'
+translatable: '0'
+indexes:
+  target_id:
+    - target_id
+status: 1
+langcode: und
