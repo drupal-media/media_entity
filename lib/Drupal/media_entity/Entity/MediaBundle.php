@@ -26,7 +26,7 @@ use Drupal\media_entity\MediaInterface;
  *       "edit" = "Drupal\media_entity\MediaBundleFormController",
  *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteConfirm"
  *     },
- *     "list" = "Drupal\Core\Config\Entity\ConfigEntityListController",
+ *     "list" = "Drupal\media_entity\MediaBundleListController",
  *   },
  *   admin_permission = "administer media",
  *   config_prefix = "media.bundle",
@@ -122,6 +122,10 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
   public static function getLabel(MediaInterface $media) {
     $bundle = entity_load('media_bundle', $media->bundle());
     return $bundle ? $bundle->label() : FALSE;
+  }
+
+  public static function exists($id) {
+    return (bool) entity_load('media_bundle', $id);
   }
 
 }
