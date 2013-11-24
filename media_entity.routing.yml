@@ -1,0 +1,7 @@
+media.view:
+  path: '/media/{media}'
+  defaults:
+    _content: '\Drupal\media_entity\Controller\MediaController::page'
+    _title_callback: '\Drupal\media_entity\Controller\MediaController::pageTitle'
+  requirements:
+    _entity_access: 'media.view'
