@@ -1,0 +1,13 @@
+media.view:
+  route_name: media.view
+  tab_root_id: media.view
+  title: 'View'
+media.edit:
+  route_name: media.edit
+  tab_root_id: media.view
+  title: Edit
+media.delete_confirm:
+  route_name: media.delete_confirm
+  tab_root_id: media.view
+  title: Delete
+  weight: 10
