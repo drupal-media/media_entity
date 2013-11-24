@@ -91,7 +91,7 @@ class MediaController extends ControllerBase {
   public function add(MediaBundleInterface $media_bundle) {
     $user = \Drupal::currentUser();
 
-    $bundle = $media_bundle->bundle;
+    $bundle = $media_bundle->id();
     $langcode = module_invoke('language', 'get_default_langcode', 'media', $bundle);
     $media = entity_create('media', array(
       'uid' => $user->id(),
