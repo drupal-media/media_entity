@@ -25,7 +25,7 @@ use Drupal\media_entity\MediaInterface;
  *     "access" = "Drupal\media_entity\MediaAccessController",
  *     "form" = {
  *       "default" = "Drupal\media_entity\MediaFormController",
- *       "delete" = "Drupal\Core\Entity\ContentEntityConfirmFormBase",
+ *       "delete" = "Drupal\media_entity\Form\MediaDeleteForm",
  *       "edit" = "Drupal\media_entity\MediaFormController"
  *     },
  *     "translation" = "Drupal\content_translation\ContentTranslationController"

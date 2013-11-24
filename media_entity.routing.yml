@@ -21,6 +21,12 @@ media.edit:
   requirements:
     _entity_access: 'media.update'
 
+media.delete_confirm:
+  path: '/media/{media}/delete'
+  defaults:
+    _entity_form: 'media.delete'
+  requirements:
+    _entity_access: 'media.delete'
 
 media.bundle_edit:
   path: '/admin/structure/media/bundles/{media_bundle}'
