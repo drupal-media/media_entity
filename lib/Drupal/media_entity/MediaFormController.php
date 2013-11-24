@@ -34,10 +34,9 @@ class MediaFormController extends ContentEntityFormController {
    */
   protected function prepareEntity() {
     $media = $this->entity;
+
     // Set up default values, if required.
-    $bundle = entity_load('media_bundle', $media->bundle());
-    $this->settings = $bundle->getModuleSettings('media');
-    $this->settings += array(
+    $this->settings = array(
       'options' => array('status'),
     );
 

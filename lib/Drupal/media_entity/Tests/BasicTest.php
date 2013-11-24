@@ -38,8 +38,8 @@ class BasicTest extends WebTestBase {
       $id = $values['bundle'];
     }
     $values += array(
-      'bundle' => $id,
-      'name' => $id,
+      'id' => $id,
+      'label' => $id,
     );
 
     $bundle = entity_create('media_bundle', $values);
