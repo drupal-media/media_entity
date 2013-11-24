@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Controller;
 
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 
 /**
@@ -76,6 +77,41 @@ class MediaController extends ControllerBase {
    */
   protected function buildPage(MediaInterface $media) {
     return array('media' => $this->entityManager()->getViewBuilder('media')->view($media));
+  }
+
+  /**
+   * Page callback: Provides the media submission form.
+   *
+   * @param $media_bundle
+   *   The media bundle object for the submitted node.
+   *
+   * @return array
+   *   A media submission form.
+   */
+  public function add(MediaBundleInterface $media_bundle) {
+    $user = \Drupal::currentUser();
+
+    $bundle = $media_bundle->bundle;
+    $langcode = module_invoke('language', 'get_default_langcode', 'media', $bundle);
+    $media = entity_create('media', array(
+      'uid' => $user->id(),
+      'bundle' => $bundle,
+      'langcode' => $langcode ? $langcode : language_default()->id,
+    ));
+    return \Drupal::entityManager()->getForm($media);
+  }
+
+  /**
+   * The _title_callback for the media.add route.
+   *
+   * @param \Drupal\media_entity\MediaBundleInterface $media_bundle
+   *   The current media.
+   *
+   * @return string
+   *   The page title.
+   */
+  public function addPageTitle(MediaBundleInterface $media_bundle) {
+    return $this->t('Create @name', array('@name' => $media_bundle->bundle));
   }
 
 }
