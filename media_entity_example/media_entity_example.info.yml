@@ -1,0 +1,7 @@
+name: Media entity example
+description: 'Very simple example of media entity usage.'
+type: module
+package: Media
+core: 8.x
+dependencies:
+ - image
