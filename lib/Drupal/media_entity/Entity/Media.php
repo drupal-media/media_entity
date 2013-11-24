@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\media_entity\Entity\Media.
+ * Contains \Drupal\media_entity\Entity\Media.
  */
 
 namespace Drupal\media_entity\Entity;
