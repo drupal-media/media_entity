@@ -36,6 +36,12 @@ function media_entity_menu() {
     'title arguments' => array(1),
     'route_name' => 'media.view',
   );
+  $items['admin/structure/media'] = array(
+    'title' => 'Media bundles',
+    'description' => 'Manage media bundles, including field configuration, display configuration, etc.',
+    'route_name' => 'media.overview_bundles',
+  );
+
   return $items;
 }
 
