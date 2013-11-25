@@ -80,7 +80,7 @@ class MediaFormController extends ContentEntityFormController {
 
     $form['name'] = array(
       '#type' => 'textfield',
-      '#title' => t('Media title'),
+      '#title' => t('Media name'),
       '#required' => TRUE,
       '#default_value' => $media->label(),
       '#maxlength' => 255,

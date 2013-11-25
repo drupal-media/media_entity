@@ -48,13 +48,15 @@ use Drupal\media_entity\MediaInterface;
  *   bundle_keys = {
  *     "bundle" = "bundle"
  *   },
+ *   bundle_entity_type = "media_bundle",
  *   route_base_path = "admin/structure/media/manage/{bundle}",
  *   permission_granularity = "entity_type",
  *   admin_permission = "administer media",
  *   links = {
- *     "canonical" = "/media/{media}",
- *     "edit-form" = "/media/{media}/edit",
- *     "version-history" = "/media/{media}/revisions"
+ *     "canonical" = "media.view",
+ *     "edit-form" = "media.edit",
+ *     "version-history" = "/media/{media}/revisions",
+ *     "admin-form" = "media.bundle_edit"
  *   }
  * )
  */

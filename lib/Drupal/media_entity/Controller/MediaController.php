@@ -111,7 +111,7 @@ class MediaController extends ControllerBase {
    *   The page title.
    */
   public function addPageTitle(MediaBundleInterface $media_bundle) {
-    return $this->t('Create @name', array('@name' => $media_bundle->bundle));
+    return $this->t('Create @name', array('@name' => $media_bundle->id()));
   }
 
 }
