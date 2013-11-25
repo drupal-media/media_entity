@@ -57,4 +57,4 @@ media.bundle_delete_confirm:
     _entity_form: 'media_bundle.delete'
     _title: 'Delete'
   requirements:
-    _entity_access: 'media_bundle.delete'
+    _permission: 'administer media'
