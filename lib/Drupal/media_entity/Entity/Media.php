@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageControllerInterface;
+use Drupal\Core\Field\FieldDefinition;
 use Drupal\media_entity\MediaInterface;
 
 /**
@@ -18,7 +19,6 @@ use Drupal\media_entity\MediaInterface;
  *   id = "media",
  *   label = @Translation("Media"),
  *   bundle_label = @Translation("Media bundle"),
- *   module = "media_entity",
  *   controllers = {
  *     "storage" = "Drupal\Core\Entity\FieldableDatabaseStorageController",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -211,111 +211,91 @@ class Media extends ContentEntityBase implements MediaInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
-    $properties['mid'] = array(
-      'label' => t('Media ID'),
-      'description' => t('The media ID.'),
-      'type' => 'integer_field',
-      'read-only' => TRUE,
-    );
-    $properties['uuid'] = array(
-      'label' => t('UUID'),
-      'description' => t('The media UUID.'),
-      'type' => 'uuid_field',
-      'read-only' => TRUE,
-    );
-    $properties['vid'] = array(
-      'label' => t('Revision ID'),
-      'description' => t('The media revision ID.'),
-      'type' => 'integer_field',
-      'read-only' => TRUE,
-    );
-    $properties['bundle'] = array(
-      'label' => t('Bundle'),
-      'description' => t('The media bundle.'),
-      'type' => 'string_field',
-      'read-only' => TRUE,
-    );
-    $properties['langcode'] = array(
-      'label' => t('Language code'),
-      'description' => t('The media language code.'),
-      'type' => 'language_field',
-    );
-    $properties['name'] = array(
-      'label' => t('Name'),
-      'description' => t('The name of this node.'),
-      'type' => 'string_field',
-      'required' => TRUE,
-      'settings' => array(
+    $fields['mid'] = FieldDefinition::create('integer')
+      ->setLabel(t('Node ID'))
+      ->setDescription(t('The media ID.'))
+      ->setReadOnly(TRUE);
+
+    $fields['uuid'] = FieldDefinition::create('uuid')
+      ->setLabel(t('UUID'))
+      ->setDescription(t('The media UUID.'))
+      ->setReadOnly(TRUE);
+
+    $fields['vid'] = FieldDefinition::create('integer')
+      ->setLabel(t('Revision ID'))
+      ->setDescription(t('The media revision ID.'))
+      ->setReadOnly(TRUE);
+
+    $fields['bundle'] = FieldDefinition::create('entity_reference')
+      ->setLabel(t('Bundle'))
+      ->setDescription(t('The media bundle.'))
+      ->setSetting('target_type', 'media_bundle')
+      ->setReadOnly(TRUE);
+
+    $fields['langcode'] = FieldDefinition::create('language')
+      ->setLabel(t('Language code'))
+      ->setDescription(t('The media language code.'));
+
+    $fields['name'] = FieldDefinition::create('string')
+      ->setLabel(t('Name'))
+      ->setDescription(t('The name of this media.'))
+      ->setRequired(TRUE)
+      ->setSettings(array(
         'default_value' => '',
-      ),
-      'property_constraints' => array(
-        'value' => array('Length' => array('max' => 255)),
-      ),
-    );
-    $properties['uid'] = array(
-      'label' => t('Publisher ID'),
-      'description' => t('The user ID of the media publisher.'),
-      'type' => 'entity_reference_field',
-      'settings' => array(
+      ))
+      ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
+
+    $fields['uid'] = FieldDefinition::create('entity_reference')
+      ->setLabel(t('Publisher ID'))
+      ->setDescription(t('The user ID of the media publisher.'))
+      ->setSettings(array(
         'target_type' => 'user',
         'default_value' => 0,
-      ),
-    );
-    $properties['status'] = array(
-      'label' => t('Publishing status'),
-      'description' => t('A boolean indicating whether the media is published.'),
-      'type' => 'boolean_field',
-    );
-    $properties['created'] = array(
-      'label' => t('Created'),
-      'description' => t('The time that the media was created.'),
-      'type' => 'integer_field',
-    );
-    $properties['changed'] = array(
-      'label' => t('Changed'),
-      'description' => t('The time that the media was last edited.'),
-      'type' => 'integer_field',
-      'property_constraints' => array(
-        'value' => array('EntityChanged' => array()),
-      ),
-    );
-    $properties['type'] = array(
-      'label' => t('Type'),
-      'description' => t('The type of this media.'),
-      'required' => TRUE,
-      'type' => 'string_field',
-      'property_constraints' => array(
-        'value' => array('Length' => array('max' => 255)),
-      ),
-    );
-    $properties['resource_id'] = array(
-      'label' => t('Resource ID'),
-      'description' => t('The unique identifier of media resource that is associated with this media.'),
-      'required' => TRUE,
-      'type' => 'string_field',
-      'property_constraints' => array(
-        'value' => array('Length' => array('max' => 255)),
-      ),
-    );
-    $properties['revision_timestamp'] = array(
-      'label' => t('Revision timestamp'),
-      'description' => t('The time that the current revision was created.'),
-      'type' => 'integer_field',
-      'queryable' => FALSE,
-    );
-    $properties['revision_uid'] = array(
-      'label' => t('Revision publisher ID'),
-      'description' => t('The user ID of the publisher of the current revision.'),
-      'type' => 'entity_reference_field',
-      'settings' => array('target_type' => 'user'),
-      'queryable' => FALSE,
-    );
-    $properties['log'] = array(
-      'label' => t('Log'),
-      'description' => t('The log entry explaining the changes in this version.'),
-      'type' => 'string_field',
-    );
-    return $properties;
+      ));
+
+    $fields['status'] = FieldDefinition::create('boolean')
+      ->setLabel(t('Publishing status'))
+      ->setDescription(t('A boolean indicating whether the media is published.'));
+
+    // @todo Convert to a "created" field in https://drupal.org/node/2145103.
+    $fields['created'] = FieldDefinition::create('integer')
+      ->setLabel(t('Created'))
+      ->setDescription(t('The time that the media was created.'));
+
+    // @todo Convert to a "changed" field in https://drupal.org/node/2145103.
+    $fields['changed'] = FieldDefinition::create('integer')
+      ->setLabel(t('Changed'))
+      ->setDescription(t('The time that the media was last edited.'))
+      ->setPropertyConstraints('value', array('EntityChanged' => array()));
+
+    $fields['type'] = FieldDefinition::create('string')
+      ->setLabel(t('Type'))
+      ->setDescription(t('The type of this media.'))
+      ->setRequired(TRUE)
+      ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
+
+    $fields['resource_id'] = FieldDefinition::create('string')
+      ->setLabel(t('Resource ID'))
+      ->setDescription(t('The unique identifier of media resource that is associated with this media.'))
+      ->setRequired(TRUE)
+      ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
+
+    $fields['revision_timestamp'] = FieldDefinition::create('integer')
+      ->setLabel(t('Revision timestamp'))
+      ->setDescription(t('The time that the current revision was created.'))
+      ->setQueryable(FALSE);
+
+    $fields['revision_uid'] = FieldDefinition::create('entity_reference')
+      ->setLabel(t('Revision publisher ID'))
+      ->setDescription(t('The user ID of the publisher of the current revision.'))
+      ->setSettings(array('target_type' => 'user'))
+      ->setQueryable(FALSE);
+
+    $fields['log'] = FieldDefinition::create('string')
+      ->setLabel(t('Log'))
+      ->setDescription(t('The log entry explaining the changes in this revision.'));
+
+    return $fields;
   }
 
 }
