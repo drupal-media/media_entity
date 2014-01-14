@@ -17,7 +17,7 @@ use Drupal\media_entity\MediaInterface;
  *
  * @EntityType(
  *   id = "media_bundle",
- *   label = @Translation("Content type"),
+ *   label = @Translation("Media bundle"),
  *   controllers = {
  *     "storage" = "Drupal\Core\Config\Entity\ConfigStorageController",
  *     "access" = "Drupal\Core\Entity\EntityAccessController",

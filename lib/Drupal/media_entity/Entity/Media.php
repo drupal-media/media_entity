@@ -211,7 +211,7 @@ class Media extends ContentEntityBase implements MediaInterface {
    */
   public static function baseFieldDefinitions($entity_type) {
     $fields['mid'] = FieldDefinition::create('integer')
-      ->setLabel(t('Node ID'))
+      ->setLabel(t('Media ID'))
       ->setDescription(t('The media ID.'))
       ->setReadOnly(TRUE);
 
