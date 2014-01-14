@@ -96,8 +96,6 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
       \Drupal::cache()->deleteTags(array('media_bundles' => TRUE));
 
       // Update bundle id with corresponding media.
-      \Drupal::entityManager()->getStorageController('media')->renameBundle($this->getOriginalId(), $this->id());
-
       entity_invoke_bundle_hook('rename', 'media', $this->getOriginalID(), $this->id());
     }
     else {

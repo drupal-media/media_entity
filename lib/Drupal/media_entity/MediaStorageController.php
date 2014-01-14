@@ -15,17 +15,19 @@ use Drupal\Core\Entity\FieldableDatabaseStorageController;
 class MediaStorageController extends FieldableDatabaseStorageController implements MediaStorageControllerInterface {
 
   /**
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
-  public function renameBundle($old_id, $new_id) {
-    db_update('media')
-      ->fields(array('bundle' => $new_id))
-      ->condition('bundle', $old_id)
+  public function onBundleRename($bundle, $bundle_new) {
+    parent::onBundleRename($bundle, $bundle_new);
+    // Update media entities with a new bundle.
+    $this->database->update('media')
+      ->fields(array('bundle' => $bundle_new))
+      ->condition('bundle', $bundle)
       ->execute();
-
-    db_update('media_field_data')
-      ->fields(array('bundle' => $new_id))
-      ->condition('bundle', $old_id)
+    $this->database->update('media_field_data')
+      ->fields(array('bundle' => $bundle_new))
+      ->condition('bundle', $bundle)
       ->execute();
   }
+
 }
