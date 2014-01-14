@@ -49,7 +49,6 @@ use Drupal\media_entity\MediaInterface;
  *     "bundle" = "bundle"
  *   },
  *   bundle_entity_type = "media_bundle",
- *   route_base_path = "admin/structure/media/manage/{bundle}",
  *   permission_granularity = "entity_type",
  *   admin_permission = "administer media",
  *   links = {

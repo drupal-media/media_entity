@@ -31,28 +31,27 @@ media.delete_confirm:
 media.overview_bundles:
   path: '/admin/structure/media'
   defaults:
-    _content: '\Drupal\Core\Entity\Controller\EntityListController::listing'
-    entity_type: 'media_bundle'
+    _entity_list: 'media_bundle'
     _title: 'Media bundles'
   requirements:
     _permission: 'administer media'
 
 media.bundle_add:
-  path: '/admin/structure/media/bundles/add'
+  path: '/admin/structure/media/add'
   defaults:
     _entity_form: 'media_bundle.add'
   requirements:
     _permission: 'administer media'
 
 media.bundle_edit:
-  path: '/admin/structure/media/bundles/manage/{media_bundle}'
+  path: '/admin/structure/media/manage/{media_bundle}'
   defaults:
     _entity_form: 'media_bundle.edit'
   requirements:
     _permission: 'administer media'
 
 media.bundle_delete_confirm:
-  path: '/admin/structure/media/bundles/manage/{media_bundle}/delete'
+  path: '/admin/structure/media/manage/{media_bundle}/delete'
   defaults:
     _entity_form: 'media_bundle.delete'
     _title: 'Delete'

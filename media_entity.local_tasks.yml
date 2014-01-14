@@ -11,3 +11,11 @@ media.delete_confirm:
   base_route: media.view
   title: Delete
   weight: 10
+media.bundle_edit:
+  title: 'Edit'
+  route_name: media.bundle_edit
+  base_route: media.bundle_edit
+media.overview_bundles:
+  title: List
+  route_name: media.overview_bundles
+  base_route: media.overview_bundles
