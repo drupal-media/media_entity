@@ -29,7 +29,7 @@ use Drupal\media_entity\MediaInterface;
  *     "list" = "Drupal\media_entity\MediaBundleListController",
  *   },
  *   admin_permission = "administer media",
- *   config_prefix = "media.bundle",
+ *   config_prefix = "media_entity.bundle",
  *   bundle_of = "media",
  *   entity_keys = {
  *     "id" = "id",
