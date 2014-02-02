@@ -28,20 +28,15 @@ function media_entity_permission() {
 }
 
 /**
- * Implements hook_menu().
+ * Implements hook_menu_link_defaults().
  */
-function media_entity_menu() {
-  $items['media/%media_entity'] = array(
-    'title callback' => 'media_entity_page_title',
-    'title arguments' => array(1),
-    'route_name' => 'media.view',
-  );
-  $items['admin/structure/media'] = array(
-    'title' => 'Media bundles',
+function media_entity_menu_link_defaults() {
+  $items['media_entity.admin.structure.media'] = array(
+    'link_title' => 'Media bundles',
     'description' => 'Manage media bundles, including field configuration, display configuration, etc.',
+    'parent' => 'system.admin.structure',
     'route_name' => 'media.overview_bundles',
   );
-
   return $items;
 }
 
@@ -59,21 +54,6 @@ function media_entity_menu() {
  */
 function media_entity_load($nid = NULL, $reset = FALSE) {
   return entity_load('media', $nid, $reset);
-}
-
-/**
- * Title callback: Displays the media's title.
- *
- * @param \Drupal\Core\Entity\EntityInterface $media
- *   The media entity.
- *
- * @return
- *   An unsanitized string that is the name of the media.
- *
- * @see media_entity_menu()
- */
-function media_entity_page_title(\Drupal\Core\Entity\EntityInterface $media) {
-  return $media->label();
 }
 
 /**
