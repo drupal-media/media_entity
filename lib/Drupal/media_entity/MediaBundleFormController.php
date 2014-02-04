@@ -56,7 +56,7 @@ class MediaBundleFormController extends EntityFormController {
       '#default_value' => $bundle->description,
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     );
-    return $form;
+    return parent::form($form, $form_state);
   }
 
   /**
@@ -97,9 +97,9 @@ class MediaBundleFormController extends EntityFormController {
    */
   public function delete(array $form, array &$form_state) {
     $form_state['redirect_route'] = array(
-      'route_name' => 'node.type_delete_confirm',
+      'route_name' => 'media.bundle_delete_confirm',
       'route_parameters' => array(
-        'node_type' => $this->entity->id(),
+        'media_bundle' => $this->entity->id(),
       ),
     );
   }
