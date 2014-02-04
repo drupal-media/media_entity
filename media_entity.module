@@ -77,7 +77,7 @@ function media_entity_uri(\Drupal\Core\Entity\EntityInterface $media) {
 function media_entity_entity_bundle_info() {
   // @TODO: Do we want to cache this?
   $bundles = array();
-  $config_names = config_get_storage_names_with_prefix('media.bundle.');
+  $config_names = config_get_storage_names_with_prefix('media_entity.bundle.');
   foreach ($config_names as $config_name) {
     $config = \Drupal::config($config_name);
     $bundles['media'][$config->get('id')]['label'] = $config->get('label');
