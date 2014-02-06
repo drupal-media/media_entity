@@ -30,12 +30,12 @@ class MediaController extends ControllerBase {
     $build = $this->buildPage($media);
 
     foreach ($media->uriRelationships() as $rel) {
-      $uri = $media->uri($rel);
+      $uri = $media->urlInfo($rel);
       // Set the node path as the canonical URL to prevent duplicate content.
       $build['#attached']['drupal_add_html_head_link'][] = array(
         array(
           'rel' => $rel,
-          'href' => $this->urlGenerator()->generateFromPath($uri['path'], $uri['options']),
+          'href' => $this->urlGenerator()->generateFromRoute($uri['route_name'], $uri['route_parameters'], $uri['options']),
         )
       , TRUE);
 
@@ -44,7 +44,7 @@ class MediaController extends ControllerBase {
         $build['#attached']['drupal_add_html_head_link'][] = array(
           array(
             'rel' => 'shortlink',
-            'href' => $this->urlGenerator()->generateFromPath($uri['path'], array_merge($uri['options'], array('alias' => TRUE))),
+            'href' => $this->urlGenerator()->generateFromRoute($uri['route_name'], $uri['route_parameters'], array_merge($uri['options'], array('alias' => TRUE))),
           )
         , TRUE);
       }
@@ -92,8 +92,8 @@ class MediaController extends ControllerBase {
     $user = \Drupal::currentUser();
 
     $bundle = $media_bundle->id();
-    $langcode = module_invoke('language', 'get_default_langcode', 'media', $bundle);
-    $media = entity_create('media', array(
+    $langcode = $this->moduleHandler()->invoke('language', 'get_default_langcode', array('media', $bundle));
+    $media = $this->entityManager()->getStorageController('media')->create(array(
       'uid' => $user->id(),
       'bundle' => $bundle,
       'langcode' => $langcode ? $langcode : language_default()->id,

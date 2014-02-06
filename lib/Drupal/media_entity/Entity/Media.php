@@ -54,7 +54,6 @@ use Drupal\media_entity\MediaInterface;
  *   links = {
  *     "canonical" = "media.view",
  *     "edit-form" = "media.edit",
- *     "version-history" = "/media/{media}/revisions",
  *     "admin-form" = "media.bundle_edit"
  *   }
  * )
