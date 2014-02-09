@@ -59,15 +59,18 @@ function media_entity_load($nid = NULL, $reset = FALSE) {
 /**
  * Entity URI callback.
  *
- * @param \Drupal\Core\Entity\EntityInterface $media
+ * @param \Drupal\media_entity\MediaInterface $media
  *   A media entity.
  *
  * @return array
- *   An array with 'path' as the key and the path to the media as its value.
+ *   Route information array.
  */
-function media_entity_uri(\Drupal\Core\Entity\EntityInterface $media) {
+function media_entity_uri(\Drupal\media_entity\MediaInterface $media) {
   return array(
-    'path' => 'media/' . $media->id(),
+    'route_name' => 'media.view',
+    'route_parameters' => array(
+      'media' => $media->id(),
+    ),
   );
 }
 
