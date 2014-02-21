@@ -15,7 +15,7 @@ use Drupal\media_entity\MediaInterface;
 /**
  * Defines the media entity class.
  *
- * @EntityType(
+ * @ContentEntityType(
  *   id = "media",
  *   label = @Translation("Media"),
  *   bundle_label = @Translation("Media bundle"),

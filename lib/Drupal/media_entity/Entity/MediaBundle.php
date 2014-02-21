@@ -15,7 +15,7 @@ use Drupal\media_entity\MediaInterface;
 /**
  * Defines the Media bundle configuration entity.
  *
- * @EntityType(
+ * @ConfigEntityType(
  *   id = "media_bundle",
  *   label = @Translation("Media bundle"),
  *   controllers = {
