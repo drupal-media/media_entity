@@ -2,12 +2,11 @@
 
 /**
  * @file
- * Definition of Drupal\media_entity\Tests\BasicTest.
+ * Contains \Drupal\media_entity\Tests\BasicTest.
  */
 
 namespace Drupal\media_entity\Tests;
 
-use Drupal\Core\Session\AccountInterface;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -44,7 +43,6 @@ class BasicTest extends WebTestBase {
 
     $bundle = entity_create('media_bundle', $values);
     $status = $bundle->save();
-    menu_router_rebuild();
 
     $this->assertEqual($status, SAVED_NEW, t('Created media bundle %bundle.', array('%bundle' => $bundle->id())));
 
@@ -99,7 +97,6 @@ class BasicTest extends WebTestBase {
     $this->drupalLogin($web_user2);
     $this->drupalGet('media/'.$media->id());
     $this->assertResponse(200);
-
   }
 
 }
