@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageControllerInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldDefinition;
 use Drupal\media_entity\MediaInterface;
 
@@ -208,7 +209,7 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
-  public static function baseFieldDefinitions($entity_type) {
+  public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['mid'] = FieldDefinition::create('integer')
       ->setLabel(t('Media ID'))
       ->setDescription(t('The media ID.'))
