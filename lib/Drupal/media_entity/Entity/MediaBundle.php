@@ -7,6 +7,7 @@
 
 namespace Drupal\media_entity\Entity;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageControllerInterface;
 use Drupal\media_entity\MediaBundleInterface;
@@ -19,8 +20,6 @@ use Drupal\media_entity\MediaInterface;
  *   id = "media_bundle",
  *   label = @Translation("Media bundle"),
  *   controllers = {
- *     "storage" = "Drupal\Core\Config\Entity\ConfigStorageController",
- *     "access" = "Drupal\Core\Entity\EntityAccessController",
  *     "form" = {
  *       "add" = "Drupal\media_entity\MediaBundleFormController",
  *       "edit" = "Drupal\media_entity\MediaBundleFormController",
@@ -100,7 +99,7 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
     }
     else {
       // Invalidate the cache tag of the updated media bundle only.
-      cache()->invalidateTags(array('media_bundle' => $this->id()));
+      Cache::invalidateTags(array('media_bundle' => $this->id()));
     }
   }
 

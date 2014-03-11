@@ -44,6 +44,11 @@ class MediaUITest extends WebTestBase {
       'administer media fields',
       'administer media form display',
       'administer media display',
+      // Media entity permissions.
+      'view media',
+      'create media',
+      'update media',
+      'delete media',
     ));
     $this->drupalLogin($this->admin_user);
     $this->media_bundle = entity_create('media_bundle', array(
@@ -62,10 +67,53 @@ class MediaUITest extends WebTestBase {
 
     $this->assertText($this->media_bundle->label());
     $this->assertLinkByHref('admin/structure/media/add');
-    $this->assertLinkByHref('structure/media/manage/default');
-    $this->assertLinkByHref('structure/media/manage/default/fields');
-    $this->assertLinkByHref('structure/media/manage/default/form-display');
-    $this->assertLinkByHref('structure/media/manage/default/display');
+    $this->assertLinkByHref('admin/structure/media/manage/default');
+    $this->assertLinkByHref('admin/structure/media/manage/default/fields');
+    $this->assertLinkByHref('admin/structure/media/manage/default/form-display');
+    $this->assertLinkByHref('admin/structure/media/manage/default/display');
+
+    // Tests bundle add form.
+    $bundle = array(
+      'id' => strtolower($this->randomName()),
+      'label' => $this->randomString(),
+      'description' => $this->randomString(),
+    );
+    $this->drupalPostForm('admin/structure/media/add', $bundle, t('Save media bundle'));
+
+    // Tests bundle edit form.
+    $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
+    $this->assertFieldByName('label', $bundle['label']);
+    $this->assertFieldByName('description', $bundle['description']);
+    $bundle['label'] = $this->randomString();
+    $bundle['description'] = $this->randomString();
+    $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
+    $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
+    $this->assertFieldByName('label', $bundle['label']);
+    $this->assertFieldByName('description', $bundle['description']);
+
+    // Tests media bundle delete form.
+    $this->drupalPostForm(NULL, $bundle, t('Delete media bundle'));
+    $this->assertUrl('admin/structure/media/manage/' . $bundle['id'] . '/delete');
+    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->assertUrl('admin/structure/media');
+
+    // Tests media add form.
+    $edit = array(
+      'name' => $this->randomString(),
+    );
+    $this->drupalPostForm('media/add/default', $edit, t('Save'));
+    $this->assertTitle($edit['name'] . ' | Drupal');
+    $media_id = \Drupal::entityQuery('media')->execute();
+    $media_id = reset($media_id);
+    // Tests edit form.
+    $this->drupalGet('media/' . $media_id . '/edit');
+    $edit['name'] = $this->randomString();
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->assertTitle($edit['name'] . ' | Drupal');
+    // Tests delete form.
+    $this->drupalPostForm('media/' . $media_id . '/delete', array(), t('Delete'));
+    $media_id = \Drupal::entityQuery('media')->execute();
+    $this->assertFalse($media_id);
   }
 
 }

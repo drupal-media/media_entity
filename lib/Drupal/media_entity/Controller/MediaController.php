@@ -98,7 +98,7 @@ class MediaController extends ControllerBase {
       'bundle' => $bundle,
       'langcode' => $langcode ? $langcode : language_default()->id,
     ));
-    return \Drupal::entityManager()->getForm($media);
+    return $this->entityFormBuilder()->getForm($media);
   }
 
   /**
