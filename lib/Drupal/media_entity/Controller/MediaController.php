@@ -93,7 +93,7 @@ class MediaController extends ControllerBase {
 
     $bundle = $media_bundle->id();
     $langcode = $this->moduleHandler()->invoke('language', 'get_default_langcode', array('media', $bundle));
-    $media = $this->entityManager()->getStorageController('media')->create(array(
+    $media = $this->entityManager()->getStorage('media')->create(array(
       'uid' => $user->id(),
       'bundle' => $bundle,
       'langcode' => $langcode ? $langcode : language_default()->id,
