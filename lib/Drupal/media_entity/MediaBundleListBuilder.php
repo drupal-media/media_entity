@@ -6,7 +6,7 @@
 
 namespace Drupal\media_entity;
 
-use Drupal\Core\Config\Entity\ConfigEntityListController;
+use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityControllerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Component\Utility\Xss;
@@ -14,7 +14,7 @@ use Drupal\Component\Utility\Xss;
 /**
  * Provides a listing of media bundles.
  */
-class MediaBundleListController extends ConfigEntityListController implements EntityControllerInterface {
+class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityControllerInterface {
 
   /**
    * {@inheritdoc}

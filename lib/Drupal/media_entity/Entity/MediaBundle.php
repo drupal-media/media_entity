@@ -25,7 +25,7 @@ use Drupal\media_entity\MediaInterface;
  *       "edit" = "Drupal\media_entity\MediaBundleFormController",
  *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteForm"
  *     },
- *     "list" = "Drupal\media_entity\MediaBundleListController",
+ *     "list_builder" = "Drupal\media_entity\MediaBundleListBuilder",
  *   },
  *   admin_permission = "administer media",
  *   config_prefix = "bundle",
