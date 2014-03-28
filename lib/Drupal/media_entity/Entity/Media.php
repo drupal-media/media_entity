@@ -79,23 +79,6 @@ class Media extends ContentEntityBase implements MediaInterface {
   }
 
   /**
-   * Implements Drupal\Core\Entity\EntityInterface::preCreate().
-   */
-  public static function preCreate(EntityStorageInterface $storage_controller,  array &$values) {
-    $values['created'] = REQUEST_TIME;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function preSave(EntityStorageInterface $storage_controller) {
-    parent::preSave($storage_controller);
-
-    // Before saving the node, set changed and revision times.
-    $this->changed->value = REQUEST_TIME;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getBundle() {
@@ -256,16 +239,13 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setLabel(t('Publishing status'))
       ->setDescription(t('A boolean indicating whether the media is published.'));
 
-    // @todo Convert to a "created" field in https://drupal.org/node/2145103.
-    $fields['created'] = FieldDefinition::create('integer')
+    $fields['created'] = FieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the media was created.'));
 
-    // @todo Convert to a "changed" field in https://drupal.org/node/2145103.
-    $fields['changed'] = FieldDefinition::create('integer')
+    $fields['changed'] = FieldDefinition::create('changed')
       ->setLabel(t('Changed'))
-      ->setDescription(t('The time that the media was last edited.'))
-      ->setPropertyConstraints('value', array('EntityChanged' => array()));
+      ->setDescription(t('The time that the media was last edited.'));
 
     $fields['type'] = FieldDefinition::create('string')
       ->setLabel(t('Type'))
@@ -279,7 +259,7 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setRequired(TRUE)
       ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
 
-    $fields['revision_timestamp'] = FieldDefinition::create('integer')
+    $fields['revision_timestamp'] = FieldDefinition::create('timestamp')
       ->setLabel(t('Revision timestamp'))
       ->setDescription(t('The time that the current revision was created.'))
       ->setQueryable(FALSE);
