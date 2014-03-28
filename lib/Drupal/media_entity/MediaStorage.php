@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Contains of \Drupal\media_entity\MediaStorageController.
+ * Contains of \Drupal\media_entity\MediaStorage.
  */
 
 namespace Drupal\media_entity;
 
-use Drupal\Core\Entity\FieldableDatabaseStorageController;
+use Drupal\Core\Entity\ContentEntityDatabaseStorage;
 
 /**
  * Controller class for media.
  */
-class MediaStorageController extends FieldableDatabaseStorageController implements MediaStorageControllerInterface {
+class MediaStorage extends ContentEntityDatabaseStorage implements MediaStorageInterface {
 
   /**
    * {@inheritdoc}

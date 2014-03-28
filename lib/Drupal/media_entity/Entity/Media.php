@@ -21,7 +21,7 @@ use Drupal\media_entity\MediaInterface;
  *   label = @Translation("Media"),
  *   bundle_label = @Translation("Media bundle"),
  *   controllers = {
- *     "storage" = "Drupal\media_entity\MediaStorageController",
+ *     "storage" = "Drupal\media_entity\MediaStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "access" = "Drupal\media_entity\MediaAccessController",
  *     "form" = {
