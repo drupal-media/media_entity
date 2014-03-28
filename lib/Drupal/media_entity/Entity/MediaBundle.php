@@ -9,7 +9,7 @@ namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Entity\EntityStorageControllerInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 
@@ -81,7 +81,7 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
   /**
    * {@inheritdoc}
    */
-  public function postSave(EntityStorageControllerInterface $storage_controller, $update = TRUE) {
+  public function postSave(EntityStorageInterface $storage_controller, $update = TRUE) {
     parent::postSave($storage_controller, $update);
 
     if (!$update) {
@@ -106,7 +106,7 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
   /**
    * {@inheritdoc}
    */
-  public static function postDelete(EntityStorageControllerInterface $storage_controller, array $entities) {
+  public static function postDelete(EntityStorageInterface $storage_controller, array $entities) {
     parent::postDelete($storage_controller, $entities);
 
     // Clear the media bundle cache to reflect the removal.

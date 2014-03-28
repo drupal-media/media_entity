@@ -8,7 +8,7 @@
 namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\EntityStorageControllerInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldDefinition;
 use Drupal\media_entity\MediaInterface;
@@ -81,14 +81,14 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * Implements Drupal\Core\Entity\EntityInterface::preCreate().
    */
-  public static function preCreate(EntityStorageControllerInterface $storage_controller,  array &$values) {
+  public static function preCreate(EntityStorageInterface $storage_controller,  array &$values) {
     $values['created'] = REQUEST_TIME;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function preSave(EntityStorageControllerInterface $storage_controller) {
+  public function preSave(EntityStorageInterface $storage_controller) {
     parent::preSave($storage_controller);
 
     // Before saving the node, set changed and revision times.
