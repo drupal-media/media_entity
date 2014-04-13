@@ -30,12 +30,11 @@ class MediaController extends ControllerBase {
     $build = $this->buildPage($media);
 
     foreach ($media->uriRelationships() as $rel) {
-      $uri = $media->urlInfo($rel);
       // Set the node path as the canonical URL to prevent duplicate content.
       $build['#attached']['drupal_add_html_head_link'][] = array(
         array(
           'rel' => $rel,
-          'href' => $this->urlGenerator()->generateFromRoute($uri['route_name'], $uri['route_parameters'], $uri['options']),
+          'href' => $media->url($rel),
         )
       , TRUE);
 
@@ -44,7 +43,7 @@ class MediaController extends ControllerBase {
         $build['#attached']['drupal_add_html_head_link'][] = array(
           array(
             'rel' => 'shortlink',
-            'href' => $this->urlGenerator()->generateFromRoute($uri['route_name'], $uri['route_parameters'], array_merge($uri['options'], array('alias' => TRUE))),
+            'href' => $media->url($rel, array('alias' => TRUE)),
           )
         , TRUE);
       }
