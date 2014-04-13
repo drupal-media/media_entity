@@ -1,0 +1,21 @@
+id: media.image.default
+uuid: e646b465-82bf-4187-ab07-7c4720ea9405
+targetEntityType: media
+bundle: image
+mode: default
+content:
+  field_image:
+    type: image
+    weight: 0
+    settings:
+      image_style: ''
+      image_link: ''
+    label: above
+hidden: {  }
+status: true
+dependencies:
+  entity:
+    - field.instance.media.image.field_image
+    - media_entity.bundle.image
+  module:
+    - image

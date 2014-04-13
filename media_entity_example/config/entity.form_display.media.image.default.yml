@@ -1,0 +1,20 @@
+id: media.image.default
+uuid: ad629e0f-c710-44c7-b400-f69ea3e66b04
+targetEntityType: media
+bundle: image
+mode: default
+content:
+  field_image:
+    type: image_image
+    weight: 0
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+hidden: {  }
+status: true
+dependencies:
+  entity:
+    - field.instance.media.image.field_image
+    - media_entity.bundle.image
+  module:
+    - image
