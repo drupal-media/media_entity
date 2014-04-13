@@ -4,3 +4,4 @@ label: Images
 description: 'Images of pretty puppies.'
 status: true
 langcode: en
+dependencies: {  }
