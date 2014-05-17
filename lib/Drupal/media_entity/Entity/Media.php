@@ -25,11 +25,11 @@ use Drupal\media_entity\MediaInterface;
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "access" = "Drupal\media_entity\MediaAccessController",
  *     "form" = {
- *       "default" = "Drupal\media_entity\MediaFormController",
+ *       "default" = "Drupal\media_entity\MediaForm",
  *       "delete" = "Drupal\media_entity\Form\MediaDeleteForm",
- *       "edit" = "Drupal\media_entity\MediaFormController"
+ *       "edit" = "Drupal\media_entity\MediaForm"
  *     },
- *     "translation" = "Drupal\content_translation\ContentTranslationController"
+ *     "translation" = "Drupal\content_translation\ContentTranslationHandler"
  *   },
  *   base_table = "media",
  *   data_table = "media_field_data",

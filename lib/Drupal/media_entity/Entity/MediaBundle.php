@@ -21,8 +21,8 @@ use Drupal\media_entity\MediaInterface;
  *   label = @Translation("Media bundle"),
  *   controllers = {
  *     "form" = {
- *       "add" = "Drupal\media_entity\MediaBundleFormController",
- *       "edit" = "Drupal\media_entity\MediaBundleFormController",
+ *       "add" = "Drupal\media_entity\MediaBundleForm",
+ *       "edit" = "Drupal\media_entity\MediaBundleForm",
  *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteForm"
  *     },
  *     "list_builder" = "Drupal\media_entity\MediaBundleListBuilder",

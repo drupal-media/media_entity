@@ -2,18 +2,18 @@
 
 /**
  * @file
- * Definition of Drupal\media_entity\MediaFormController.
+ * Definition of Drupal\media_entity\MediaForm.
  */
 
 namespace Drupal\media_entity;
 
 use Drupal\Core\Datetime\DrupalDateTime;
-use Drupal\Core\Entity\ContentEntityFormController;
+use Drupal\Core\Entity\ContentEntityForm;
 
 /**
  * Form controller for the media edit forms.
  */
-class MediaFormController extends ContentEntityFormController {
+class MediaForm extends ContentEntityForm {
 
   /**
    * Default settings for this media bundle.
@@ -62,7 +62,7 @@ class MediaFormController extends ContentEntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::form().
+   * Overrides Drupal\Core\Entity\EntityForm::form().
    */
   public function form(array $form, array &$form_state) {
     $media = $this->entity;
@@ -164,7 +164,7 @@ class MediaFormController extends ContentEntityFormController {
   /**
    * Updates the media by processing the submitted values.
    *
-   * Overrides Drupal\Core\Entity\EntityFormController::submit().
+   * Overrides Drupal\Core\Entity\EntityForm::submit().
    */
   public function submit(array $form, array &$form_state) {
     // Build the media object from the submitted values.
@@ -202,7 +202,7 @@ class MediaFormController extends ContentEntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::save().
+   * Overrides Drupal\Core\Entity\EntityForm::save().
    */
   public function save(array $form, array &$form_state) {
     $media = $this->entity;
@@ -232,7 +232,7 @@ class MediaFormController extends ContentEntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::delete().
+   * Overrides Drupal\Core\Entity\EntityForm::delete().
    */
   public function delete(array $form, array &$form_state) {
     $destination = array();

@@ -2,18 +2,18 @@
 
 /**
  * @file
- * Contains \Drupal\media_entity\MediaBundleFormController.
+ * Contains \Drupal\media_entity\MediaBundleForm.
  */
 
 namespace Drupal\media_entity;
 
-use Drupal\Core\Entity\EntityFormController;
+use Drupal\Core\Entity\EntityForm;
 use Drupal\Component\Utility\String;
 
 /**
  * Form controller for node type forms.
  */
-class MediaBundleFormController extends EntityFormController {
+class MediaBundleForm extends EntityForm {
 
   /**
    * {@inheritdoc}
