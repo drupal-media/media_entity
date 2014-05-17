@@ -46,7 +46,7 @@ class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityCo
   public function render() {
     $build = parent::render();
     $build['#empty'] = t('No media bundle available. <a href="@link">Add media bundle</a>.', array(
-      '@link' => url('admin/structure/media/bundle/add'),
+      '@link' => url('admin/structure/media/add'),
     ));
     return $build;
   }
