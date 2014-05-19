@@ -65,6 +65,8 @@ class MediaForm extends ContentEntityForm {
    * Overrides Drupal\Core\Entity\EntityForm::form().
    */
   public function form(array $form, array &$form_state) {
+    $account = \Drupal::currentUser();
+
     $media = $this->entity;
     $media_bundle = entity_load('media_bundle', $media->getBundle());
 
@@ -105,14 +107,14 @@ class MediaForm extends ContentEntityForm {
         'class' => array('media-form-revision-information'),
       ),
       '#weight' => 20,
-      '#access' => $media->isNewRevision() || user_access('administer media'),
+      '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
     );
 
     $form['revision_information']['revision']['revision'] = array(
       '#type' => 'checkbox',
       '#title' => t('Create new revision'),
       '#default_value' => $media->isNewRevision(),
-      '#access' => user_access('administer media'),
+      '#access' => $account->hasPermission('administer media'),
     );
 
     $form['revision_information']['revision']['log'] = array(
@@ -131,7 +133,7 @@ class MediaForm extends ContentEntityForm {
     // Media publisher information for administrators.
     $form['publisher'] = array(
       '#type' => 'details',
-      '#access' => user_access('administer media'),
+      '#access' => $account->hasPermission('administer media'),
       '#title' => t('Authoring information'),
       '#collapsed' => TRUE,
       '#group' => 'advanced',
