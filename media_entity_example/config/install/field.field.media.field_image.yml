@@ -1,5 +1,4 @@
 id: media.field_image
-uuid: acc3afe4-9975-4cc0-a700-ef498406f5dc
 name: field_image
 entity_type: media
 type: image

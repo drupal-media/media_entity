@@ -1,7 +1,5 @@
 id: media.image.field_image
-uuid: ba037f34-e112-4298-8408-8c8d1dc68b7f
 field_name: field_image
-field_uuid: acc3afe4-9975-4cc0-a700-ef498406f5dc
 entity_type: media
 bundle: image
 label: Image

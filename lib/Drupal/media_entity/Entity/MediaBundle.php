@@ -51,13 +51,6 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
   public $id;
 
   /**
-   * The UUID of the media bundle.
-   *
-   * @var string
-   */
-  public $uuid;
-
-  /**
    * The human-readable name of the media bundle.
    *
    * @var string
