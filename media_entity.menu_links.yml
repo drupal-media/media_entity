@@ -1,5 +1,5 @@
 media.overview_bundles:
-  title: 'Media types'
+  title: 'Media bundles'
   parent: system.admin_structure
-  description: 'Manage media types'
+  description: 'Manage media bundles'
   route_name: media.overview_bundles
