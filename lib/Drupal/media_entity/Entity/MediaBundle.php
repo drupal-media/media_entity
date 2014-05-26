@@ -33,6 +33,7 @@ use Drupal\media_entity\MediaInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
+ *     "type" = "type",
  *     "uuid" = "uuid"
  *   },
  *   links = {
@@ -64,6 +65,13 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
   public $label;
 
   /**
+   * The type of this media bundle.
+   *
+   * @var string
+   */
+  public $type;
+
+  /**
    * A brief description of this media bundle.
    *
    * @var string
@@ -76,6 +84,13 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
    */
   public function id() {
     return $this->id;
+  }
+
+  /**
+   * Returns the type of the media bundle.
+   */
+  public function type() {
+    return $this->type;
   }
 
   /**

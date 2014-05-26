@@ -50,6 +50,15 @@ class MediaBundleForm extends EntityForm {
       '#description' => t('A unique machine-readable name for this media bundle.'),
     );
 
+    $form['type'] = array(
+      '#title' => t('Type'),
+      '#type' => 'textfield',
+      '#default_value' => $bundle->type(),
+      '#description' => t('The type of this media bundle e.g. image, video, audio.'),
+      '#required' => TRUE,
+      '#size' => 30,
+    );
+
     $form['description'] = array(
       '#title' => t('Description'),
       '#type' => 'textarea',
