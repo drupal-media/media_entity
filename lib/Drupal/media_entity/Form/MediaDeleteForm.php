@@ -27,12 +27,7 @@ class MediaDeleteForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return array(
-      'route_name' => 'media.view',
-      'route_parameters' => array(
-        'media' => $this->entity->id(),
-      ),
-    );
+    return $this->entity->urlInfo();
   }
 
   /**

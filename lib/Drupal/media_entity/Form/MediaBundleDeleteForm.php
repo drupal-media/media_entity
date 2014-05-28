@@ -8,6 +8,7 @@
 namespace Drupal\media_entity\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
+use Drupal\Core\Url;
 
 /**
  * Provides a form for media bundle deletion.
@@ -24,9 +25,7 @@ class MediaBundleDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return array(
-      'route_name' => 'media.overview_bundles',
-    );
+    return new Url('media.overview_bundles');
   }
 
   /**

@@ -37,7 +37,8 @@ use Drupal\media_entity\MediaInterface;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "edit-form" = "media.bundle_edit"
+ *     "edit-form" = "media.bundle_edit",
+ *     "delete-form" = "media.bundle_delete_confirm"
  *   }
  * )
  */
