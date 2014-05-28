@@ -39,6 +39,7 @@ class BasicTest extends WebTestBase {
     $values += array(
       'id' => $id,
       'label' => $id,
+      'type' => $id,
     );
 
     $bundle = entity_create('media_bundle', $values);
@@ -66,6 +67,7 @@ class BasicTest extends WebTestBase {
     $media = entity_create('media', array(
       'bundle' => 'default',
       'name' => 'Unnamed',
+      'type' => 'Unknown',
     ));
     $media->save();
 
@@ -83,6 +85,7 @@ class BasicTest extends WebTestBase {
     $media = entity_create('media', array(
       'bundle' => 'default',
       'name' => 'Unnamed',
+      'type' => 'Unknown',
     ));
     $media->save();
 

@@ -77,6 +77,7 @@ class MediaUITest extends WebTestBase {
       'id' => strtolower($this->randomName()),
       'label' => $this->randomString(),
       'description' => $this->randomString(),
+      'type' => $this->randomString(),
     );
     $this->drupalPostForm('admin/structure/media/add', $bundle, t('Save media bundle'));
 
@@ -84,15 +85,19 @@ class MediaUITest extends WebTestBase {
     $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
     $this->assertFieldByName('label', $bundle['label']);
     $this->assertFieldByName('description', $bundle['description']);
+    $this->assertFieldByName('type', $bundle['type']);
     $bundle['label'] = $this->randomString();
     $bundle['description'] = $this->randomString();
+    $bundle['type'] = $this->randomString();
     $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
     $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
     $this->assertFieldByName('label', $bundle['label']);
     $this->assertFieldByName('description', $bundle['description']);
+    $this->assertFieldByName('type', $bundle['type']);
 
     // Tests media bundle delete form.
-    $this->drupalPostForm(NULL, $bundle, t('Delete media bundle'));
+    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle['id'] . '/delete');
+    $this->clickLink(t('Delete'));
     $this->assertUrl('admin/structure/media/manage/' . $bundle['id'] . '/delete');
     $this->drupalPostForm(NULL, array(), t('Delete'));
     $this->assertUrl('admin/structure/media');
