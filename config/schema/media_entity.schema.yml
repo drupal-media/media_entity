@@ -11,6 +11,9 @@ media_entity.bundle.*:
     name:
       type: label
       label: 'Name'
-    description:
+    type:
       type: label
+      label: 'Type'
+    description:
+      type: text
       label: 'Description'
