@@ -28,35 +28,6 @@ function media_entity_permission() {
 }
 
 /**
- * Implements hook_menu_link_defaults().
- */
-function media_entity_menu_link_defaults() {
-  $items['media_entity.admin.structure.media'] = array(
-    'link_title' => 'Media bundles',
-    'description' => 'Manage media bundles, including field configuration, display configuration, etc.',
-    'parent' => 'system.admin.structure',
-    'route_name' => 'media.overview_bundles',
-  );
-  return $items;
-}
-
-/**
- * Loads a media entity from the database.
- *
- * @param int $mid
- *   The media ID.
- * @param bool $reset
- *   (optional) Whether to reset the media_load_multiple() cache. Defaults to
- *   FALSE.
- *
- * @return \Drupal\media_entity\MediaInterface|null
- *   A fully-populated media entity, or NULL if the media is not found.
- */
-function media_entity_load($nid = NULL, $reset = FALSE) {
-  return entity_load('media', $nid, $reset);
-}
-
-/**
  * Entity URI callback.
  *
  * @param \Drupal\media_entity\MediaInterface $media
@@ -72,19 +43,4 @@ function media_entity_uri(\Drupal\media_entity\MediaInterface $media) {
       'media' => $media->id(),
     ),
   );
-}
-
-/**
- * Implements hook_entity_bundle_info().
- */
-function media_entity_entity_bundle_info() {
-  // @TODO: Do we want to cache this?
-  $bundles = array();
-  $config_names = \Drupal::configFactory()->listAll('media_entity.bundle.');
-  foreach ($config_names as $config_name) {
-    $config = \Drupal::config($config_name);
-    $bundles['media'][$config->get('id')]['label'] = $config->get('label');
-  }
-
-  return $bundles;
 }
