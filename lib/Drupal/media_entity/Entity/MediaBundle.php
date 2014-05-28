@@ -7,8 +7,7 @@
 
 namespace Drupal\media_entity\Entity;
 
-use Drupal\Core\Cache\Cache;
-use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
@@ -42,7 +41,7 @@ use Drupal\media_entity\MediaInterface;
  *   }
  * )
  */
-class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
+class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface {
 
   /**
    * The machine name of this media bundle.
@@ -90,39 +89,11 @@ class MediaBundle extends ConfigEntityBase implements MediaBundleInterface {
   /**
    * {@inheritdoc}
    */
-  public function postSave(EntityStorageInterface $storage_controller, $update = TRUE) {
-    parent::postSave($storage_controller, $update);
-
-    if (!$update) {
-      // Clear the media bundle cache, so the new bundle appears.
-      \Drupal::cache()->deleteTags(array('media_bundles' => TRUE));
-
-      entity_invoke_bundle_hook('create', 'media', $this->id());
-    }
-    elseif ($this->getOriginalID() != $this->id()) {
-      // Clear the media bundle cache to reflect the rename.
-      \Drupal::cache()->deleteTags(array('media_bundles' => TRUE));
-
-      // Update bundle id with corresponding media.
-      entity_invoke_bundle_hook('rename', 'media', $this->getOriginalID(), $this->id());
-    }
-    else {
-      // Invalidate the cache tag of the updated media bundle only.
-      Cache::invalidateTags(array('media_bundle' => $this->id()));
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function postDelete(EntityStorageInterface $storage_controller, array $entities) {
-    parent::postDelete($storage_controller, $entities);
+  public static function postDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
 
     // Clear the media bundle cache to reflect the removal.
-    $storage_controller->resetCache(array_keys($entities));
-    foreach ($entities as $entity) {
-      entity_invoke_bundle_hook('delete', 'media', $entity->id());
-    }
+    $storage->resetCache(array_keys($entities));
   }
 
   public static function getLabel(MediaInterface $media) {
