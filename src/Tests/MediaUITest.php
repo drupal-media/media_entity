@@ -7,6 +7,8 @@
 
 namespace Drupal\media_entity\Tests;
 
+use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\Xss;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -67,8 +69,8 @@ class MediaUITest extends WebTestBase {
     $this->drupalGet('admin/structure/media');
     $this->assertResponse(200);
 
-    $this->assertText($this->media_bundle->label());
-    $this->assertText($this->media_bundle->description);
+    $this->assertRaw(String::checkPlain($this->media_bundle->label()));
+    $this->assertRaw(Xss::filterAdmin($this->media_bundle->description));
     $this->assertLinkByHref('admin/structure/media/add');
     $this->assertLinkByHref('admin/structure/media/manage/default');
     $this->assertLinkByHref('admin/structure/media/manage/default/fields');
@@ -85,8 +87,8 @@ class MediaUITest extends WebTestBase {
     );
     $this->drupalPostForm('admin/structure/media/add', $bundle, t('Save media bundle'));
     $this->assertUrl('admin/structure/media');
-    $this->assertText($bundle['label']);
-    $this->assertText($bundle['description']);
+    $this->assertRaw(String::checkPlain($bundle['label']));
+    $this->assertRaw(Xss::filterAdmin($bundle['description']));
 
     // Tests bundle edit form.
     $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
@@ -108,6 +110,8 @@ class MediaUITest extends WebTestBase {
     $this->assertUrl('admin/structure/media/manage/' . $bundle['id'] . '/delete');
     $this->drupalPostForm(NULL, array(), t('Delete'));
     $this->assertUrl('admin/structure/media');
+    $this->assertRaw(t('The media bundle %name has been deleted.', array('%name' => $bundle['label'])));
+    $this->assertNoRaw(Xss::filterAdmin($bundle['description']));
 
     // Tests media add form.
     $edit = array(
