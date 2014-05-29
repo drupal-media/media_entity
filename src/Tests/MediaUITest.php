@@ -54,6 +54,8 @@ class MediaUITest extends WebTestBase {
     $this->media_bundle = entity_create('media_bundle', array(
       'id' => 'default',
       'label' => 'Unnamed',
+      'type' => 'Unknown',
+      'description' => 'Media description',
     ));
     $this->media_bundle->save();
   }
@@ -66,11 +68,13 @@ class MediaUITest extends WebTestBase {
     $this->assertResponse(200);
 
     $this->assertText($this->media_bundle->label());
+    $this->assertText($this->media_bundle->description);
     $this->assertLinkByHref('admin/structure/media/add');
     $this->assertLinkByHref('admin/structure/media/manage/default');
     $this->assertLinkByHref('admin/structure/media/manage/default/fields');
     $this->assertLinkByHref('admin/structure/media/manage/default/form-display');
     $this->assertLinkByHref('admin/structure/media/manage/default/display');
+    $this->assertLinkByHref('admin/structure/media/manage/default/delete');
 
     // Tests bundle add form.
     $bundle = array(
@@ -80,6 +84,9 @@ class MediaUITest extends WebTestBase {
       'type' => $this->randomString(),
     );
     $this->drupalPostForm('admin/structure/media/add', $bundle, t('Save media bundle'));
+    $this->assertUrl('admin/structure/media');
+    $this->assertText($bundle['label']);
+    $this->assertText($bundle['description']);
 
     // Tests bundle edit form.
     $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
