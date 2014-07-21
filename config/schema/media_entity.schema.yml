@@ -1,16 +1,13 @@
 media_entity.bundle.*:
-  type: mapping
+  type: config_entity
   label: 'Media bundle'
   mapping:
     id:
       type: string
       label: 'Machine name'
-    uuid:
-      type: string
-      label: 'UUID'
-    name:
+    label:
       type: label
-      label: 'Name'
+      label: 'Label'
     type:
       type: label
       label: 'Type'

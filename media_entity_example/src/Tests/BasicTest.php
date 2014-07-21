@@ -7,10 +7,13 @@
 
 namespace Drupal\media_entity_example\Tests;
 
+use Drupal\media_entity\MediaBundleInterface;
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Sets up page and article content types.
+ * Ensures that the shipped config works correctly.
+ *
+ * @group media
  */
 class BasicTest extends WebTestBase {
 
@@ -21,14 +24,6 @@ class BasicTest extends WebTestBase {
    */
   public static $modules = array('media_entity_example');
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Basic example tests',
-      'description' => 'Ensures that the shipped config works correctly.',
-      'group' => 'Media',
-    );
-  }
-
   /**
    * Tests the shipped default config.
    */
@@ -37,7 +32,7 @@ class BasicTest extends WebTestBase {
       ->getStorage('media_bundle')
       ->load('image');
 
-    $this->assertTrue(is_object($bundle_entity) && ($bundle_entity instanceof \Drupal\Core\Entity\EntityInterface), 'The image media bundle was correctly created.');
+    $this->assertTrue($bundle_entity instanceof MediaBundleInterface, 'The image media bundle was correctly created.');
   }
 
 }

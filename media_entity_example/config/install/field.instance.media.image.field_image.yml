@@ -27,6 +27,6 @@ status: 1
 langcode: und
 dependencies:
   entity:
-    - field.field.media.field_image
+    - field.storage.media.field_image
     - media_entity.bundle.image
 field_type: image

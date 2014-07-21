@@ -10,7 +10,7 @@ namespace Drupal\media_entity;
 use Drupal\Core\Entity\ContentEntityDatabaseStorage;
 
 /**
- * Controller class for media.
+ * Media storage class.
  */
 class MediaStorage extends ContentEntityDatabaseStorage implements MediaStorageInterface {
 

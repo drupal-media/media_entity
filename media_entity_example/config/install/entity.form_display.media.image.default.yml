@@ -9,6 +9,7 @@ content:
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
+    third_party_settings: { }
 hidden: {  }
 status: true
 dependencies:

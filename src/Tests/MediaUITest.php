@@ -12,7 +12,9 @@ use Drupal\Component\Utility\Xss;
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Sets up page and article content types.
+ * Ensures that media UI work correctly.
+ *
+ * @group media
  */
 class MediaUITest extends WebTestBase {
 
@@ -27,14 +29,6 @@ class MediaUITest extends WebTestBase {
    * @var array
    */
   public static $modules = array('media_entity', 'field_ui');
-
-  public static function getInfo() {
-    return array(
-      'name' => 'Media UI tests',
-      'description' => 'Ensures that media UI work correctly.',
-      'group' => 'Media',
-    );
-  }
 
   /**
    * {@inheritdoc}
@@ -115,17 +109,17 @@ class MediaUITest extends WebTestBase {
 
     // Tests media add form.
     $edit = array(
-      'name' => $this->randomString(),
+      'name[0][value]' => $this->randomString(),
     );
     $this->drupalPostForm('media/add/default', $edit, t('Save'));
-    $this->assertTitle($edit['name'] . ' | Drupal');
+    $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
     $media_id = \Drupal::entityQuery('media')->execute();
     $media_id = reset($media_id);
     // Tests edit form.
     $this->drupalGet('media/' . $media_id . '/edit');
-    $edit['name'] = $this->randomString();
+    $edit['name[0][value]'] = $this->randomString();
     $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->assertTitle($edit['name'] . ' | Drupal');
+    $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
     // Tests delete form.
     $this->drupalPostForm('media/' . $media_id . '/delete', array(), t('Delete'));
     $media_id = \Drupal::entityQuery('media')->execute();

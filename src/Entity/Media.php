@@ -35,9 +35,7 @@ use Drupal\media_entity\MediaInterface;
  *   data_table = "media_field_data",
  *   revision_table = "media_revision",
  *   revision_data_table = "media_field_revision",
- *   uri_callback = "media_entity_uri",
  *   fieldable = TRUE,
- *   translatable = TRUE,
  *   render_cache = TRUE,
  *   entity_keys = {
  *     "id" = "mid",
@@ -45,9 +43,6 @@ use Drupal\media_entity\MediaInterface;
  *     "bundle" = "bundle",
  *     "label" = "name",
  *     "uuid" = "uuid"
- *   },
- *   bundle_keys = {
- *     "bundle" = "bundle"
  *   },
  *   bundle_entity_type = "media_bundle",
  *   permission_granularity = "entity_type",
@@ -71,12 +66,6 @@ class Media extends ContentEntityBase implements MediaInterface {
    */
   const NOT_PUBLISHED = 0;
 
-  /**
-   * Implements Drupal\Core\Entity\EntityInterface::id().
-   */
-  public function id() {
-    return $this->get('mid')->value;
-  }
 
   /**
    * {@inheritdoc}
@@ -192,6 +181,38 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
+  public function preSave(EntityStorageInterface $storage) {
+    parent::preSave($storage);
+
+    // If no owner has been set explicitly, make the current user the owner.
+    if (!$this->getPublisher()) {
+      $this->setPublisherId(\Drupal::currentUser()->id());
+    }
+    // If no revision author has been set explicitly, make the media owner the
+    // revision author.
+    if (!$this->get('revision_uid')->entity) {
+      $this->set('revision_uid', $this->getPublisherId());
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preSaveRevision(EntityStorageInterface $storage, \stdClass $record) {
+    parent::preSaveRevision($storage, $record);
+
+    if (!$this->isNewRevision() && isset($this->original) && (!isset($record->revision_log) || $record->revision_log === '')) {
+      // If we are updating an existing node without adding a new revision, we
+      // need to make sure $entity->revision_log is reset whenever it is empty.
+      // Therefore, this code allows us to avoid clobbering an existing log
+      // entry with an empty one.
+      $record->revision_log = $this->original->revision_log->value;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['mid'] = FieldDefinition::create('integer')
       ->setLabel(t('Media ID'))
@@ -216,24 +237,29 @@ class Media extends ContentEntityBase implements MediaInterface {
 
     $fields['langcode'] = FieldDefinition::create('language')
       ->setLabel(t('Language code'))
-      ->setDescription(t('The media language code.'));
+      ->setDescription(t('The media language code.'))
+      ->setRevisionable(TRUE);
 
     $fields['name'] = FieldDefinition::create('string')
-      ->setLabel(t('Name'))
+      ->setLabel(t('Media name'))
       ->setDescription(t('The name of this media.'))
       ->setRequired(TRUE)
-      ->setSettings(array(
-        'default_value' => '',
+      ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE)
+      ->setDefaultValue('')
+      ->setSetting('max_length', 255)
+      ->setDisplayOptions('form', array(
+        'type' => 'string',
+        'weight' => -5,
       ))
-      ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['uid'] = FieldDefinition::create('entity_reference')
       ->setLabel(t('Publisher ID'))
       ->setDescription(t('The user ID of the media publisher.'))
-      ->setSettings(array(
-        'target_type' => 'user',
-        'default_value' => 0,
-      ));
+      ->setRevisionable(TRUE)
+      ->setDefaultValue(0)
+      ->setSetting('target_type', 'user');
 
     $fields['status'] = FieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
@@ -241,38 +267,47 @@ class Media extends ContentEntityBase implements MediaInterface {
 
     $fields['created'] = FieldDefinition::create('created')
       ->setLabel(t('Created'))
-      ->setDescription(t('The time that the media was created.'));
+      ->setDescription(t('The time that the media was created.'))
+      ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE);
 
     $fields['changed'] = FieldDefinition::create('changed')
       ->setLabel(t('Changed'))
-      ->setDescription(t('The time that the media was last edited.'));
+      ->setDescription(t('The time that the media was last edited.'))
+      ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE);
 
     $fields['type'] = FieldDefinition::create('string')
       ->setLabel(t('Type'))
       ->setDescription(t('The type of this media.'))
       ->setRequired(TRUE)
-      ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
+      ->setSetting('max_length', 255);
 
     $fields['resource_id'] = FieldDefinition::create('string')
       ->setLabel(t('Resource ID'))
       ->setDescription(t('The unique identifier of media resource that is associated with this media.'))
       ->setRequired(TRUE)
-      ->setPropertyConstraints('value', array('Length' => array('max' => 255)));
+      ->setSetting('max_length', 255)
+      ->setDefaultValue('');
 
     $fields['revision_timestamp'] = FieldDefinition::create('timestamp')
       ->setLabel(t('Revision timestamp'))
       ->setDescription(t('The time that the current revision was created.'))
-      ->setQueryable(FALSE);
+      ->setQueryable(FALSE)
+      ->setRevisionable(TRUE);
 
     $fields['revision_uid'] = FieldDefinition::create('entity_reference')
       ->setLabel(t('Revision publisher ID'))
       ->setDescription(t('The user ID of the publisher of the current revision.'))
-      ->setSettings(array('target_type' => 'user'))
-      ->setQueryable(FALSE);
+      ->setSetting('target_type', 'user')
+      ->setQueryable(FALSE)
+      ->setRevisionable(TRUE);
 
-    $fields['log'] = FieldDefinition::create('string')
-      ->setLabel(t('Log'))
-      ->setDescription(t('The log entry explaining the changes in this revision.'));
+    $fields['revision_log'] = FieldDefinition::create('string_long')
+      ->setLabel(t('Revision Log'))
+      ->setDescription(t('The log entry explaining the changes in this revision.'))
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE);
 
     return $fields;
   }

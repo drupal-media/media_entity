@@ -391,8 +391,8 @@ function media_entity_views_data() {
     );
   }
 
-  $data['media_revision']['log'] = array(
-    'title' => t('Log message'),
+  $data['media_revision']['revision_log'] = array(
+    'title' => t('Revision log message'),
     'help' => t('The log message entered when the revision was created.'),
     'field' => array(
       'id' => 'xss',

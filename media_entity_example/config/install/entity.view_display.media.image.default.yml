@@ -9,6 +9,7 @@ content:
     settings:
       image_style: ''
       image_link: ''
+    third_party_settings: { }
     label: above
 hidden: {  }
 status: true

@@ -27,7 +27,9 @@ class MediaController extends ControllerBase {
    *   An array suitable for drupal_render().
    */
   public function page(MediaInterface $media) {
-    $build = $this->buildPage($media);
+    $build = array(
+      'media' => $this->entityManager()->getViewBuilder('media')->view($media),
+    );
 
     foreach ($media->uriRelationships() as $rel) {
       // Set the node path as the canonical URL to prevent duplicate content.

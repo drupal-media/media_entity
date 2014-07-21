@@ -10,7 +10,9 @@ namespace Drupal\media_entity\Tests;
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Sets up page and article content types.
+ * Ensures that basic functions work correctly.
+ *
+ * @group media
  */
 class BasicTest extends WebTestBase {
 
@@ -20,14 +22,6 @@ class BasicTest extends WebTestBase {
    * @var array
    */
   public static $modules = array('media_entity');
-
-  public static function getInfo() {
-    return array(
-      'name' => 'Basic tests',
-      'description' => 'Ensures that basic functions work correctly.',
-      'group' => 'Media',
-    );
-  }
 
   protected function drupalCreateMediaBundle(array $values = array()) {
     if (!isset($values['bundle'])) {

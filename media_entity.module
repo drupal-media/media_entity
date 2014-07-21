@@ -26,21 +26,3 @@ function media_entity_permission() {
 
   return $perms;
 }
-
-/**
- * Entity URI callback.
- *
- * @param \Drupal\media_entity\MediaInterface $media
- *   A media entity.
- *
- * @return array
- *   Route information array.
- */
-function media_entity_uri(\Drupal\media_entity\MediaInterface $media) {
-  return array(
-    'route_name' => 'media.view',
-    'route_parameters' => array(
-      'media' => $media->id(),
-    ),
-  );
-}

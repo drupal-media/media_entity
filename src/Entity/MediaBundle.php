@@ -86,23 +86,13 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
     return $this->type;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function postDelete(EntityStorageInterface $storage, array $entities) {
-    parent::postDelete($storage, $entities);
-
-    // Clear the media bundle cache to reflect the removal.
-    $storage->resetCache(array_keys($entities));
-  }
-
   public static function getLabel(MediaInterface $media) {
     $bundle = entity_load('media_bundle', $media->bundle());
     return $bundle ? $bundle->label() : FALSE;
   }
 
   public static function exists($id) {
-    return (bool) entity_load('media_bundle', $id);
+    return (bool) static::load($id);
   }
 
 }

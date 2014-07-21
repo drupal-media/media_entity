@@ -48,14 +48,13 @@ class MediaForm extends ContentEntityForm {
           $media->$key = (int) in_array($key, $this->settings['options']);
         }
       }
-      global $user;
-      $media->setPublisherId($user->id());
+      $media->setPublisherId($this->currentUser()->id());
       $media->setCreatedTime(REQUEST_TIME);
     }
     else {
       $media->date = format_date($media->getCreatedTime(), 'custom', 'Y-m-d H:i:s O');
       // Remove the log message from the original media entity.
-      $media->log = NULL;
+      $media->revision_log = NULL;
     }
     // Always use the default revision setting.
     $media->setNewRevision(in_array('revision', $this->settings['options']));
@@ -80,15 +79,6 @@ class MediaForm extends ContentEntityForm {
       '#default_value' => $media->getChangedTime(),
     );
 
-    $form['name'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Media name'),
-      '#required' => TRUE,
-      '#default_value' => $media->label(),
-      '#maxlength' => 255,
-      '#weight' => -5,
-    );
-
     $form['advanced'] = array(
       '#type' => 'vertical_tabs',
       '#attributes' => array('class' => array('entity-meta')),
@@ -101,28 +91,32 @@ class MediaForm extends ContentEntityForm {
       '#type' => 'details',
       '#group' => 'advanced',
       '#title' => t('Revision information'),
-      // Collapsed by default when "Create new revision" is unchecked.
-      '#collapsed' => !$media->isNewRevision(),
+      // Open by default when "Create new revision" is checked.
+      '#open' => $media->isNewRevision(),
       '#attributes' => array(
         'class' => array('media-form-revision-information'),
       ),
       '#weight' => 20,
       '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
+      '#optional' => TRUE,
     );
 
-    $form['revision_information']['revision']['revision'] = array(
+    $form['revision'] = array(
       '#type' => 'checkbox',
       '#title' => t('Create new revision'),
       '#default_value' => $media->isNewRevision(),
       '#access' => $account->hasPermission('administer media'),
+      '#group' => 'revision_information',
     );
 
-    $form['revision_information']['revision']['log'] = array(
+    $form['revision_log'] = array(
       '#type' => 'textarea',
       '#title' => t('Revision log message'),
       '#rows' => 4,
-      '#default_value' => !empty($media->log->value) ? $media->log->value : '',
+      '#default_value' =>$media->revision_log->value,
       '#description' => t('Briefly describe the changes you have made.'),
+      '#group' => 'revision_information',
+      '#access' => $account->hasPermission('administer media'),
       '#states' => array(
         'visible' => array(
           ':input[name="revision"]' => array('checked' => TRUE),
@@ -143,7 +137,7 @@ class MediaForm extends ContentEntityForm {
       '#weight' => 90,
     );
 
-    $form['publisher']['publisher_name'] = array(
+    $form['uid'] = array(
       '#type' => 'textfield',
       '#title' => t('Published by'),
       '#maxlength' => 60,
@@ -151,13 +145,15 @@ class MediaForm extends ContentEntityForm {
       '#default_value' => $media->getPublisher() ? $media->getPublisher()->getUsername() : '',
       '#weight' => -1,
       '#description' => t('Leave blank for anonymous.'),
+      '#group' => 'publisher',
     );
-    $form['publisher']['date'] = array(
+    $form['created'] = array(
       '#type' => 'textfield',
       '#title' => t('Authored on'),
       '#maxlength' => 25,
       '#description' => t('Format: %time. The date format is YYYY-MM-DD and %timezone is the time zone offset from UTC. Leave blank to use the time of form submission.', array('%time' => !empty($media->date) ? date_format(date_create($media->date), 'Y-m-d H:i:s O') : format_date($media->getCreatedTime(), 'custom', 'Y-m-d H:i:s O'), '%timezone' => !empty($media->date) ? date_format(date_create($media->date), 'O') : format_date($media->getCreatedTime(), 'custom', 'O'))),
       '#default_value' => !empty($media->date) ? $media->date : '',
+      '#group' => 'publisher',
     );
 
     return parent::form($form, $form_state, $media);
@@ -175,6 +171,12 @@ class MediaForm extends ContentEntityForm {
     // Save as a new revision if requested to do so.
     if (!empty($form_state['values']['revision'])) {
       $media->setNewRevision();
+      // If a new revision is created, save the current user as revision author.
+      $media->set('revision_timestamp', REQUEST_TIME);
+      $media->set('revision_uid', $this->currentUser()->id());
+    }
+    else {
+      $media->setNewRevision(FALSE);
     }
 
     return $media;
@@ -187,15 +189,15 @@ class MediaForm extends ContentEntityForm {
     $entity = parent::buildEntity($form, $form_state);
     // A user might assign the media publisher by entering a user name in the node
     // form, which we then need to translate to a user ID.
-    if (!empty($form_state['values']['publisher_name']) && $account = user_load_by_name($form_state['values']['publisher_name'])) {
+    if (!empty($form_state['values']['uid']) && $account = user_load_by_name($form_state['values']['uid'])) {
       $entity->setPublisherId($account->id());
     }
     else {
       $entity->setPublisherId(0);
     }
 
-    if (!empty($form_state['values']['date']) && $form_state['values']['date'] instanceOf DrupalDateTime) {
-      $entity->setCreatedTime($form_state['values']['date']->getTimestamp());
+    if (!empty($form_state['values']['created']) && $form_state['values']['created'] instanceOf DrupalDateTime) {
+      $entity->setCreatedTime($form_state['values']['created']->getTimestamp());
     }
     else {
       $entity->setCreatedTime(REQUEST_TIME);
