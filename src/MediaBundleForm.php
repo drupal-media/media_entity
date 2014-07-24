@@ -20,7 +20,6 @@ class MediaBundleForm extends EntityForm {
    */
   public function form(array $form, array &$form_state) {
     $form = parent::form($form, $form_state);
-
     $bundle = $this->entity;
     if ($this->operation == 'add') {
       $form['#title'] = String::checkPlain($this->t('Add media bundle'));
@@ -38,11 +37,12 @@ class MediaBundleForm extends EntityForm {
       '#size' => 30,
     );
 
+    // @todo: '#disabled' not always FALSE.
     $form['id'] = array(
       '#type' => 'machine_name',
       '#default_value' => $bundle->id(),
       '#maxlength' => 32,
-      '#disabled' => FALSE,// @todo not always
+      '#disabled' => FALSE,
       '#machine_name' => array(
         'exists' => array('\Drupal\media_entity\Entity\MediaBundle', 'exists'),
         'source' => array('label'),
@@ -62,7 +62,7 @@ class MediaBundleForm extends EntityForm {
     $form['description'] = array(
       '#title' => t('Description'),
       '#type' => 'textarea',
-      '#default_value' => $bundle->description,
+      '#default_value' => $bundle->getDescription(),
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     );
     return parent::form($form, $form_state);

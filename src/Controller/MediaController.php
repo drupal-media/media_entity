@@ -37,17 +37,15 @@ class MediaController extends ControllerBase {
         array(
           'rel' => $rel,
           'href' => $media->url($rel),
-        )
-      , TRUE);
+        ), TRUE);
 
       if ($rel == 'canonical') {
-        // Set the non-aliased canonical path as a default shortlink.
+        // Set the non-aliased canonical path as a default short-link.
         $build['#attached']['drupal_add_html_head_link'][] = array(
           array(
             'rel' => 'shortlink',
             'href' => $media->url($rel, array('alias' => TRUE)),
-          )
-        , TRUE);
+          ), TRUE);
       }
     }
 
@@ -81,10 +79,43 @@ class MediaController extends ControllerBase {
   }
 
   /**
+   * Displays add media links for available media bundles.
+   *
+   * Redirects to media/add/[bundle] if only one bundle is available.
+   *
+   * @return array
+   *   A render array for a list of the bundles that can be added; however,
+   *   if there is only one defined for the site, the function
+   *   redirects to the media add page for that one type and returns
+   *   RedirectResponse.
+   */
+  public function addPage() {
+    $content = array();
+
+    // Only use media bundles the user has access to.
+    foreach ($this->entityManager()->getStorage('media_bundle')->loadMultiple() as $type) {
+      if ($this->entityManager()->getAccessController('media')->createAccess($type->id)) {
+        $content[$type->id] = $type;
+      }
+    }
+
+    // Bypass the media/add listing if only one bundle is available.
+    if (count($content) == 1) {
+      $type = array_shift($content);
+      return $this->redirect('media.add', array('media_bundle' => $type->id));
+    }
+
+    return array(
+      '#theme' => 'media_add_list',
+      '#content' => $content,
+    );
+  }
+
+  /**
    * Page callback: Provides the media submission form.
    *
-   * @param $media_bundle
-   *   The media bundle object for the submitted node.
+   * @param \Drupal\media_entity\MediaBundleInterface $media_bundle
+   *   The media bundle object for the submitted media.
    *
    * @return array
    *   A media submission form.
@@ -99,6 +130,7 @@ class MediaController extends ControllerBase {
       'bundle' => $bundle,
       'langcode' => $langcode ? $langcode : language_default()->id,
     ));
+
     return $this->entityFormBuilder()->getForm($media);
   }
 

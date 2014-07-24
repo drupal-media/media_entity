@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Implements hook_permission().
  */
@@ -25,4 +24,17 @@ function media_entity_permission() {
   );
 
   return $perms;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function media_entity_theme() {
+  return array(
+    'media_add_list' => array(
+      'variables' => array('content' => NULL),
+      'file' => 'media_entity.theme.inc',
+      'template' => 'media-add-list',
+    ),
+  );
 }

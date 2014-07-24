@@ -14,6 +14,7 @@ use Drupal\Core\Url;
  * Provides a form for media bundle deletion.
  */
 class MediaBundleDeleteForm extends EntityConfirmFormBase {
+
   /**
    * {@inheritdoc}
    */

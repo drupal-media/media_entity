@@ -8,7 +8,6 @@
 namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 
@@ -71,7 +70,6 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    */
   public $description;
 
-
   /**
    * {@inheritdoc}
    */
@@ -80,19 +78,31 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   }
 
   /**
-   * Returns the type of the media bundle.
+   * {@inheritdoc}
    */
   public function type() {
     return $this->type;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function getLabel(MediaInterface $media) {
     $bundle = entity_load('media_bundle', $media->bundle());
     return $bundle ? $bundle->label() : FALSE;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function exists($id) {
     return (bool) static::load($id);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription() {
+    return $this->description;
+  }
 }

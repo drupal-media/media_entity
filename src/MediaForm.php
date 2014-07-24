@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\media_entity\MediaForm.
+ * Contains Drupal\media_entity\MediaForm.
  */
 
 namespace Drupal\media_entity;
@@ -42,11 +42,9 @@ class MediaForm extends ContentEntityForm {
 
     // If this is a new media, fill in the default values.
     if ($media->isNew()) {
-      foreach (array('status') as $key) {
-        // Multistep media forms might have filled in something already.
-        if ($media->$key->isEmpty()) {
-          $media->$key = (int) in_array($key, $this->settings['options']);
-        }
+      // Multistep media forms might have filled in something already.
+      if ($media->status->isEmpty()) {
+        $media->status = (int) in_array('status', $this->settings['options']);
       }
       $media->setPublisherId($this->currentUser()->id());
       $media->setCreatedTime(REQUEST_TIME);
@@ -65,7 +63,6 @@ class MediaForm extends ContentEntityForm {
    */
   public function form(array $form, array &$form_state) {
     $account = \Drupal::currentUser();
-
     $media = $this->entity;
     $media_bundle = entity_load('media_bundle', $media->getBundle());
 
@@ -113,7 +110,7 @@ class MediaForm extends ContentEntityForm {
       '#type' => 'textarea',
       '#title' => t('Revision log message'),
       '#rows' => 4,
-      '#default_value' =>$media->revision_log->value,
+      '#default_value' => $media->revision_log->value,
       '#description' => t('Briefly describe the changes you have made.'),
       '#group' => 'revision_information',
       '#access' => $account->hasPermission('administer media'),
@@ -147,6 +144,7 @@ class MediaForm extends ContentEntityForm {
       '#description' => t('Leave blank for anonymous.'),
       '#group' => 'publisher',
     );
+
     $form['created'] = array(
       '#type' => 'textfield',
       '#title' => t('Authored on'),
@@ -186,9 +184,10 @@ class MediaForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildEntity(array $form, array &$form_state) {
+    /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = parent::buildEntity($form, $form_state);
-    // A user might assign the media publisher by entering a user name in the node
-    // form, which we then need to translate to a user ID.
+    // A user might assign the media publisher by entering a user name in the
+    // media form, which we then need to translate to a user ID.
     if (!empty($form_state['values']['uid']) && $account = user_load_by_name($form_state['values']['uid'])) {
       $entity->setPublisherId($account->id());
     }

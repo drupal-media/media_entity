@@ -3,3 +3,9 @@ media.bundle_add:
   title: 'Add media bundle'
   appears_on:
     - media.overview_bundles
+
+media.add:
+  route_name: media.add_page
+  title: 'Add media'
+  appears_on:
+    - view.media.page_1

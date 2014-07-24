@@ -56,9 +56,7 @@ function media_entity_views_data() {
     'title' => t('Name'),
     'help' => t('The media title.'),
     'field' => array(
-      // TODO: Create support for something smarter (linking to media, ...) -
-      // similar to \Drupal\node\Plugin\views\field\Node.
-      'id' => 'standard',
+      'id' => 'media_name',
     ),
     'sort' => array(
       'id' => 'standard',
@@ -78,7 +76,7 @@ function media_entity_views_data() {
       'id' => 'date',
     ),
     'sort' => array(
-      'id' => 'date'
+      'id' => 'date',
     ),
     'filter' => array(
       'id' => 'date',
@@ -92,7 +90,7 @@ function media_entity_views_data() {
       'id' => 'date',
     ),
     'sort' => array(
-      'id' => 'date'
+      'id' => 'date',
     ),
     'filter' => array(
       'id' => 'date',
@@ -157,16 +155,37 @@ function media_entity_views_data() {
     'title' => t('Media operations bulk form'),
     'help' => t('Add a form element that lets you run operations on multiple media items.'),
     'field' => array(
-      // TODO: Review this and figure out what to customize in an optional custom
+      // TODO: Review and figure out what to customize in an optional custom.
       // plugin that extends this one.
       'id' => 'action_bulk_form',
     ),
   );
 
-  // TODO: Add "link to media", "link to edit", "delete link", "path" fields.
+  $data['media']['view_media'] = array(
+    'field' => array(
+      'title' => t('Link to media'),
+      'help' => t('Provide a simple link to the media.'),
+      'id' => 'media_link',
+    ),
+  );
+
+  $data['media']['edit_media'] = array(
+    'field' => array(
+      'title' => t('Link to edit media'),
+      'help' => t('Provide a simple link to edit the media.'),
+      'id' => 'media_link_edit',
+    ),
+  );
+
+  $data['media']['delete_media'] = array(
+    'field' => array(
+      'title' => t('Link to delete media'),
+      'help' => t('Provide a simple link to delete the media.'),
+      'id' => 'media_link_delete',
+    ),
+  );
 
   // Bogus fields for aliasing purposes.
-
   $data['media_field_data']['created_fulldate'] = array(
     'title' => t('Created date'),
     'help' => t('Date in the form of CCYYMMDD.'),
@@ -472,7 +491,7 @@ function media_entity_views_data() {
       'id' => 'date',
     ),
     'sort' => array(
-      'id' => 'date'
+      'id' => 'date',
     ),
     'filter' => array(
       'id' => 'date',

@@ -1,6 +1,6 @@
 <?php
-
 /**
+ * @file
  * Contains \Drupal\media_entity\MediaBundleListController.
  */
 
@@ -36,7 +36,7 @@ class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityCo
       'data' => $this->getLabel($entity),
       'class' => array('menu-label'),
     );
-    $row['description'] = Xss::filterAdmin($entity->description);
+    $row['description'] = Xss::filterAdmin($entity->getDescription());
     return $row + parent::buildRow($entity);
   }
 

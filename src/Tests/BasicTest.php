@@ -23,6 +23,15 @@ class BasicTest extends WebTestBase {
    */
   public static $modules = array('media_entity');
 
+  /**
+   * Creates media bundle.
+   *
+   * @param array $values
+   *   The media bundle values.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   Returns newly created media bundle.
+   */
   protected function drupalCreateMediaBundle(array $values = array()) {
     if (!isset($values['bundle'])) {
       $id = strtolower($this->randomName(8));
@@ -86,13 +95,13 @@ class BasicTest extends WebTestBase {
     // Ensures user without 'view media' permission can't access media pages.
     $web_user1 = $this->drupalCreateUser();
     $this->drupalLogin($web_user1);
-    $this->drupalGet('media/'.$media->id());
+    $this->drupalGet('media/' . $media->id());
     $this->assertResponse(403);
 
     // Ensures user with 'view media' permission can access media pages.
     $web_user2 = $this->drupalCreateUser(array('view media'));
     $this->drupalLogin($web_user2);
-    $this->drupalGet('media/'.$media->id());
+    $this->drupalGet('media/' . $media->id());
     $this->assertResponse(200);
   }
 

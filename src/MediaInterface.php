@@ -9,7 +9,6 @@ namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\user\UserInterface;
 
 /**
  * Provides an interface defining a media entity.
@@ -25,7 +24,6 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
   public function getBundle();
 
   /**
-   *
    * Returns the media name.
    *
    * @return string
@@ -42,7 +40,7 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
    * @return \Drupal\media_entity\MediaInterface
    *   The called media entity.
    */
-  public function setName($title);
+  public function setName($name);
 
   /**
    * Returns the media creation timestamp.
@@ -141,7 +139,7 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
   /**
    * Sets the media resource ID..
    *
-   * @param string id
+   * @param string $id
    *   The media resource ID.
    *
    * @return \Drupal\media_entity\MediaInterface

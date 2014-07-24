@@ -36,6 +36,7 @@ use Drupal\media_entity\MediaInterface;
  *   revision_table = "media_revision",
  *   revision_data_table = "media_field_revision",
  *   fieldable = TRUE,
+ *   translatable = TRUE,
  *   render_cache = TRUE,
  *   entity_keys = {
  *     "id" = "mid",
@@ -66,7 +67,6 @@ class Media extends ContentEntityBase implements MediaInterface {
    */
   const NOT_PUBLISHED = 0;
 
-
   /**
    * {@inheritdoc}
    */
@@ -84,8 +84,8 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
-  public function setName($title) {
-    $this->set('name', $title);
+  public function setName($name) {
+    $this->set('name', $name);
     return $this;
   }
 

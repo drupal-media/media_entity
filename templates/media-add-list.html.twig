@@ -1,0 +1,34 @@
+{#
+/**
+ * @file
+ * Default theme implementation to list bundles available for adding content.
+ *
+ * This list is displayed on the add media admin and the media bundle page.
+ *
+ * Available variables:
+ *   - bundles: A list of media bundles, description of this media bundle and
+ *     link to create media of this bundle, each with the following properties:
+ *   - add_link: Link to create a piece of content of this bundle.
+ *   - description: Description of this bundle of content.
+ *
+ * @see template_preprocess_media_add_list()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if bundles is not empty %}
+    <ul class="admin-list">
+        {% for bundle in bundles %}
+            <li class="clearfix">
+                {{ bundle.add_link }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+<p>
+    {% set create_media_bundle = url('admin/structure/media/add') %}
+    {% trans %}
+    You have not created any media bundles yet. Go to the <a href="{{ create_media_bundle }}">media bundle creation page</a> to add a new media bundle.
+    {% endtrans %}
+</p>
+{% endif %}
