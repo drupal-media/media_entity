@@ -25,6 +25,7 @@ function media_entity_views_data() {
     ),
   );
   $data['media']['table']['entity type'] = 'media';
+  $data['media']['table']['wizard_id'] = 'media';
 
   $data['media_field_data']['table']['group'] = t('Media');
   $data['media_field_data']['table']['entity type'] = 'media';
@@ -39,7 +40,7 @@ function media_entity_views_data() {
     'help' => t('The media ID.'),
     'field' => array(
       // TODO: Provide something smarter; with support for linking etc.
-      'id' => 'numeric',
+      'id' => 'standard',
     ),
     'argument' => array(
       'id' => 'numeric',
@@ -322,6 +323,7 @@ function media_entity_views_data() {
   // Define the base group of this table. Fields that don't have a group defined
   // will go into this field by default.
   $data['media_revision']['table']['group']  = t('Media revision');
+  $data['media_revision']['table']['wizard_id'] = 'media_revision';
 
   // Advertise this table as a possible base table.
   $data['media_revision']['table']['base'] = array(
@@ -432,14 +434,19 @@ function media_entity_views_data() {
     ),
   );
 
-  $data['media_field_revision']['table']['entity type'] = 'media';
   // Define the base group of this table. Fields that don't have a group defined
   // will go into this field by default.
   $data['media_field_revision']['table']['group']  = t('Media revision');
+  $data['media_field_revision']['table']['entity type'] = 'media';
+  $data['media_field_revision']['table']['wizard_id'] = 'media_field_revision';
 
   // For other base tables, explain how we join.
   $data['media_field_revision']['table']['join'] = array(
     'media' => array(
+      'left_field' => 'vid',
+      'field' => 'vid',
+    ),
+    'media_revision' => array(
       'left_field' => 'vid',
       'field' => 'vid',
     ),

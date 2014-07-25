@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Tests;
 
 use Drupal\Component\Utility\String;
 use Drupal\Component\Utility\Xss;
+use Drupal\media_entity\Entity\Media;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -21,7 +22,7 @@ class MediaUITest extends WebTestBase {
   /**
    * The test user.
    *
-   * @var string
+   * @var \Drupal\User\UserInterface
    */
   protected $adminUser;
 
@@ -30,7 +31,7 @@ class MediaUITest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('media_entity', 'views', 'field_ui');
+  public static $modules = array('media_entity', 'field_ui', 'views_ui', 'node');
 
   /**
    * {@inheritdoc}
@@ -47,6 +48,8 @@ class MediaUITest extends WebTestBase {
       'create media',
       'update media',
       'delete media',
+      // Other permissions.
+      'administer views',
     ));
     $this->drupalLogin($this->adminUser);
   }
@@ -145,6 +148,64 @@ class MediaUITest extends WebTestBase {
     $this->assertResponse(200);
     $this->assertNoText($edit['name[0][value]']);
     $this->assertText('No media items.');
+  }
+
+  /**
+   * Tests the views wizards provided by the media module.
+   */
+  public function testMediaViewsWizard() {
+
+    $data = array(
+      'name' => $this->randomName(),
+      'bundle' => 'default',
+      'type' => 'Unknown',
+      'uid' => $this->adminUser->id(),
+      'langcode' => language_default()->id,
+      'status' => Media::PUBLISHED,
+    );
+    $media = entity_create('media', $data);
+    $media->save();
+
+    // Test the Media wizard.
+    $this->drupalPostForm('admin/structure/views/add', array(
+      'label' => 'media view',
+      'id' => 'media_test',
+      'show[wizard_key]' => 'media',
+      'page[create]' => 1,
+      'page[title]' => 'media_test',
+      'page[path]' => 'media_test',
+    ), t('Save and edit'));
+
+    $this->drupalGet('media_test');
+    $this->assertText($data['name']);
+
+    user_role_revoke_permissions('anonymous', array('access content'));
+    $this->drupalLogout();
+    $this->drupalGet('media_test');
+    $this->assertResponse(403);
+
+    $this->drupalLogin($this->adminUser);
+
+    // Test the MediaRevision wizard.
+    $this->drupalPostForm('admin/structure/views/add', array(
+      'label' => 'media revision view',
+      'id' => 'media_revision',
+      'show[wizard_key]' => 'media_revision',
+      'page[create]' => 1,
+      'page[title]' => 'media_revision',
+      'page[path]' => 'media_revision',
+    ), t('Save and edit'));
+
+    $this->drupalGet('media_revision');
+    $this->assertText($data['name']);
+    // Check only for the label of the changed field as we want to only test
+    // if the field is present and not its value.
+    $this->assertText('Updated date');
+
+    user_role_revoke_permissions('anonymous', array('view revisions'));
+    $this->drupalLogout();
+    $this->drupalGet('media_revision');
+    $this->assertResponse(403);
   }
 
   /**

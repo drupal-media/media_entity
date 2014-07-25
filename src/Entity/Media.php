@@ -263,7 +263,9 @@ class Media extends ContentEntityBase implements MediaInterface {
 
     $fields['status'] = FieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
-      ->setDescription(t('A boolean indicating whether the media is published.'));
+      ->setDescription(t('A boolean indicating whether the media is published.'))
+      ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE);
 
     $fields['created'] = FieldDefinition::create('created')
       ->setLabel(t('Created'))
