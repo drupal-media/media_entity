@@ -50,6 +50,7 @@ use Drupal\media_entity\MediaInterface;
  *   admin_permission = "administer media",
  *   links = {
  *     "canonical" = "media.view",
+ *     "delete-form" = "media.delete_confirm",
  *     "edit-form" = "media.edit",
  *     "admin-form" = "media.bundle_edit"
  *   }
@@ -217,7 +218,8 @@ class Media extends ContentEntityBase implements MediaInterface {
     $fields['mid'] = FieldDefinition::create('integer')
       ->setLabel(t('Media ID'))
       ->setDescription(t('The media ID.'))
-      ->setReadOnly(TRUE);
+      ->setReadOnly(TRUE)
+      ->setSetting('unsigned', TRUE);
 
     $fields['uuid'] = FieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
@@ -227,7 +229,8 @@ class Media extends ContentEntityBase implements MediaInterface {
     $fields['vid'] = FieldDefinition::create('integer')
       ->setLabel(t('Revision ID'))
       ->setDescription(t('The media revision ID.'))
-      ->setReadOnly(TRUE);
+      ->setReadOnly(TRUE)
+      ->setSetting('unsigned', TRUE);
 
     $fields['bundle'] = FieldDefinition::create('entity_reference')
       ->setLabel(t('Bundle'))
@@ -259,7 +262,8 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setDescription(t('The user ID of the media publisher.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(0)
-      ->setSetting('target_type', 'user');
+      ->setSetting('target_type', 'user')
+      ->setTranslatable(TRUE);
 
     $fields['status'] = FieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
@@ -283,16 +287,19 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setLabel(t('Type'))
       ->setDescription(t('The type of this media.'))
       ->setRequired(TRUE)
-      ->setSetting('max_length', 255);
+      ->setSetting('max_length', 255)
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE);
 
     $fields['resource_id'] = FieldDefinition::create('string')
       ->setLabel(t('Resource ID'))
       ->setDescription(t('The unique identifier of media resource that is associated with this media.'))
       ->setRequired(TRUE)
       ->setSetting('max_length', 255)
-      ->setDefaultValue('');
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE);
 
-    $fields['revision_timestamp'] = FieldDefinition::create('timestamp')
+    $fields['revision_timestamp'] = FieldDefinition::create('created')
       ->setLabel(t('Revision timestamp'))
       ->setDescription(t('The time that the current revision was created.'))
       ->setQueryable(FALSE)

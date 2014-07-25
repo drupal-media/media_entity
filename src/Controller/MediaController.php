@@ -66,19 +66,6 @@ class MediaController extends ControllerBase {
   }
 
   /**
-   * Builds a media page render array.
-   *
-   * @param \Drupal\media_entity\MediaInterface $media
-   *   The media we are displaying.
-   *
-   * @return array
-   *   An array suitable for drupal_render().
-   */
-  protected function buildPage(MediaInterface $media) {
-    return array('media' => $this->entityManager()->getViewBuilder('media')->view($media));
-  }
-
-  /**
    * Displays add media links for available media bundles.
    *
    * Redirects to media/add/[bundle] if only one bundle is available.
@@ -144,7 +131,7 @@ class MediaController extends ControllerBase {
    *   The page title.
    */
   public function addPageTitle(MediaBundleInterface $media_bundle) {
-    return $this->t('Create @name', array('@name' => $media_bundle->id()));
+    return $this->t('Create @name', array('@name' => $media_bundle->label()));
   }
 
 }

@@ -62,7 +62,8 @@ class MediaForm extends ContentEntityForm {
    * Overrides Drupal\Core\Entity\EntityForm::form().
    */
   public function form(array $form, array &$form_state) {
-    $account = \Drupal::currentUser();
+    $account = $this->currentUser();
+
     $media = $this->entity;
     $media_bundle = entity_load('media_bundle', $media->getBundle());
 
@@ -70,6 +71,7 @@ class MediaForm extends ContentEntityForm {
       $form['#title'] = $this->t('<em>Edit @bundle</em> @title', array('@bundle' => $media_bundle->label(), '@title' => $media->label()));
     }
 
+    $user_config = $this->config('user.settings');
     // Changed must be sent to the client, for later overwrite error checking.
     $form['changed'] = array(
       '#type' => 'hidden',
@@ -102,7 +104,7 @@ class MediaForm extends ContentEntityForm {
       '#type' => 'checkbox',
       '#title' => t('Create new revision'),
       '#default_value' => $media->isNewRevision(),
-      '#access' => $account->hasPermission('administer media'),
+      '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
       '#group' => 'revision_information',
     );
 
@@ -113,7 +115,7 @@ class MediaForm extends ContentEntityForm {
       '#default_value' => $media->revision_log->value,
       '#description' => t('Briefly describe the changes you have made.'),
       '#group' => 'revision_information',
-      '#access' => $account->hasPermission('administer media'),
+      '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
       '#states' => array(
         'visible' => array(
           ':input[name="revision"]' => array('checked' => TRUE),
@@ -124,9 +126,7 @@ class MediaForm extends ContentEntityForm {
     // Media publisher information for administrators.
     $form['publisher'] = array(
       '#type' => 'details',
-      '#access' => $account->hasPermission('administer media'),
       '#title' => t('Authoring information'),
-      '#collapsed' => TRUE,
       '#group' => 'advanced',
       '#attributes' => array(
         'class' => array('media-form-publisher'),
@@ -141,8 +141,9 @@ class MediaForm extends ContentEntityForm {
       '#autocomplete_route_name' => 'user.autocomplete',
       '#default_value' => $media->getPublisher() ? $media->getPublisher()->getUsername() : '',
       '#weight' => -1,
-      '#description' => t('Leave blank for anonymous.'),
+      '#description' => t('Leave blank for %anonymous.', array('%anonymous' => $user_config->get('anonymous'))),
       '#group' => 'publisher',
+      '#access' => $account->hasPermission('administer media'),
     );
 
     $form['created'] = array(
@@ -152,6 +153,7 @@ class MediaForm extends ContentEntityForm {
       '#description' => t('Format: %time. The date format is YYYY-MM-DD and %timezone is the time zone offset from UTC. Leave blank to use the time of form submission.', array('%time' => !empty($media->date) ? date_format(date_create($media->date), 'Y-m-d H:i:s O') : format_date($media->getCreatedTime(), 'custom', 'Y-m-d H:i:s O'), '%timezone' => !empty($media->date) ? date_format(date_create($media->date), 'O') : format_date($media->getCreatedTime(), 'custom', 'O'))),
       '#default_value' => !empty($media->date) ? $media->date : '',
       '#group' => 'publisher',
+      '#access' => $account->hasPermission('administer media'),
     );
 
     return parent::form($form, $form_state, $media);
@@ -167,7 +169,7 @@ class MediaForm extends ContentEntityForm {
     $media = parent::submit($form, $form_state);
 
     // Save as a new revision if requested to do so.
-    if (!empty($form_state['values']['revision'])) {
+    if (!empty($form_state['values']['revision']) && $form_state['values']['revision'] != FALSE) {
       $media->setNewRevision();
       // If a new revision is created, save the current user as revision author.
       $media->set('revision_timestamp', REQUEST_TIME);

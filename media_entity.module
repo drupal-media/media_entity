@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Provides media entities.
+ */
+
+/**
  * Implements hook_permission().
  */
 function media_entity_permission() {
@@ -35,6 +40,11 @@ function media_entity_theme() {
       'variables' => array('content' => NULL),
       'file' => 'media_entity.theme.inc',
       'template' => 'media-add-list',
+    ),
+    'media' => array(
+      'render element' => 'elements',
+      'file' => 'media_entity.theme.inc',
+      'template' => 'media',
     ),
   );
 }
