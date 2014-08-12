@@ -81,7 +81,7 @@ class MediaController extends ControllerBase {
 
     // Only use media bundles the user has access to.
     foreach ($this->entityManager()->getStorage('media_bundle')->loadMultiple() as $type) {
-      if ($this->entityManager()->getAccessController('media')->createAccess($type->id)) {
+      if ($this->entityManager()->getAccessControlHandler('media')->createAccess($type->id)) {
         $content[$type->id] = $type;
       }
     }

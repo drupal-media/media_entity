@@ -9,6 +9,7 @@ namespace Drupal\media_entity;
 
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Form controller for the media edit forms.
@@ -61,7 +62,7 @@ class MediaForm extends ContentEntityForm {
   /**
    * Overrides Drupal\Core\Entity\EntityForm::form().
    */
-  public function form(array $form, array &$form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     $account = $this->currentUser();
 
     $media = $this->entity;
@@ -164,12 +165,12 @@ class MediaForm extends ContentEntityForm {
    *
    * Overrides Drupal\Core\Entity\EntityForm::submit().
    */
-  public function submit(array $form, array &$form_state) {
+  public function submit(array $form, FormStateInterface $form_state) {
     // Build the media object from the submitted values.
     $media = parent::submit($form, $form_state);
 
     // Save as a new revision if requested to do so.
-    if (!empty($form_state['values']['revision']) && $form_state['values']['revision'] != FALSE) {
+    if (!$form_state->isValueEmpty('revision') && $form_state->getValue('revision') != FALSE) {
       $media->setNewRevision();
       // If a new revision is created, save the current user as revision author.
       $media->set('revision_timestamp', REQUEST_TIME);
@@ -185,20 +186,20 @@ class MediaForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildEntity(array $form, array &$form_state) {
+  public function buildEntity(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = parent::buildEntity($form, $form_state);
     // A user might assign the media publisher by entering a user name in the
     // media form, which we then need to translate to a user ID.
-    if (!empty($form_state['values']['uid']) && $account = user_load_by_name($form_state['values']['uid'])) {
+    if (!$form_state->isValueEmpty('uid') && $account = user_load_by_name($form_state->getValue('uid'))) {
       $entity->setPublisherId($account->id());
     }
     else {
       $entity->setPublisherId(0);
     }
 
-    if (!empty($form_state['values']['created']) && $form_state['values']['created'] instanceOf DrupalDateTime) {
-      $entity->setCreatedTime($form_state['values']['created']->getTimestamp());
+    if (!$form_state->isValueEmpty('created') && $form_state->getValue('created') instanceOf DrupalDateTime) {
+      $entity->setCreatedTime($form_state->getValue('created')->getTimestamp());
     }
     else {
       $entity->setCreatedTime(REQUEST_TIME);
@@ -209,23 +210,18 @@ class MediaForm extends ContentEntityForm {
   /**
    * Overrides Drupal\Core\Entity\EntityForm::save().
    */
-  public function save(array $form, array &$form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
     $media = $this->entity;
     $media->save();
 
     if ($media->id()) {
-      $form_state['values']['mid'] = $media->id();
+      $form_state->setValue('mid', $media->id());
       $form_state['mid'] = $media->id();
       if ($media->access('view')) {
-        $form_state['redirect_route'] = array(
-          'route_name' => 'media.view',
-          'route_parameters' => array(
-            'media' => $media->id(),
-          ),
-        );
+        $form_state->setRedirect('media.view', array('media' => $media->id()));
       }
       else {
-        $form_state['redirect_route']['route_name'] = '<front>';
+        $form_state->setRedirect('<front>');
       }
     }
     else {
@@ -239,21 +235,17 @@ class MediaForm extends ContentEntityForm {
   /**
    * Overrides Drupal\Core\Entity\EntityForm::delete().
    */
-  public function delete(array $form, array &$form_state) {
+  public function delete(array $form, FormStateInterface $form_state) {
     $destination = array();
     $query = \Drupal::request()->query;
     if ($query->has('destination')) {
       $destination = drupal_get_destination();
       $query->remove('destination');
     }
-    $form_state['redirect_route'] = array(
-      'route_name' => 'media.delete_confirm',
-      'route_parameters' => array(
-        'media' => $this->entity->id(),
-      ),
-      'options' => array(
-        'query' => $destination,
-      ),
+    $form_state->setRedirect(
+      'media.delete_confirm',
+      array('media' => $this->entity->id()),
+      array('query' => $destination)
     );
   }
 

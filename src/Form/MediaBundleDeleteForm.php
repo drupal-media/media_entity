@@ -8,6 +8,8 @@
 namespace Drupal\media_entity\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
+use Drupal\Core\Form\FormState;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
@@ -39,7 +41,7 @@ class MediaBundleDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     // @todo Check if there are media in the bundle.
     return parent::buildForm($form, $form_state);
   }
@@ -47,13 +49,13 @@ class MediaBundleDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submit(array $form, array &$form_state) {
+  public function submit(array $form,FormStateInterface $form_state) {
     $this->entity->delete();
     $t_args = array('%name' => $this->entity->label());
     drupal_set_message(t('The media bundle %name has been deleted.', $t_args));
     watchdog('node', 'Deleted media bundle %name.', $t_args, WATCHDOG_NOTICE);
 
-    $form_state['redirect_route']['route_name'] = 'media.overview_bundles';
+    $form_state->setRedirectUrl($this->getCancelUrl());
   }
 
 }
