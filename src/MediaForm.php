@@ -9,6 +9,7 @@ namespace Drupal\media_entity;
 
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Form controller for the media edit forms.
@@ -61,7 +62,7 @@ class MediaForm extends ContentEntityForm {
   /**
    * Overrides Drupal\Core\Entity\EntityForm::form().
    */
-  public function form(array $form, array &$form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     $account = $this->currentUser();
 
     $media = $this->entity;
@@ -164,7 +165,7 @@ class MediaForm extends ContentEntityForm {
    *
    * Overrides Drupal\Core\Entity\EntityForm::submit().
    */
-  public function submit(array $form, array &$form_state) {
+  public function submit(array $form, FormStateInterface $form_state) {
     // Build the media object from the submitted values.
     $media = parent::submit($form, $form_state);
 
@@ -185,7 +186,7 @@ class MediaForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildEntity(array $form, array &$form_state) {
+  public function buildEntity(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = parent::buildEntity($form, $form_state);
     // A user might assign the media publisher by entering a user name in the
@@ -209,7 +210,7 @@ class MediaForm extends ContentEntityForm {
   /**
    * Overrides Drupal\Core\Entity\EntityForm::save().
    */
-  public function save(array $form, array &$form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
     $media = $this->entity;
     $media->save();
 
@@ -239,7 +240,7 @@ class MediaForm extends ContentEntityForm {
   /**
    * Overrides Drupal\Core\Entity\EntityForm::delete().
    */
-  public function delete(array $form, array &$form_state) {
+  public function delete(array $form, FormStateInterface $form_state) {
     $destination = array();
     $query = \Drupal::request()->query;
     if ($query->has('destination')) {
