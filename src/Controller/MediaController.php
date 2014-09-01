@@ -31,23 +31,17 @@ class MediaController extends ControllerBase {
       'media' => $this->entityManager()->getViewBuilder('media')->view($media),
     );
 
-    foreach ($media->uriRelationships() as $rel) {
-      // Set the node path as the canonical URL to prevent duplicate content.
-      $build['#attached']['drupal_add_html_head_link'][] = array(
-        array(
-          'rel' => $rel,
-          'href' => $media->url($rel),
-        ), TRUE);
+    $build['#attached']['drupal_add_html_head_link'][] = array(
+      array(
+        'rel' => 'canonical',
+        'href' => $media->url('canonical'),
+      ), TRUE);
 
-      if ($rel == 'canonical') {
-        // Set the non-aliased canonical path as a default short-link.
-        $build['#attached']['drupal_add_html_head_link'][] = array(
-          array(
-            'rel' => 'shortlink',
-            'href' => $media->url($rel, array('alias' => TRUE)),
-          ), TRUE);
-      }
-    }
+    $build['#attached']['drupal_add_html_head_link'][] = array(
+      array(
+        'rel' => 'shortlink',
+        'href' => $media->url('canonical', array('alias' => TRUE)),
+      ), TRUE);
 
     return $build;
   }
