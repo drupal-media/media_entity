@@ -17,7 +17,7 @@ use Drupal\media_entity\MediaInterface;
  * @ConfigEntityType(
  *   id = "media_bundle",
  *   label = @Translation("Media bundle"),
- *   controllers = {
+ *   handlers = {
  *     "form" = {
  *       "add" = "Drupal\media_entity\MediaBundleForm",
  *       "edit" = "Drupal\media_entity\MediaBundleForm",

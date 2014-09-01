@@ -20,7 +20,7 @@ use Drupal\media_entity\MediaInterface;
  *   id = "media",
  *   label = @Translation("Media"),
  *   bundle_label = @Translation("Media bundle"),
- *   controllers = {
+ *   handlers = {
  *     "storage" = "Drupal\media_entity\MediaStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "access" = "Drupal\media_entity\MediaAccessController",
@@ -48,6 +48,7 @@ use Drupal\media_entity\MediaInterface;
  *   bundle_entity_type = "media_bundle",
  *   permission_granularity = "entity_type",
  *   admin_permission = "administer media",
+ *   field_ui_base_route = "media.bundle_edit",
  *   links = {
  *     "canonical" = "media.view",
  *     "delete-form" = "media.delete_confirm",

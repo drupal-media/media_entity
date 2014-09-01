@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Form;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\media_entity\Entity\MediaBundle;
 
 /**
@@ -40,7 +41,7 @@ class MediaDeleteForm extends ContentEntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submit(array $form, array &$form_state) {
+  public function submit(array $form, FormStateInterface $form_state) {
     $this->entity->delete();
     $bundle = MediaBundle::getLabel($this->entity);
     drupal_set_message(t('@type %title has been deleted.', array('@type' => $bundle, '%title' => $this->entity->label())));

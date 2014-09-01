@@ -9,6 +9,7 @@ namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Component\Utility\String;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Form controller for node type forms.
@@ -18,7 +19,7 @@ class MediaBundleForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, array &$form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
     $bundle = $this->entity;
     if ($this->operation == 'add') {
@@ -71,7 +72,7 @@ class MediaBundleForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  protected function actions(array $form, array &$form_state) {
+  protected function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = t('Save media bundle');
     $actions['delete']['#value'] = t('Delete media bundle');
@@ -82,7 +83,7 @@ class MediaBundleForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function save(array $form, array &$form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
     $bundle = $this->entity;
     $bundle->id = trim($bundle->id());
 

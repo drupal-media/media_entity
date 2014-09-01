@@ -14,7 +14,7 @@ use Drupal\Component\Utility\Xss;
 /**
  * Provides a listing of media bundles.
  */
-class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityControllerInterface {
+class MediaBundleListBuilder extends ConfigEntityListBuilder {
 
   /**
    * {@inheritdoc}
