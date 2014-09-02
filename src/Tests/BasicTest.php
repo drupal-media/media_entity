@@ -34,7 +34,7 @@ class BasicTest extends WebTestBase {
    */
   protected function drupalCreateMediaBundle(array $values = array()) {
     if (!isset($values['bundle'])) {
-      $id = strtolower($this->randomName(8));
+      $id = strtolower($this->randomMachineName());
     }
     else {
       $id = $values['bundle'];

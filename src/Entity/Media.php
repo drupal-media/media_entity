@@ -10,7 +10,7 @@ namespace Drupal\media_entity\Entity;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Field\FieldDefinition;
+use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\media_entity\MediaInterface;
 
 /**
@@ -20,7 +20,7 @@ use Drupal\media_entity\MediaInterface;
  *   id = "media",
  *   label = @Translation("Media"),
  *   bundle_label = @Translation("Media bundle"),
- *   controllers = {
+ *   handlers = {
  *     "storage" = "Drupal\media_entity\MediaStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "access" = "Drupal\media_entity\MediaAccessController",
@@ -48,6 +48,7 @@ use Drupal\media_entity\MediaInterface;
  *   bundle_entity_type = "media_bundle",
  *   permission_granularity = "entity_type",
  *   admin_permission = "administer media",
+ *   field_ui_base_route = "media.bundle_edit",
  *   links = {
  *     "canonical" = "media.view",
  *     "delete-form" = "media.delete_confirm",
@@ -215,35 +216,35 @@ class Media extends ContentEntityBase implements MediaInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
-    $fields['mid'] = FieldDefinition::create('integer')
+    $fields['mid'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Media ID'))
       ->setDescription(t('The media ID.'))
       ->setReadOnly(TRUE)
       ->setSetting('unsigned', TRUE);
 
-    $fields['uuid'] = FieldDefinition::create('uuid')
+    $fields['uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
       ->setDescription(t('The media UUID.'))
       ->setReadOnly(TRUE);
 
-    $fields['vid'] = FieldDefinition::create('integer')
+    $fields['vid'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Revision ID'))
       ->setDescription(t('The media revision ID.'))
       ->setReadOnly(TRUE)
       ->setSetting('unsigned', TRUE);
 
-    $fields['bundle'] = FieldDefinition::create('entity_reference')
+    $fields['bundle'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Bundle'))
       ->setDescription(t('The media bundle.'))
       ->setSetting('target_type', 'media_bundle')
       ->setReadOnly(TRUE);
 
-    $fields['langcode'] = FieldDefinition::create('language')
+    $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language code'))
       ->setDescription(t('The media language code.'))
       ->setRevisionable(TRUE);
 
-    $fields['name'] = FieldDefinition::create('string')
+    $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Media name'))
       ->setDescription(t('The name of this media.'))
       ->setRequired(TRUE)
@@ -257,7 +258,7 @@ class Media extends ContentEntityBase implements MediaInterface {
       ))
       ->setDisplayConfigurable('form', TRUE);
 
-    $fields['uid'] = FieldDefinition::create('entity_reference')
+    $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Publisher ID'))
       ->setDescription(t('The user ID of the media publisher.'))
       ->setRevisionable(TRUE)
@@ -265,25 +266,25 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setSetting('target_type', 'user')
       ->setTranslatable(TRUE);
 
-    $fields['status'] = FieldDefinition::create('boolean')
+    $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
       ->setDescription(t('A boolean indicating whether the media is published.'))
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE);
 
-    $fields['created'] = FieldDefinition::create('created')
+    $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the media was created.'))
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE);
 
-    $fields['changed'] = FieldDefinition::create('changed')
+    $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
       ->setDescription(t('The time that the media was last edited.'))
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE);
 
-    $fields['type'] = FieldDefinition::create('string')
+    $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Type'))
       ->setDescription(t('The type of this media.'))
       ->setRequired(TRUE)
@@ -291,7 +292,7 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setRevisionable(TRUE)
       ->setTranslatable(TRUE);
 
-    $fields['resource_id'] = FieldDefinition::create('string')
+    $fields['resource_id'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Resource ID'))
       ->setDescription(t('The unique identifier of media resource that is associated with this media.'))
       ->setRequired(TRUE)
@@ -299,20 +300,20 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setRevisionable(TRUE)
       ->setTranslatable(TRUE);
 
-    $fields['revision_timestamp'] = FieldDefinition::create('created')
+    $fields['revision_timestamp'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Revision timestamp'))
       ->setDescription(t('The time that the current revision was created.'))
       ->setQueryable(FALSE)
       ->setRevisionable(TRUE);
 
-    $fields['revision_uid'] = FieldDefinition::create('entity_reference')
+    $fields['revision_uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Revision publisher ID'))
       ->setDescription(t('The user ID of the publisher of the current revision.'))
       ->setSetting('target_type', 'user')
       ->setQueryable(FALSE)
       ->setRevisionable(TRUE);
 
-    $fields['revision_log'] = FieldDefinition::create('string_long')
+    $fields['revision_log'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Revision Log'))
       ->setDescription(t('The log entry explaining the changes in this revision.'))
       ->setRevisionable(TRUE)

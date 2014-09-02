@@ -76,9 +76,9 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('type', $bundle['type']);
 
     // Edit and save media bundle form fields with new values.
-    $bundle['label'] = $this->randomName();
-    $bundle['description'] = $this->randomName();
-    $bundle['type'] = $this->randomName();
+    $bundle['label'] = $this->randomMachineName();
+    $bundle['description'] = $this->randomMachineName();
+    $bundle['type'] = $this->randomMachineName();
     $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
 
     // Test if edit worked and if new field values have been saved as
@@ -115,7 +115,7 @@ class MediaUITest extends WebTestBase {
 
     // Tests media item add form.
     $edit = array(
-      'name[0][value]' => $this->randomName(),
+      'name[0][value]' => $this->randomMachineName(),
     );
     $this->drupalPostForm('media/add', $edit, t('Save'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
@@ -129,7 +129,7 @@ class MediaUITest extends WebTestBase {
 
     // Tests media edit form.
     $this->drupalGet('media/' . $media_id . '/edit');
-    $edit['name[0][value]'] = $this->randomName();
+    $edit['name[0][value]'] = $this->randomMachineName();
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
 
@@ -156,7 +156,7 @@ class MediaUITest extends WebTestBase {
   public function testMediaViewsWizard() {
 
     $data = array(
-      'name' => $this->randomName(),
+      'name' => $this->randomMachineName(),
       'bundle' => 'default',
       'type' => 'Unknown',
       'uid' => $this->adminUser->id(),
@@ -244,12 +244,12 @@ class MediaUITest extends WebTestBase {
    */
   public function createMediaBundle() {
     // Generates and holds all media bundle fields.
-    $name = $this->randomName();
+    $name = $this->randomMachineName();
     $edit = array(
       'id' => strtolower($name),
       'label' => $name,
-      'type' => $this->randomName(),
-      'description' => $this->randomName(),
+      'type' => $this->randomMachineName(),
+      'description' => $this->randomMachineName(),
     );
 
     // Create new media bundle.
@@ -276,7 +276,7 @@ class MediaUITest extends WebTestBase {
    */
   public function createMediaItem($media_bundle) {
     // Define the media item name.
-    $name = $this->randomName();
+    $name = $this->randomMachineName();
     $edit = array(
       'name[0][value]' => $name,
     );

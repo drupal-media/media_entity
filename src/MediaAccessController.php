@@ -7,7 +7,7 @@
 
 namespace Drupal\media_entity;
 
-use Drupal\Core\Entity\EntityAccessController;
+use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 
@@ -15,7 +15,7 @@ use Drupal\Core\Session\AccountInterface;
 /**
  * Defines an access controller for the media entity.
  */
-class MediaAccessController extends EntityAccessController {
+class MediaAccessController extends EntityAccessControlHandler {
 
   /**
    * {@inheritdoc}
