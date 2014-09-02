@@ -29,7 +29,3 @@ Maintainers:
  - Boris Gordon (@boztek) drupal.org/user/134410
 
 IRC channel: #drupal-media
-
-Meetings:
-Every first friday in month on #drupal-media. Follow groups.drupal.org/media for
-more info.
