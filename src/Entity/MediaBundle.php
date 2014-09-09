@@ -75,7 +75,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    *
    * @var array
    */
-  public $type_configuraton = array();
+  public $type_configuration = array();
 
   /**
    * Type plugin bag.
@@ -137,7 +137,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    */
   protected function typeBag() {
     if (!$this->typeBag) {
-      $this->typeBag = new DefaultSinglePluginBag(\Drupal::service('plugin.manager.media_entity.type'), $this->type, $this->type_configuraton);
+      $this->typeBag = new DefaultSinglePluginBag(\Drupal::service('plugin.manager.media_entity.type'), $this->type, $this->type_configuration);
     }
     return $this->typeBag;
   }

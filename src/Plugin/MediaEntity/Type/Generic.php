@@ -8,6 +8,7 @@ namespace Drupal\media_entity\Plugin\MediaEntity\Type;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaTypeInterface;
 
 /**
@@ -53,7 +54,7 @@ class Generic extends PluginBase implements MediaTypeInterface {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm() {
+  public function settingsForm(MediaBundleInterface $bundle) {
     return array();
   }
 

@@ -26,7 +26,7 @@ interface MediaTypeInterface extends PluginInspectionInterface {
 
   public function getField($name);
 
-  public function settingsForm();
+  public function settingsForm(MediaBundleInterface $bundle);
 
   public function validate();
 

@@ -10,6 +10,7 @@ namespace Drupal\media_entity;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 
 /**
  * Form controller for node type forms.
@@ -73,6 +74,25 @@ class MediaBundleForm extends EntityForm {
       '#description' => t('Media type provider plugin that is responsible for additional logic related to this media.'),
     );
 
+    $form['type_configuration'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Type provider configuration'),
+      '#tree' => TRUE,
+    );
+
+    foreach ($plugins as $plugin => $definition) {
+      $plugin_configuration = $bundle->getType()->getPluginId() == $plugin ? $bundle->type_configuration : array();
+      $form['type_configuration'][$plugin] = array(
+        '#type' => 'container',
+        '#states' => array(
+          'visible' => array(
+            ':input[name="type"]' => array('value' => $plugin),
+          ),
+        ),
+      );
+      $form['type_configuration'][$plugin] += \Drupal::service('plugin.manager.media_entity.type')->createInstance($plugin, $plugin_configuration)->settingsForm($this->entity);
+    }
+
     return parent::form($form, $form_state);
   }
 
@@ -93,6 +113,9 @@ class MediaBundleForm extends EntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     $bundle = $this->entity;
     $bundle->id = trim($bundle->id());
+
+    // Use type configuration for the plugin that was chosen.
+    $bundle->type_configuration = empty($bundle->type_configuration[$bundle->type]) ? array() : $bundle->type_configuration[$bundle->type];
 
     $status = $bundle->save();
 
