@@ -1,0 +1,9 @@
+media.edit:
+  route_name: media.edit
+  group: media
+  title: Edit
+media.delete_confirm:
+  route_name: media.delete_confirm
+  group: media
+  title: Delete
+  weight: 10
