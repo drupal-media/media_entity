@@ -7,12 +7,12 @@
 
 namespace Drupal\media_entity;
 
-use Drupal\Core\Entity\ContentEntityDatabaseStorage;
+use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 
 /**
  * Media storage class.
  */
-class MediaStorage extends ContentEntityDatabaseStorage implements MediaStorageInterface {
+class MediaStorage extends SqlContentEntityStorage implements MediaStorageInterface {
 
   /**
    * {@inheritdoc}
