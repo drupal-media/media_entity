@@ -26,8 +26,25 @@ interface MediaTypeInterface extends PluginInspectionInterface {
 
   public function getField($name);
 
+  /**
+   * Gets settings (sub) form for type plugin.
+   *
+   * @param MediaBundleInterface $bundle
+   *   Media bundle.
+   * @return mixed
+   *   Form structure. Form elements should reflect configuration schema.
+   */
   public function settingsForm(MediaBundleInterface $bundle);
 
-  public function validate();
+  /**
+   * Validates media.
+   *
+   * @param MediaInterface $media
+   *   Media.
+   *
+   * @throws MediaTypeException
+   *   Exception in case of failed validation.
+   */
+  public function validate(MediaInterface $media);
 
 }

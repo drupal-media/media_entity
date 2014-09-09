@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Plugin\MediaEntity\Type;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\media_entity\MediaBundleInterface;
+use Drupal\media_entity\MediaInterface;
 use Drupal\media_entity\MediaTypeInterface;
 
 /**
@@ -61,6 +62,6 @@ class Generic extends PluginBase implements MediaTypeInterface {
   /**
    * {@inheritdoc}
    */
-  public function validate() { }
+  public function validate(MediaInterface $media) { }
 
 }

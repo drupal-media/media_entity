@@ -249,4 +249,25 @@ class MediaForm extends ContentEntityForm {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function validate(array $form, FormStateInterface $form_state) {
+    parent::validate($form, $form_state);
+
+    /** @var \Drupal\media_entity\MediaInterface $entity */
+    $entity = $this->buildEntity($form, $form_state);
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
+    $bundle = $this->entityManager->getStorage('media_bundle')->load($entity->bundle());
+    if ($type = $bundle->getType()) {
+      try {
+        $type->validate($entity);
+      }
+      catch (MediaTypeException $e) {
+        $form_state->setErrorByName($e->getElement(), $e->getMessage());
+      }
+    }
+
+  }
+
 }
