@@ -21,6 +21,7 @@ class MediaBundleForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $this->entity;
     if ($this->operation == 'add') {
       $form['#title'] = String::checkPlain($this->t('Add media bundle'));
@@ -51,21 +52,27 @@ class MediaBundleForm extends EntityForm {
       '#description' => t('A unique machine-readable name for this media bundle.'),
     );
 
-    $form['type'] = array(
-      '#title' => t('Type'),
-      '#type' => 'textfield',
-      '#default_value' => $bundle->type(),
-      '#description' => t('The type of this media bundle e.g. image, video, audio.'),
-      '#required' => TRUE,
-      '#size' => 30,
-    );
-
     $form['description'] = array(
       '#title' => t('Description'),
       '#type' => 'textarea',
       '#default_value' => $bundle->getDescription(),
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     );
+
+    $plugins = \Drupal::service('plugin.manager.media_entity.type')->getDefinitions();
+    $options = array();
+    foreach ($plugins as $plugin => $definition) {
+      $options[$plugin] = $definition['label'];
+    }
+
+    $form['type'] = array(
+      '#type' => 'select',
+      '#title' => t('Type provider'),
+      '#default_value' => $bundle->getType()->getPluginId(),
+      '#options' => $options,
+      '#description' => t('Media type provider plugin that is responsible for additional logic related to this media.'),
+    );
+
     return parent::form($form, $form_state);
   }
 

@@ -8,9 +8,11 @@ media_entity.bundle.*:
     label:
       type: label
       label: 'Label'
-    type:
-      type: label
-      label: 'Type'
     description:
       type: text
       label: 'Description'
+    type:
+      type: string
+      label: 'Type plugin ID'
+    type_configuration:
+      type: media_entity.bundle.type.[%type]

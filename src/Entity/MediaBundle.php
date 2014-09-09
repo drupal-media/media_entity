@@ -8,6 +8,8 @@
 namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+use Drupal\Core\Entity\EntityWithPluginBagsInterface;
+use Drupal\Core\Plugin\DefaultSinglePluginBag;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 
@@ -30,9 +32,7 @@ use Drupal\media_entity\MediaInterface;
  *   bundle_of = "media",
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "label",
- *     "type" = "type",
- *     "uuid" = "uuid"
+ *     "label" = "label"
  *   },
  *   links = {
  *     "edit-form" = "media.bundle_edit",
@@ -40,7 +40,7 @@ use Drupal\media_entity\MediaInterface;
  *   }
  * )
  */
-class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface {
+class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface, EntityWithPluginBagsInterface {
 
   /**
    * The machine name of this media bundle.
@@ -57,18 +57,32 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   public $label;
 
   /**
-   * The type of this media bundle.
-   *
-   * @var string
-   */
-  public $type;
-
-  /**
    * A brief description of this media bundle.
    *
    * @var string
    */
   public $description;
+
+  /**
+   * The type plugin id.
+   *
+   * @var string
+   */
+  public $type = 'generic';
+
+  /**
+   * The type plugin configuration.
+   *
+   * @var array
+   */
+  public $type_configuraton = array();
+
+  /**
+   * Type plugin bag.
+   *
+   * @var \Drupal\Core\Plugin\DefaultSinglePluginBag
+   */
+  protected $typeBag;
 
   /**
    * {@inheritdoc}
@@ -80,8 +94,10 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   /**
    * {@inheritdoc}
    */
-  public function type() {
-    return $this->type;
+  public function getPluginBags() {
+    return array(
+      'type' => $this->typeBag(),
+    );
   }
 
   /**
@@ -105,4 +121,25 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   public function getDescription() {
     return $this->description;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getType() {
+    return $this->typeBag()->get($this->type);
+  }
+
+  /**
+   * Returns type plugin bag.
+   *
+   * @return \Drupal\Core\Plugin\DefaultSinglePluginBag
+   *   The tag plugin bag.
+   */
+  protected function typeBag() {
+    if (!$this->typeBag) {
+      $this->typeBag = new DefaultSinglePluginBag(\Drupal::service('plugin.manager.media_entity.type'), $this->type, $this->type_configuraton);
+    }
+    return $this->typeBag;
+  }
+
 }

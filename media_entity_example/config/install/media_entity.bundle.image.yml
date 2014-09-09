@@ -1,7 +1,8 @@
 id: image
 label: Images
-type: image
 description: 'Images of pretty puppies.'
+type: 'generic'
+type_configuration: {  }
 status: true
 langcode: en
 dependencies: {  }
