@@ -24,7 +24,17 @@ interface MediaTypeInterface extends PluginInspectionInterface {
 
   public function providedFields();
 
-  public function getField($name);
+  /**
+   * Get's a media-related field/value.
+   *
+   * @param MediaInterface $media
+   *   Media object.
+   * @param $name
+   *   Name of field to fetch.
+   * @return mixed
+   *   Field value or FALSE if data unavailable.
+   */
+  public function getField(MediaInterface $media, $name);
 
   /**
    * Gets settings (sub) form for type plugin.

@@ -16,3 +16,6 @@ media_entity.bundle.*:
       label: 'Type plugin ID'
     type_configuration:
       type: media_entity.bundle.type.[%type]
+    field_map:
+      type: mapping
+      label: 'Field map'

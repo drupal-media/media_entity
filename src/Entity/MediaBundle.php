@@ -85,6 +85,13 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   protected $typeBag;
 
   /**
+   * Field map. Fields provided by type plugin to be stored as entity fields.
+   *
+   * @var array
+   */
+  public $field_map = array();
+
+  /**
    * {@inheritdoc}
    */
   public function id() {

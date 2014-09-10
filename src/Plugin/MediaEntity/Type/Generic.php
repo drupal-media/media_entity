@@ -48,7 +48,7 @@ class Generic extends PluginBase implements MediaTypeInterface {
   /**
    * {@inheritdoc}
    */
-  public function getField($name) {
+  public function getField(MediaInterface$media, $name) {
     return FALSE;
   }
 
