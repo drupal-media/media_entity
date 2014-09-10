@@ -197,10 +197,9 @@ class MediaUITest extends WebTestBase {
     ), t('Save and edit'));
 
     $this->drupalGet('media_revision');
-    $this->assertText($data['name']);
     // Check only for the label of the changed field as we want to only test
     // if the field is present and not its value.
-    $this->assertText('Updated date');
+    $this->assertText($data['name']);
 
     user_role_revoke_permissions('anonymous', array('view revisions'));
     $this->drupalLogout();
