@@ -22,6 +22,12 @@ interface MediaTypeInterface extends PluginInspectionInterface {
    */
   public function label();
 
+  /**
+   * Gets list of fields provided by this plugin.
+   *
+   * @return array
+   *   Associative array with field names as keys and descriptions as values.
+   */
   public function providedFields();
 
   /**
@@ -31,6 +37,7 @@ interface MediaTypeInterface extends PluginInspectionInterface {
    *   Media object.
    * @param $name
    *   Name of field to fetch.
+   *
    * @return mixed
    *   Field value or FALSE if data unavailable.
    */
@@ -41,6 +48,7 @@ interface MediaTypeInterface extends PluginInspectionInterface {
    *
    * @param MediaBundleInterface $bundle
    *   Media bundle.
+   *
    * @return mixed
    *   Form structure. Form elements should reflect configuration schema.
    */
