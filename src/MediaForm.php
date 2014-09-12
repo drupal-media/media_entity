@@ -216,7 +216,6 @@ class MediaForm extends ContentEntityForm {
 
     if ($media->id()) {
       $form_state->setValue('mid', $media->id());
-      $form_state['mid'] = $media->id();
       if ($media->access('view')) {
         $form_state->setRedirect('media.view', array('media' => $media->id()));
       }
