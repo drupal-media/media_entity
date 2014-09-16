@@ -195,6 +195,20 @@ class Media extends ContentEntityBase implements MediaInterface {
     if (!$this->get('revision_uid')->entity) {
       $this->set('revision_uid', $this->getPublisherId());
     }
+
+    // Try to set fields provided by type plugin and mapped in bundle
+    // configuration.
+    $bundle = $this->entityManager()->getStorage('media_bundle')->load($this->bundle());
+    foreach ($bundle->field_map as $source_field => $destination_field) {
+      // Only save value in entity field if empty. Do not overwrite existing data.
+      // @TODO We might modify that in the future but let's leave it like this
+      // for now.
+      if ($this->{$destination_field} && $this->{$destination_field}->isEmpty() && ($value = $bundle->getType()->getField($this, $source_field))) {
+        $property_name = $this->{$destination_field}->first()->mainPropertyName();
+        $this->{$destination_field}->first()->{$property_name} = $value;
+      }
+    }
+
   }
 
   /**
