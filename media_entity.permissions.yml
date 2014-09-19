@@ -1,0 +1,11 @@
+administer media:
+  title: 'Administer media'
+  restrict access: TRUE
+view media:
+  title: 'View media'
+update media:
+  title: 'Update media'
+delete media:
+  title:  'Delete media'
+create media:
+  title: 'Create media'
