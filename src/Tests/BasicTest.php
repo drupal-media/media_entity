@@ -7,14 +7,12 @@
 
 namespace Drupal\media_entity\Tests;
 
-use Drupal\simpletest\WebTestBase;
-
 /**
  * Ensures that basic functions work correctly.
  *
  * @group media
  */
-class BasicTest extends WebTestBase {
+class BasicTest extends MediaEntityTestBase {
 
   /**
    * Modules to enable.
@@ -22,36 +20,6 @@ class BasicTest extends WebTestBase {
    * @var array
    */
   public static $modules = array('media_entity');
-
-  /**
-   * Creates media bundle.
-   *
-   * @param array $values
-   *   The media bundle values.
-   *
-   * @return \Drupal\Core\Entity\EntityInterface
-   *   Returns newly created media bundle.
-   */
-  protected function drupalCreateMediaBundle(array $values = array()) {
-    if (!isset($values['bundle'])) {
-      $id = strtolower($this->randomMachineName());
-    }
-    else {
-      $id = $values['bundle'];
-    }
-    $values += array(
-      'id' => $id,
-      'label' => $id,
-      'type' => $id,
-    );
-
-    $bundle = entity_create('media_bundle', $values);
-    $status = $bundle->save();
-
-    $this->assertEqual($status, SAVED_NEW, t('Created media bundle %bundle.', array('%bundle' => $bundle->id())));
-
-    return $bundle;
-  }
 
   /**
    * Tests creating a media bundle programmatically.
@@ -68,9 +36,8 @@ class BasicTest extends WebTestBase {
    */
   public function testMediaEntityCreation() {
     $media = entity_create('media', array(
-      'bundle' => 'default',
+      'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
-      'type' => 'Unknown',
     ));
     $media->save();
 
@@ -86,9 +53,8 @@ class BasicTest extends WebTestBase {
    */
   public function testMediaAccess() {
     $media = entity_create('media', array(
-      'bundle' => 'default',
+      'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
-      'type' => 'Unknown',
     ));
     $media->save();
 

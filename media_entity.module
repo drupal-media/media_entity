@@ -6,32 +6,6 @@
  */
 
 /**
- * Implements hook_permission().
- */
-function media_entity_permission() {
-  $perms = array(
-    'administer media' => array(
-      'title' => t('Administer media'),
-      'restrict access' => TRUE,
-    ),
-    'view media' => array(
-      'title' => t('View media'),
-    ),
-    'update media' => array(
-      'title' => t('Update media'),
-    ),
-    'delete media' => array(
-      'title' => t('Delete media'),
-    ),
-    'create media' => array(
-      'title' => t('Create media'),
-    ),
-  );
-
-  return $perms;
-}
-
-/**
  * Implements hook_theme().
  */
 function media_entity_theme() {
