@@ -103,7 +103,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    */
   public function getPluginBags() {
     return array(
-      'type' => $this->typeBag(),
+      'type_configuration' => $this->typeBag(),
     );
   }
 

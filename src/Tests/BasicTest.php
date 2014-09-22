@@ -26,9 +26,21 @@ class BasicTest extends MediaEntityTestBase {
    */
   public function testMediaBundleCreation() {
     $bundle = $this->drupalCreateMediaBundle();
+    /** @var $bundle_storage \Drupal\media_entity\MediaBundleInterface */
+    $bundle_storage = $this->container->get('entity.manager')->getStorage('media_bundle');
 
-    $bundle_exists = (bool) entity_load('media_bundle', $bundle->id());
+    $bundle_exists = (bool) $bundle_storage->load($bundle->id());
     $this->assertTrue($bundle_exists, 'The new media bundle has been created in the database.');
+
+    // Test default bundle created from default configuration.
+    $this->container->get('module_handler')->install(array('media_entity_test'));
+    $test_bundle = $bundle_storage->load('test');
+    $this->assertTrue((bool) $test_bundle, 'The media bundle from default configuration has been created in the database.');
+    $this->assertEqual($test_bundle->get('label'), 'Test bundle', 'Correct label detected.');
+    $this->assertEqual($test_bundle->get('description'), 'Test bundle.', 'Correct description detected.');
+    $this->assertEqual($test_bundle->get('type'), 'generic', 'Correct plugin ID detected.');
+    $this->assertEqual($test_bundle->get('type_configuration'), array(), 'Correct plugin configuration detected.');
+    $this->assertEqual($test_bundle->get('field_map'), array(), 'Correct field map detected.');
   }
 
   /**
