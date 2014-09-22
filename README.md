@@ -28,4 +28,6 @@ Maintainers:
  - Nguyễn Hải Nam (@jcisio) drupal.org/user/210762
  - Boris Gordon (@boztek) drupal.org/user/134410
 
-IRC channel: #drupal-media
+Get in touch:
+ - http://groups.drupal.org/media
+ - IRC: #drupal-media @ Freenode
