@@ -26,7 +26,7 @@
     </ul>
 {% else %}
 <p>
-    {% set create_media_bundle = url('admin/structure/media/add') %}
+    {% set create_media_bundle = url('media.bundle_add') %}
     {% trans %}
     You have not created any media bundles yet. Go to the <a href="{{ create_media_bundle }}">media bundle creation page</a> to add a new media bundle.
     {% endtrans %}
