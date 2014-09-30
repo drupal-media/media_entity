@@ -1,5 +1,5 @@
 id: media.field_image
-name: field_image
+field_name: field_image
 entity_type: media
 type: image
 module: image
