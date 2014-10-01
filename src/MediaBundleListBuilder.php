@@ -10,6 +10,7 @@ use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Component\Utility\Xss;
+use Drupal\Core\Url;
 
 /**
  * Provides a listing of media bundles.
@@ -46,7 +47,7 @@ class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityHa
   public function render() {
     $build = parent::render();
     $build['#empty'] = t('No media bundle available. <a href="@link">Add media bundle</a>.', array(
-      '@link' => url('admin/structure/media/add'),
+      '@link' => Url::fromRoute('media.bundle_add')->toString(),
     ));
     return $build;
   }
