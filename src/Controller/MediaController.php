@@ -31,13 +31,13 @@ class MediaController extends ControllerBase {
       'media' => $this->entityManager()->getViewBuilder('media')->view($media),
     );
 
-    $build['#attached']['drupal_add_html_head_link'][] = array(
+    $build['#attached']['html_head_link'][] = array(
       array(
         'rel' => 'canonical',
         'href' => $media->url('canonical'),
       ), TRUE);
 
-    $build['#attached']['drupal_add_html_head_link'][] = array(
+    $build['#attached']['html_head_link'][] = array(
       array(
         'rel' => 'shortlink',
         'href' => $media->url('canonical', array('alias' => TRUE)),
@@ -109,7 +109,7 @@ class MediaController extends ControllerBase {
     $media = $this->entityManager()->getStorage('media')->create(array(
       'uid' => $user->id(),
       'bundle' => $bundle,
-      'langcode' => $langcode ? $langcode : language_default()->id,
+      'langcode' => $langcode ? $langcode : language_default()->getId(),
     ));
 
     return $this->entityFormBuilder()->getForm($media);
