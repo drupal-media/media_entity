@@ -8,8 +8,8 @@
 namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
-use Drupal\Core\Entity\EntityWithPluginBagsInterface;
-use Drupal\Core\Plugin\DefaultSinglePluginBag;
+use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
+use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 
@@ -40,7 +40,7 @@ use Drupal\media_entity\MediaInterface;
  *   }
  * )
  */
-class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface, EntityWithPluginBagsInterface {
+class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface, EntityWithPluginCollectionInterface {
 
   /**
    * The machine name of this media bundle.
@@ -78,11 +78,11 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   public $type_configuration = array();
 
   /**
-   * Type plugin bag.
+   * Type lazy plugin collection.
    *
-   * @var \Drupal\Core\Plugin\DefaultSinglePluginBag
+   * @var \Drupal\Core\Plugin\DefaultSingleLazyPluginCollection
    */
-  protected $typeBag;
+  protected $typePluginCollection;
 
   /**
    * Field map. Fields provided by type plugin to be stored as entity fields.
@@ -101,9 +101,9 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   /**
    * {@inheritdoc}
    */
-  public function getPluginBags() {
+  public function getPluginCollections() {
     return array(
-      'type_configuration' => $this->typeBag(),
+      'type_configuration' => $this->typePluginCollection(),
     );
   }
 
@@ -133,20 +133,20 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * {@inheritdoc}
    */
   public function getType() {
-    return $this->typeBag()->get($this->type);
+    return $this->typePluginCollection()->get($this->type);
   }
 
   /**
-   * Returns type plugin bag.
+   * Returns type lazy plugin collection.
    *
-   * @return \Drupal\Core\Plugin\DefaultSinglePluginBag
-   *   The tag plugin bag.
+   * @return \Drupal\Core\Plugin\DefaultSingleLazyPluginCollection
+   *   The tag plugin collection.
    */
-  protected function typeBag() {
-    if (!$this->typeBag) {
-      $this->typeBag = new DefaultSinglePluginBag(\Drupal::service('plugin.manager.media_entity.type'), $this->type, $this->type_configuration);
+  protected function typePluginCollection() {
+    if (!$this->typePluginCollection) {
+      $this->typePluginCollection = new DefaultSingleLazyPluginCollection(\Drupal::service('plugin.manager.media_entity.type'), $this->type, $this->type_configuration);
     }
-    return $this->typeBag;
+    return $this->typePluginCollection;
   }
 
 }
