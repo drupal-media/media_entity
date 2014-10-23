@@ -53,7 +53,7 @@ class MediaBundleDeleteForm extends EntityConfirmFormBase {
     $this->entity->delete();
     $t_args = array('%name' => $this->entity->label());
     drupal_set_message(t('The media bundle %name has been deleted.', $t_args));
-    watchdog('node', 'Deleted media bundle %name.', $t_args, WATCHDOG_NOTICE);
+    $this->logger('media')->notice('Deleted media bundle %name.', $t_args);
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

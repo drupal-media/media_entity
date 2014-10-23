@@ -155,7 +155,7 @@ class MediaUITest extends MediaEntityTestBase {
       'bundle' => $this->testBundle->id(),
       'type' => 'Unknown',
       'uid' => $this->adminUser->id(),
-      'langcode' => language_default()->id,
+      'langcode' => \Drupal::languageManager()->getDefaultLanguage()->getId(),
       'status' => Media::PUBLISHED,
     );
     $media = entity_create('media', $data);
