@@ -51,4 +51,20 @@ interface MediaBundleInterface extends ConfigEntityInterface {
    *   The type.
    */
   public function getType();
+
+  /**
+   * Returns the media type configuration.
+   *
+   * @return array
+   *   The type configuration.
+   */
+  public function getTypeConfiguration();
+
+  /**
+   * Sets the media type configuration.
+   *
+   * @param array $configuration
+   *   The type configuration.
+   */
+  public function setTypeConfiguration($configuration);
 }

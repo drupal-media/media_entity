@@ -132,6 +132,21 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   /**
    * {@inheritdoc}
    */
+  public function getTypeConfiguration() {
+    return $this->type_configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setTypeConfiguration($configuration) {
+    $this->type_configuration = $configuration;
+    $this->typePluginCollection = NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getType() {
     return $this->typePluginCollection()->get($this->type);
   }

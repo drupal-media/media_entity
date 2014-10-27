@@ -9,6 +9,7 @@ namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Component\Utility\String;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 
@@ -110,12 +111,22 @@ class MediaBundleForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function save(array $form, FormStateInterface $form_state) {
-    $bundle = $this->entity;
-    $bundle->id = trim($bundle->id());
+  protected function copyFormValuesToEntity(MediaBundleInterface $entity, array $form, FormStateInterface $form_state) {
+    parent::copyFormValuesToEntity($entity, $form, $form_state);
 
     // Use type configuration for the plugin that was chosen.
-    $bundle->type_configuration = empty($bundle->type_configuration[$bundle->type]) ? array() : $bundle->type_configuration[$bundle->type];
+    $configuration = $entity->getTypeConfiguration();
+    $configuration = empty($configuration[$entity->getType()->getPluginId()]) ? [] : $configuration[$entity->getType()->getPluginId()];
+    $entity->setTypeConfiguration($configuration);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    /** @var  \Drupal\media_entity\MediaBundleInterface $bundle */
+    $bundle = $this->entity;
+    $bundle->id = trim($bundle->id());
 
     $status = $bundle->save();
 
