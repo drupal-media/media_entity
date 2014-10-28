@@ -111,7 +111,8 @@ class MediaBundleForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  protected function copyFormValuesToEntity(MediaBundleInterface $entity, array $form, FormStateInterface $form_state) {
+  protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    /** @var \Drupal\media_entity\MediaBundleInterface $entity */
     parent::copyFormValuesToEntity($entity, $form, $form_state);
 
     // Use type configuration for the plugin that was chosen.
