@@ -5,6 +5,7 @@
  */
 use Drupal\Component\Utility\String;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
 
 /**
  * Prepares variables for list of available media bundles.
@@ -20,8 +21,9 @@ function template_preprocess_media_add_list(&$variables) {
   if (!empty($variables['content'])) {
     foreach ($variables['content'] as $bundle) {
       $link_text = '<span class="label">' . $bundle->label . '</span><div class="description">' . $bundle->description . '</div>';
+      $link_url = Url::fromRoute('media.add', array('media_bundle' => $bundle->id))->setOption('html', TRUE);
       $variables['bundles'][$bundle->id] = array(
-        'add_link' => l($link_text, 'media/add/' . $bundle->id, array('html' => TRUE)),
+        'add_link' => \Drupal::l($link_text, $link_url),
       );
     }
   }
