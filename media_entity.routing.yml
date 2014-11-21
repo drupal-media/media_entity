@@ -1,7 +1,7 @@
 media.view:
   path: '/media/{media}'
   defaults:
-    _content: '\Drupal\media_entity\Controller\MediaController::page'
+    _controller: '\Drupal\media_entity\Controller\MediaController::page'
     _title_callback: '\Drupal\media_entity\Controller\MediaController::pageTitle'
   requirements:
     _entity_access: 'media.view'
@@ -10,7 +10,7 @@ media.add_page:
   path: '/media/add'
   defaults:
     _title: 'Add media'
-    _content: '\Drupal\media_entity\Controller\MediaController::addPage'
+    _controller: '\Drupal\media_entity\Controller\MediaController::addPage'
   options:
     _access_mode: 'ANY'
     _admin_route: TRUE
@@ -20,7 +20,7 @@ media.add_page:
 media.add:
   path: '/media/add/{media_bundle}'
   defaults:
-    _content: '\Drupal\media_entity\Controller\MediaController::add'
+    _controller: '\Drupal\media_entity\Controller\MediaController::add'
     _title_callback: '\Drupal\media_entity\Controller\MediaController::addPageTitle'
   options:
     _admin_route: TRUE
