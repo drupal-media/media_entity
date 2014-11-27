@@ -8,11 +8,12 @@
 namespace Drupal\media_entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Config\Entity\ThirdPartySettingsInterface;
 
 /**
  * Provides an interface defining a media bundle entity.
  */
-interface MediaBundleInterface extends ConfigEntityInterface {
+interface MediaBundleInterface extends ConfigEntityInterface, ThirdPartySettingsInterface {
 
   /**
    * Returns the label.

@@ -8,6 +8,7 @@
 namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+use Drupal\Core\Config\Entity\ThirdPartySettingsTrait;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
 use Drupal\media_entity\MediaBundleInterface;
@@ -41,6 +42,7 @@ use Drupal\media_entity\MediaInterface;
  * )
  */
 class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface, EntityWithPluginCollectionInterface {
+  use ThirdPartySettingsTrait;
 
   /**
    * The machine name of this media bundle.
