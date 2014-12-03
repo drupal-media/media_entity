@@ -1,20 +1,20 @@
-media.view:
-  route_name: media.view
-  base_route: media.view
+entity.media.canonical:
+  route_name: entity.media.canonical
+  base_route: entity.media.canonical
   title: 'View'
-media.edit:
-  route_name: media.edit
-  base_route: media.view
+entity.media.edit_form:
+  route_name: entity.media.edit_form
+  base_route: entity.media.canonical
   title: Edit
-media.delete_confirm:
-  route_name: media.delete_confirm
-  base_route: media.view
+entity.media.delete_form:
+  route_name: entity.media.delete_form
+  base_route: entity.media.canonical
   title: Delete
   weight: 10
-media.bundle_edit:
+entity.media_bundle.edit_form:
   title: 'Edit'
-  route_name: media.bundle_edit
-  base_route: media.bundle_edit
+  route_name: entity.media_bundle.edit_form
+  base_route: entity.media_bundle.edit_form
 media.overview_bundles:
   title: List
   route_name: media.overview_bundles

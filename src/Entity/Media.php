@@ -47,12 +47,12 @@ use Drupal\media_entity\MediaInterface;
  *   bundle_entity_type = "media_bundle",
  *   permission_granularity = "entity_type",
  *   admin_permission = "administer media",
- *   field_ui_base_route = "media.bundle_edit",
+ *   field_ui_base_route = "entity.media_bundle.edit_form",
  *   links = {
- *     "canonical" = "media.view",
- *     "delete-form" = "media.delete_confirm",
- *     "edit-form" = "media.edit",
- *     "admin-form" = "media.bundle_edit"
+ *     "canonical" = "entity.media.canonical",
+ *     "delete-form" = "entity.media.delete_form",
+ *     "edit-form" = "entity.media.edit_form",
+ *     "admin-form" = "entity.media_bundle.edit_form"
  *   }
  * )
  */
