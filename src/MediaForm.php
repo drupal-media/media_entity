@@ -217,7 +217,7 @@ class MediaForm extends ContentEntityForm {
     if ($media->id()) {
       $form_state->setValue('mid', $media->id());
       if ($media->access('view')) {
-        $form_state->setRedirect('media.view', array('media' => $media->id()));
+        $form_state->setRedirect('entity.media.canonical', array('media' => $media->id()));
       }
       else {
         $form_state->setRedirect('<front>');
@@ -242,7 +242,7 @@ class MediaForm extends ContentEntityForm {
       $query->remove('destination');
     }
     $form_state->setRedirect(
-      'media.delete_confirm',
+      'entity.media.delete_form',
       array('media' => $this->entity->id()),
       array('query' => $destination)
     );

@@ -36,8 +36,8 @@ use Drupal\media_entity\MediaInterface;
  *     "label" = "label"
  *   },
  *   links = {
- *     "edit-form" = "media.bundle_edit",
- *     "delete-form" = "media.bundle_delete_confirm"
+ *     "edit-form" = "entity.media_bundle.edit_form",
+ *     "delete-form" = "entity.media_bundle.delete_form"
  *   }
  * )
  */
