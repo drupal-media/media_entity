@@ -116,7 +116,7 @@ class MediaBundleForm extends EntityForm {
     parent::copyFormValuesToEntity($entity, $form, $form_state);
 
     // Use type configuration for the plugin that was chosen.
-    $configuration = $entity->getTypeConfiguration();
+    $configuration = $form_state->getValue('type_configuration');
     $configuration = empty($configuration[$entity->getType()->getPluginId()]) ? [] : $configuration[$entity->getType()->getPluginId()];
     $entity->setTypeConfiguration($configuration);
   }

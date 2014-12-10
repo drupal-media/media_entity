@@ -42,7 +42,7 @@ function template_preprocess_media(&$variables) {
   /** @var \Drupal\media_entity\MediaInterface $media */
   $media = $variables['elements']['#media'];
 
-  $variables['name'] = String::checkPlain($media->getName());
+  $variables['name'] = String::checkPlain($media->label());
 
   // Helpful $content variable for templates.
   foreach (Element::children($variables['elements']) as $key) {

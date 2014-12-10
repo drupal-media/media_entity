@@ -24,25 +24,6 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
   public function getBundle();
 
   /**
-   * Returns the media name.
-   *
-   * @return string
-   *   Name of the media.
-   */
-  public function getName();
-
-  /**
-   * Sets the media name.
-   *
-   * @param string $name
-   *   The media name.
-   *
-   * @return \Drupal\media_entity\MediaInterface
-   *   The called media entity.
-   */
-  public function setName($name);
-
-  /**
    * Returns the media creation timestamp.
    *
    * @return int
@@ -128,22 +109,4 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
    */
   public function setType($type);
 
-  /**
-   * Returns the media resource ID.
-   *
-   * @return string
-   *   The media resource ID.
-   */
-  public function getResourceId();
-
-  /**
-   * Sets the media resource ID..
-   *
-   * @param string $id
-   *   The media resource ID.
-   *
-   * @return \Drupal\media_entity\MediaInterface
-   *   The called media entity.
-   */
-  public function setResourceId($id);
 }

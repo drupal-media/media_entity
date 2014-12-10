@@ -70,6 +70,15 @@ function media_entity_views_data() {
     ),
   );
 
+  $data['media_field_data']['thumbnail'] = array(
+    'title' => t('Thumbnail'),
+    'help' => t('The thumbnail for the media.'),
+    'real field' => 'mid',
+    'field' => array(
+      'id' => 'media_name',
+    ),
+  );
+
   $data['media_field_data']['created'] = array(
     'title' => t('Create date'),
     'help' => t('The date the media was created/uploaded.'),
