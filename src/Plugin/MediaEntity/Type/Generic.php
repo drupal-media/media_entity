@@ -108,7 +108,7 @@ class Generic extends PluginBase implements MediaTypeInterface, ContainerFactory
   /**
    * {@inheritdoc}
    */
-  public function thumbnail() {
+  public function thumbnail(MediaInterface $media) {
     return $this->config->get('icon_base') . '/generic.png';
   }
 
