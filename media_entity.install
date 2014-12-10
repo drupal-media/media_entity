@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Install, uninstall and update hooks for Media entity module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function media_entity_install() {
+  media_entity_copy_icons();
+}
