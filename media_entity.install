@@ -9,5 +9,7 @@
  * Implements hook_install().
  */
 function media_entity_install() {
-  media_entity_copy_icons();
+  $source = drupal_get_path('module', 'media_entity') . '/images/icons';
+  $destination = \Drupal::config('media_entity.settings')->get('icon_base');
+  media_entity_copy_icons($source, $destination);
 }
