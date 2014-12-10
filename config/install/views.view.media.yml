@@ -12,27 +12,6 @@ base_table: media
 base_field: mid
 core: 8.x
 display:
-  page_1:
-    display_plugin: page
-    id: page_1
-    display_title: Page
-    position: 1
-    display_options:
-      path: admin/content/media
-      menu:
-        type: tab
-        title: Media
-        description: 'Find and manage media.'
-        name: admin
-        weight: 2
-        context: '0'
-      defaults:
-        filters: true
-        filter_groups: true
-        exposed_form: true
-        exposed_form_options: true
-      field_langcode: '***CURRENT_LANGUAGE***'
-      field_langcode_add_to_query: null
   default:
     display_plugin: default
     id: default
@@ -86,65 +65,17 @@ display:
             last: 'last »'
           quantity: 9
       style:
-        type: table
+        type: media_entity_library
         options:
-          grouping: {  }
           row_class: ''
           default_row_class: true
-          override: true
-          sticky: false
-          caption: ''
-          summary: ''
-          description: ''
-          columns:
-            mid: mid
-            name: name
-            bundle: bundle
-            created: created
-            changed: changed
-          info:
-            mid:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            name:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            bundle:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            created:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            changed:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-          default: '-1'
-          empty_table: true
+          uses_fields: false
       row:
         type: 'entity:media'
         options:
           relationship: none
-          view_mode: default
+          view_mode: library_thumbnail
+          rendering_language: translation_language_renderer
       fields:
         mid:
           id: mid
@@ -650,5 +581,26 @@ display:
           provider: views
       relationships: {  }
       arguments: {  }
+      field_langcode: '***CURRENT_LANGUAGE***'
+      field_langcode_add_to_query: null
+  page_1:
+    display_plugin: page
+    id: page_1
+    display_title: Page
+    position: 1
+    display_options:
+      path: admin/content/media
+      menu:
+        type: tab
+        title: Media
+        description: 'Find and manage media.'
+        name: admin
+        weight: 2
+        context: '0'
+      defaults:
+        filters: true
+        filter_groups: true
+        exposed_form: true
+        exposed_form_options: true
       field_langcode: '***CURRENT_LANGUAGE***'
       field_langcode_add_to_query: null
