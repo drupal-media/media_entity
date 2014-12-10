@@ -65,4 +65,11 @@ interface MediaTypeInterface extends PluginInspectionInterface {
    */
   public function validate(MediaInterface $media);
 
+  /**
+   * Gets thumbnail image.
+   *
+   * @return string
+   *   URI of the thumbnail.
+   */
+  public function thumbnail();
 }
