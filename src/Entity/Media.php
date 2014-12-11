@@ -78,21 +78,6 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
-  public function getName() {
-    return $this->get('name')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setName($name) {
-    $this->set('name', $name);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getCreatedTime() {
     return $this->get('created')->value;
   }
@@ -167,21 +152,6 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
-  public function getResourceId() {
-    return $this->get('resource_id')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setResourceId($id) {
-    $this->set('resource_id', $id);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
@@ -195,9 +165,36 @@ class Media extends ContentEntityBase implements MediaInterface {
       $this->set('revision_uid', $this->getPublisherId());
     }
 
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
+    $bundle = $this->entityManager()->getStorage('media_bundle')->load($this->bundle());
+
+    // Set thumbnail.
+    if (!$this->get('thumbnail')->entity) {
+      $thumbnail_uri = $bundle->getType()->thumbnail($this);
+
+      $existing = \Drupal::entityQuery('file')
+        ->condition('uri', $thumbnail_uri)
+        ->execute();
+
+      if ($existing) {
+        $this->thumbnail->target_id = reset($existing);
+      }
+      else {
+        /** @var \Drupal\file\FileInterface $file */
+        $file = $this->entityManager()->getStorage('file')->create(['uri' => $thumbnail_uri]);
+        $file->setOwner($this->getPublisher());
+        $file->setPermanent();
+        $file->save();
+        $this->thumbnail->target_id = $file->id();
+      }
+
+      // TODO - We should probably use something smarter (tokens, ...).
+      $this->thumbnail->alt = t('Thumbnail');
+      $this->thumbnail->title = $this->label();
+    }
+
     // Try to set fields provided by type plugin and mapped in bundle
     // configuration.
-    $bundle = $this->entityManager()->getStorage('media_bundle')->load($this->bundle());
     foreach ($bundle->field_map as $source_field => $destination_field) {
       // Only save value in entity field if empty. Do not overwrite existing data.
       // @TODO We might modify that in the future but let's leave it like this
@@ -271,6 +268,21 @@ class Media extends ContentEntityBase implements MediaInterface {
       ))
       ->setDisplayConfigurable('form', TRUE);
 
+    $fields['thumbnail'] = BaseFieldDefinition::create('image')
+      ->setLabel(t('Thumbnail'))
+      ->setDescription(t('The thumbnail of the media.'))
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('view', array(
+        'type' => 'image',
+        'weight' => 1,
+        'label' => 'hidden',
+        'settings' => array(
+          'image_style' => 'thumbnail',
+        ),
+      ))
+      ->setDisplayConfigurable('view', TRUE)
+      ->setReadOnly(TRUE);
+
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Publisher ID'))
       ->setDescription(t('The user ID of the media publisher.'))
@@ -300,14 +312,6 @@ class Media extends ContentEntityBase implements MediaInterface {
     $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Type'))
       ->setDescription(t('The type of this media.'))
-      ->setRequired(TRUE)
-      ->setSetting('max_length', 255)
-      ->setRevisionable(TRUE)
-      ->setTranslatable(TRUE);
-
-    $fields['resource_id'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Resource ID'))
-      ->setDescription(t('The unique identifier of media resource that is associated with this media.'))
       ->setRequired(TRUE)
       ->setSetting('max_length', 255)
       ->setRevisionable(TRUE)

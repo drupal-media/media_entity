@@ -65,4 +65,18 @@ interface MediaTypeInterface extends PluginInspectionInterface {
    */
   public function validate(MediaInterface $media);
 
+  /**
+   * Gets thumbnail image.
+   *
+   * Media type plugin is responsible for returning URI of the generic thumbnail
+   * if no other is available. This functions should always return a valid URI.
+   *
+   * @param MediaInterface $media
+   *   Media.
+   *
+   * @return string
+   *   URI of the thumbnail.
+   */
+  public function thumbnail(MediaInterface $media);
+
 }

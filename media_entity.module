@@ -22,3 +22,27 @@ function media_entity_theme() {
     ),
   );
 }
+
+/**
+ * Copy the media file icons to files directory for use with image styles.
+ *
+ * @param $source string
+ *   Source folder.
+ * @param $destination string
+ *   Destination folder.
+ *
+ * @throws Exception
+ */
+function media_entity_copy_icons($source, $destination) {
+  if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+    throw new Exception("Unable to create directory $destination.");
+  }
+
+  $files = file_scan_directory($source, '/.*\.(png|jpg)$/');
+  foreach ($files as $file) {
+    $result = file_unmanaged_copy($file->uri, $destination, FILE_EXISTS_REPLACE);
+    if (!$result) {
+      throw new Exception("Unable to copy {$file->uri} to $destination.");
+    }
+  }
+}
