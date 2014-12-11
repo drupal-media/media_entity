@@ -592,7 +592,7 @@ display:
     display_options:
       path: admin/content/media
       menu:
-        type: none
+        type: tab
         title: Media
         description: 'Find and manage media.'
         parent: ''
