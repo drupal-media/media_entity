@@ -78,4 +78,5 @@ interface MediaTypeInterface extends PluginInspectionInterface {
    *   URI of the thumbnail.
    */
   public function thumbnail(MediaInterface $media);
+
 }

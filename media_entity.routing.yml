@@ -1,4 +1,4 @@
-media.view:
+entity.media.canonical:
   path: '/media/{media}'
   defaults:
     _controller: '\Drupal\media_entity\Controller\MediaController::page'
@@ -27,7 +27,7 @@ media.add:
   requirements:
     _entity_create_access: 'media:{media_bundle}'
 
-media.edit:
+entity.media.edit_form:
   path: '/media/{media}/edit'
   defaults:
     _entity_form: 'media.edit'
@@ -36,7 +36,7 @@ media.edit:
   requirements:
     _entity_access: 'media.update'
 
-media.delete_confirm:
+entity.media.delete_form:
   path: '/media/{media}/delete'
   defaults:
     _entity_form: 'media.delete'
@@ -60,14 +60,14 @@ media.bundle_add:
   requirements:
     _permission: 'administer media'
 
-media.bundle_edit:
+entity.media_bundle.edit_form:
   path: '/admin/structure/media/manage/{media_bundle}'
   defaults:
     _entity_form: 'media_bundle.edit'
   requirements:
     _permission: 'administer media'
 
-media.bundle_delete_confirm:
+entity.media_bundle.delete_form:
   path: '/admin/structure/media/manage/{media_bundle}/delete'
   defaults:
     _entity_form: 'media_bundle.delete'

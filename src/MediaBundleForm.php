@@ -148,7 +148,7 @@ class MediaBundleForm extends EntityForm {
    * {@inheritdoc}
    */
   public function delete(array $form, FormStateInterface $form_state) {
-    $form_state->setRedirect('media.bundle_delete_confirm', array('media_bundle' => $this->entity->id()));
+    $form_state->setRedirect('entity.media_bundle.delete_form', array('media_bundle' => $this->entity->id()));
   }
 
 }

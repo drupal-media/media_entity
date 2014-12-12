@@ -76,7 +76,7 @@ class MediaController extends ControllerBase {
   }
 
   /**
-   * The _title_callback for the media.view route.
+   * The _title_callback for the entity.media.canonical route.
    *
    * @param \Drupal\media_entity\MediaInterface $media
    *   The current media.
