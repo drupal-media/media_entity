@@ -1,9 +1,0 @@
-id: media.library_thumbnail
-label: 'Media library thumbnail'
-status: true
-cache: true
-langcode: und
-targetEntityType: media
-dependencies:
-  module:
-    - media_entity

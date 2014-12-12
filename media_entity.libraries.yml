@@ -1,5 +1,0 @@
-library:
-  version: VERSION
-  css:
-    base:
-      css/media_library.css: {}
