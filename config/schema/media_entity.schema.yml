@@ -1,3 +1,11 @@
+media_entity.settings:
+  type: mapping
+  label: 'Media entity settings'
+  mapping:
+    icon_base:
+      type: string
+      label: 'Base folder for icons installation'
+
 media_entity.bundle.*:
   type: config_entity
   label: 'Media bundle'
