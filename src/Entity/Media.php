@@ -266,7 +266,13 @@ class Media extends ContentEntityBase implements MediaInterface {
         'type' => 'string_textfield',
         'weight' => -5,
       ))
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', array(
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ))
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['thumbnail'] = BaseFieldDefinition::create('image')
       ->setLabel(t('Thumbnail'))
@@ -289,7 +295,13 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setRevisionable(TRUE)
       ->setDefaultValue(0)
       ->setSetting('target_type', 'user')
-      ->setTranslatable(TRUE);
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', array(
+        'label' => 'hidden',
+        'type' => 'author',
+        'weight' => 0,
+      ))
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
@@ -301,7 +313,18 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the media was created.'))
       ->setTranslatable(TRUE)
-      ->setRevisionable(TRUE);
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('view', array(
+        'label' => 'hidden',
+        'type' => 'timestamp',
+        'weight' => 0,
+      ))
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayOptions('form', array(
+        'type' => 'datetime_timestamp',
+        'weight' => 10,
+      ))
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
