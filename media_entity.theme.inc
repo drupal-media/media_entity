@@ -3,9 +3,11 @@
  * @file
  * Theme functions for the media_entity module.
  */
+
 use Drupal\Component\Utility\String;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
+use Drupal\Component\Utility\Html;
 
 /**
  * Prepares variables for list of available media bundles.
@@ -50,11 +52,11 @@ function template_preprocess_media(&$variables) {
   }
 
   $variables['attributes']['class'][] = 'media';
-  $variables['attributes']['class'][] = drupal_html_class('media-' . $media->getBundle());
+  $variables['attributes']['class'][] = Html::getClass('media-' . $media->getBundle());
   if (!$media->isPublished()) {
     $variables['attributes']['class'][] = 'unpublished';
   }
   if ($variables['elements']['#view_mode']) {
-    $variables['attributes']['class'][] = drupal_html_class('view-mode-' . $variables['elements']['#view_mode']);
+    $variables['attributes']['class'][] = Html::getClass('view-mode-' . $variables['elements']['#view_mode']);
   }
 }
