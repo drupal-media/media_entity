@@ -52,7 +52,7 @@ function template_preprocess_media(&$variables) {
   }
 
   $variables['attributes']['class'][] = 'media';
-  $variables['attributes']['class'][] = Html::getClass('media-' . $media->getBundle());
+  $variables['attributes']['class'][] = Html::getClass('media-' . $media->bundle());
   if (!$media->isPublished()) {
     $variables['attributes']['class'][] = 'unpublished';
   }

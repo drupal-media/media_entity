@@ -66,7 +66,7 @@ class MediaForm extends ContentEntityForm {
     $account = $this->currentUser();
 
     $media = $this->entity;
-    $media_bundle = entity_load('media_bundle', $media->getBundle());
+    $media_bundle = entity_load('media_bundle', $media->bundle());
 
     if ($this->operation == 'edit') {
       $form['#title'] = $this->t('<em>Edit @bundle</em> @title', array('@bundle' => $media_bundle->label(), '@title' => $media->label()));

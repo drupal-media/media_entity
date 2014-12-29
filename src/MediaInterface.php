@@ -16,14 +16,6 @@ use Drupal\Core\Entity\ContentEntityInterface;
 interface MediaInterface extends ContentEntityInterface, EntityChangedInterface {
 
   /**
-   * Returns the media bundle.
-   *
-   * @return string
-   *   The media type.
-   */
-  public function getBundle();
-
-  /**
    * Returns the media creation timestamp.
    *
    * @return int
