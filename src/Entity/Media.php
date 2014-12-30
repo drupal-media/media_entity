@@ -42,6 +42,7 @@ use Drupal\media_entity\MediaInterface;
  *     "revision" = "vid",
  *     "bundle" = "bundle",
  *     "label" = "name",
+ *     "langcode" = "langcode",
  *     "uuid" = "uuid"
  *   },
  *   bundle_entity_type = "media_bundle",
