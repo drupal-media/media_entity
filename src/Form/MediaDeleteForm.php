@@ -7,7 +7,6 @@
 
 namespace Drupal\media_entity\Form;
 
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\media_entity\Entity\MediaBundle;
@@ -45,7 +44,6 @@ class MediaDeleteForm extends ContentEntityConfirmFormBase {
     $this->entity->delete();
     $bundle = MediaBundle::getLabel($this->entity);
     drupal_set_message(t('@type %title has been deleted.', array('@type' => $bundle, '%title' => $this->entity->label())));
-    Cache::invalidateTags(array('media' => TRUE));
     $form_state->setRedirect('<front>');
   }
 
