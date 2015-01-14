@@ -50,10 +50,10 @@ use Drupal\media_entity\MediaInterface;
  *   admin_permission = "administer media",
  *   field_ui_base_route = "entity.media_bundle.edit_form",
  *   links = {
- *     "canonical" = "entity.media.canonical",
- *     "delete-form" = "entity.media.delete_form",
- *     "edit-form" = "entity.media.edit_form",
- *     "admin-form" = "entity.media_bundle.edit_form"
+ *     "canonical" = "/media/{media}",
+ *     "delete-form" = "/media/{media}/delete",
+ *     "edit-form" = "/media/{media}/edit",
+ *     "admin-form" = "/admin/structure/media/manage/{media_bundle}"
  *   }
  * )
  */
