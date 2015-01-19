@@ -45,7 +45,7 @@ entity.media.delete_form:
   requirements:
     _entity_access: 'media.delete'
 
-media.overview_bundles:
+entity.media_bundle.collection:
   path: '/admin/structure/media'
   defaults:
     _entity_list: 'media_bundle'

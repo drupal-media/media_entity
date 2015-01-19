@@ -2,7 +2,7 @@ media.bundle_add:
   route_name: media.bundle_add
   title: 'Add media bundle'
   appears_on:
-    - media.overview_bundles
+    - entity.media_bundle.collection
 
 media.add:
   route_name: media.add_page
