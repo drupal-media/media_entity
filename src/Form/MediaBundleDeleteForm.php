@@ -28,7 +28,7 @@ class MediaBundleDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.media_bundle.collection');
+    return $this->entity->urlInfo('collection');
   }
 
   /**
