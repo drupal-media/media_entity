@@ -141,7 +141,7 @@ class MediaBundleForm extends EntityForm {
       $this->logger('media')->notice('Added bundle %name.', $t_args);
     }
 
-    $form_state->setRedirect($bundle->urlInfo('collection'));
+    $form_state->setRedirectUrl($bundle->urlInfo('collection'));
   }
 
   /**
