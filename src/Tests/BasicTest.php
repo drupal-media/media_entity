@@ -10,7 +10,7 @@ namespace Drupal\media_entity\Tests;
 /**
  * Ensures that basic functions work correctly.
  *
- * @group media
+ * @group media_entity
  */
 class BasicTest extends MediaEntityTestBase {
 

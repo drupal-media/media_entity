@@ -13,7 +13,7 @@ use Drupal\simpletest\WebTestBase;
 /**
  * Base test class for media entity tests.
  *
- * @group media
+ * @group media_entity
  */
 abstract class MediaEntityTestBase extends WebTestBase {
 
