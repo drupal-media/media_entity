@@ -14,7 +14,7 @@ use Drupal\media_entity\Entity\Media;
 /**
  * Ensures that media UI work correctly.
  *
- * @group media
+ * @group media_entity
  */
 class MediaUITest extends MediaEntityTestBase {
 
