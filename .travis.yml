@@ -7,7 +7,7 @@ php:
 env:
   global:
     - MODULE_NAME='media_entity'
-    - MODULE_TEST_GROUP='media'
+    - MODULE_TEST_GROUP='media_entity'
     - DRUPAL_REPO='git://drupalcode.org/project/drupal.git'
     - DRUPAL_VERSION='8.0.x'
     - PHPCS_VERSION='2.0.*@dev'
