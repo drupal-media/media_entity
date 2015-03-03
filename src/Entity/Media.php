@@ -194,8 +194,7 @@ class Media extends ContentEntityBase implements MediaInterface {
       // @TODO We might modify that in the future but let's leave it like this
       // for now.
       if ($this->{$destination_field} && $this->{$destination_field}->isEmpty() && ($value = $bundle->getType()->getField($this, $source_field))) {
-        $property_name = $this->{$destination_field}->first()->mainPropertyName();
-        $this->{$destination_field}->first()->{$property_name} = $value;
+        $this->{$destination_field}->setValue([$value]);
       }
     }
 
