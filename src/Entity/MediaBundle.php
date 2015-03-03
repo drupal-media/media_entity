@@ -36,7 +36,7 @@ use Drupal\media_entity\MediaInterface;
  *   },
  *   links = {
  *     "edit-form" = "/admin/structure/media/manage/{media_bundle}",
- *     "delete-form" = "/admin/structure/media/manage/{media_bundle}/delete"
+ *     "delete-form" = "/admin/structure/media/manage/{media_bundle}/delete",
  *     "collection" = "/admin/structure/media",
  *   }
  * )
