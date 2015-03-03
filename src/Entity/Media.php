@@ -193,8 +193,8 @@ class Media extends ContentEntityBase implements MediaInterface {
       // Only save value in entity field if empty. Do not overwrite existing data.
       // @TODO We might modify that in the future but let's leave it like this
       // for now.
-      if ($this->{$destination_field} && $this->{$destination_field}->isEmpty() && ($value = $bundle->getType()->getField($this, $source_field))) {
-        $this->{$destination_field}->setValue([$value]);
+      if ($this->hasField($destination_field) && $this->{$destination_field}->isEmpty() && ($value = $bundle->getType()->getField($this, $source_field))) {
+        $this->set($destination_field, $value);
       }
     }
 
