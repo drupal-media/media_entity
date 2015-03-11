@@ -26,7 +26,7 @@ media_entity.bundle.*:
       type: sequence
       label: 'Third party settings'
       sequence:
-        - type: media_entity.bundle.third_party.[%key]
+        type: media_entity.bundle.third_party.[%key]
     type_configuration:
       type: media_entity.bundle.type.[%type]
     field_map:
