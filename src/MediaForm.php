@@ -7,7 +7,6 @@
 
 namespace Drupal\media_entity;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -36,138 +35,25 @@ class MediaForm extends ContentEntityForm {
   protected function prepareEntity() {
     $media = $this->entity;
 
-    // Set up default values, if required.
-    $this->settings = array(
-      'options' => array('status'),
-    );
-
     // If this is a new media, fill in the default values.
     if ($media->isNew()) {
-      // Multistep media forms might have filled in something already.
-      if ($media->status->isEmpty()) {
-        $media->status = (int) in_array('status', $this->settings['options']);
-      }
+      $media->setPublished(TRUE);
       $media->setPublisherId($this->currentUser()->id());
       $media->setCreatedTime(REQUEST_TIME);
     }
     else {
-      $media->date = format_date($media->getCreatedTime(), 'custom', 'Y-m-d H:i:s O');
       // Remove the log message from the original media entity.
       $media->revision_log = NULL;
     }
-    // Always use the default revision setting.
-    $media->setNewRevision(in_array('revision', $this->settings['options']));
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityForm::form().
+   * {@inheritdoc}
    */
-  public function form(array $form, FormStateInterface $form_state) {
-    $account = $this->currentUser();
-
-    $media = $this->entity;
-    $media_bundle = entity_load('media_bundle', $media->bundle());
-
-    if ($this->operation == 'edit') {
-      $form['#title'] = $this->t('<em>Edit @bundle</em> @title', array('@bundle' => $media_bundle->label(), '@title' => $media->label()));
-    }
-
-    $user_config = $this->config('user.settings');
-    // Changed must be sent to the client, for later overwrite error checking.
-    $form['changed'] = array(
-      '#type' => 'hidden',
-      '#default_value' => $media->getChangedTime(),
-    );
-
-    $form['advanced'] = array(
-      '#type' => 'vertical_tabs',
-      '#attributes' => array('class' => array('entity-meta')),
-      '#weight' => 99,
-    );
-
-    // Add a log field if the "Create new revision" option is checked, or if
-    // the current user has the ability to check that option.
-    $form['revision_information'] = array(
-      '#type' => 'details',
-      '#group' => 'advanced',
-      '#title' => t('Revision information'),
-      // Open by default when "Create new revision" is checked.
-      '#open' => $media->isNewRevision(),
-      '#attributes' => array(
-        'class' => array('media-form-revision-information'),
-      ),
-      '#weight' => 20,
-      '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
-      '#optional' => TRUE,
-    );
-
-    $form['revision'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Create new revision'),
-      '#default_value' => $media->isNewRevision(),
-      '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
-      '#group' => 'revision_information',
-    );
-
-    $form['revision_log'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Revision log message'),
-      '#rows' => 4,
-      '#default_value' => $media->revision_log->value,
-      '#description' => t('Briefly describe the changes you have made.'),
-      '#group' => 'revision_information',
-      '#access' => $media->isNewRevision() || $account->hasPermission('administer media'),
-      '#states' => array(
-        'visible' => array(
-          ':input[name="revision"]' => array('checked' => TRUE),
-        ),
-      ),
-    );
-
-    // Media publisher information for administrators.
-    $form['publisher'] = array(
-      '#type' => 'details',
-      '#title' => t('Authoring information'),
-      '#group' => 'advanced',
-      '#attributes' => array(
-        'class' => array('media-form-publisher'),
-      ),
-      '#weight' => 90,
-    );
-
-    $form['uid'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Published by'),
-      '#maxlength' => 60,
-      '#autocomplete_route_name' => 'user.autocomplete',
-      '#default_value' => $media->getPublisher() ? $media->getPublisher()->getUsername() : '',
-      '#weight' => -1,
-      '#description' => t('Leave blank for %anonymous.', array('%anonymous' => $user_config->get('anonymous'))),
-      '#group' => 'publisher',
-      '#access' => $account->hasPermission('administer media'),
-    );
-
-    $form['created'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Authored on'),
-      '#maxlength' => 25,
-      '#description' => t('Format: %time. The date format is YYYY-MM-DD and %timezone is the time zone offset from UTC. Leave blank to use the time of form submission.', array('%time' => !empty($media->date) ? date_format(date_create($media->date), 'Y-m-d H:i:s O') : format_date($media->getCreatedTime(), 'custom', 'Y-m-d H:i:s O'), '%timezone' => !empty($media->date) ? date_format(date_create($media->date), 'O') : format_date($media->getCreatedTime(), 'custom', 'O'))),
-      '#default_value' => !empty($media->date) ? $media->date : '',
-      '#group' => 'publisher',
-      '#access' => $account->hasPermission('administer media'),
-    );
-
-    return parent::form($form, $form_state, $media);
-  }
-
-  /**
-   * Updates the media by processing the submitted values.
-   *
-   * Overrides Drupal\Core\Entity\EntityForm::submit().
-   */
-  public function submit(array $form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     // Build the media object from the submitted values.
-    $media = parent::submit($form, $form_state);
+    parent::submitForm($form, $form_state);
+    $media = $this->entity;
 
     // Save as a new revision if requested to do so.
     if (!$form_state->isValueEmpty('revision') && $form_state->getValue('revision') != FALSE) {
@@ -179,36 +65,10 @@ class MediaForm extends ContentEntityForm {
     else {
       $media->setNewRevision(FALSE);
     }
-
-    return $media;
   }
 
   /**
    * {@inheritdoc}
-   */
-  public function buildEntity(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\media_entity\MediaInterface $entity */
-    $entity = parent::buildEntity($form, $form_state);
-    // A user might assign the media publisher by entering a user name in the
-    // media form, which we then need to translate to a user ID.
-    if (!$form_state->isValueEmpty('uid') && $account = user_load_by_name($form_state->getValue('uid'))) {
-      $entity->setPublisherId($account->id());
-    }
-    else {
-      $entity->setPublisherId(0);
-    }
-
-    if (!$form_state->isValueEmpty('created') && $form_state->getValue('created') instanceOf DrupalDateTime) {
-      $entity->setCreatedTime($form_state->getValue('created')->getTimestamp());
-    }
-    else {
-      $entity->setCreatedTime(REQUEST_TIME);
-    }
-    return $entity;
-  }
-
-  /**
-   * Overrides Drupal\Core\Entity\EntityForm::save().
    */
   public function save(array $form, FormStateInterface $form_state) {
     $media = $this->entity;
@@ -217,7 +77,7 @@ class MediaForm extends ContentEntityForm {
     if ($media->id()) {
       $form_state->setValue('mid', $media->id());
       if ($media->access('view')) {
-        $form_state->setRedirect('entity.media.canonical', array('media' => $media->id()));
+        $form_state->setRedirect('entity.media.canonical', ['media' => $media->id()]);
       }
       else {
         $form_state->setRedirect('<front>');
@@ -227,25 +87,8 @@ class MediaForm extends ContentEntityForm {
       // In the unlikely case something went wrong on save, the media will be
       // rebuilt and media form redisplayed the same way as in preview.
       drupal_set_message(t('The media could not be saved.'), 'error');
-      $form_state['rebuild'] = TRUE;
+      $form_state->setRebuild();
     }
-  }
-
-  /**
-   * Overrides Drupal\Core\Entity\EntityForm::delete().
-   */
-  public function delete(array $form, FormStateInterface $form_state) {
-    $destination = array();
-    $query = \Drupal::request()->query;
-    if ($query->has('destination')) {
-      $destination = drupal_get_destination();
-      $query->remove('destination');
-    }
-    $form_state->setRedirect(
-      'entity.media.delete_form',
-      array('media' => $this->entity->id()),
-      array('query' => $destination)
-    );
   }
 
   /**
@@ -253,9 +96,15 @@ class MediaForm extends ContentEntityForm {
    */
   public function validate(array $form, FormStateInterface $form_state) {
     parent::validate($form, $form_state);
-
     /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = $this->buildEntity($form, $form_state);
+    /** @var \Drupal\media_entity\MediaInterface $entity_unchanged */
+    $entity_unchanged = $this->entityManager->getStorage('media')->loadUnchanged($entity->id());
+
+    if ($entity->id() && $entity_unchanged && $entity_unchanged->getChangedTime() > $entity->getChangedTime()) {
+      $form_state->setErrorByName('changed', $this->t('The media on this page has either been modified by another user, or you have already submitted modifications using this form. As a result, your changes cannot be saved.'));
+    }
+
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $this->entityManager->getStorage('media_bundle')->load($entity->bundle());
     if ($type = $bundle->getType()) {
