@@ -25,7 +25,8 @@ class MediaBundleForm extends EntityForm {
     $form = parent::form($form, $form_state);
 
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
-    $bundle = $this->entity;
+    $form['#entity'] = $bundle = $this->entity;
+    
     if ($this->operation == 'add') {
       $form['#title'] = String::checkPlain($this->t('Add media bundle'));
     }
