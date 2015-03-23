@@ -7,7 +7,7 @@
 
 namespace Drupal\media_entity\Tests;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Xss;
 use Drupal\media_entity\Entity\Media;
 
@@ -219,11 +219,11 @@ class MediaUITest extends MediaEntityTestBase {
     $this->drupalGet('media/add');
 
     // Checks for the first media bundle.
-    $this->assertRaw(String::checkPlain($first_media_bundle['label']));
+    $this->assertRaw(SafeMarkup::checkPlain($first_media_bundle['label']));
     $this->assertRaw(Xss::filterAdmin($first_media_bundle['description']));
 
     // Checks for the second media bundle.
-    $this->assertRaw(String::checkPlain($second_media_bundle['label']));
+    $this->assertRaw(SafeMarkup::checkPlain($second_media_bundle['label']));
     $this->assertRaw(Xss::filterAdmin($second_media_bundle['description']));
 
     // Continue testing media bundle filter.
@@ -253,7 +253,7 @@ class MediaUITest extends MediaEntityTestBase {
     // Check if media bundle is successfully created.
     $this->drupalGet('admin/structure/media');
     $this->assertResponse(200);
-    $this->assertRaw(String::checkPlain($edit['label']));
+    $this->assertRaw(SafeMarkup::checkPlain($edit['label']));
     $this->assertRaw(Xss::filterAdmin($edit['description']));
 
     return $edit;
