@@ -7,7 +7,7 @@
 
 namespace Drupal\media_entity\Controller;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\media_entity\MediaBundleInterface;
@@ -85,7 +85,7 @@ class MediaController extends ControllerBase {
    *   The page title.
    */
   public function pageTitle(MediaInterface $media) {
-    return String::checkPlain($this->entityManager()->getTranslationFromContext($media)->label());
+    return SafeMarkup::checkPlain($this->entityManager()->getTranslationFromContext($media)->label());
   }
 
   /**
