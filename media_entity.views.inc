@@ -184,7 +184,7 @@ function media_entity_views_data() {
     'field' => array(
       // TODO: Review and figure out what to customize in an optional custom.
       // plugin that extends this one.
-      'id' => 'action_bulk_form',
+      'id' => 'bulk_form',
     ),
   );
 
