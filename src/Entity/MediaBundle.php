@@ -22,7 +22,7 @@ use Drupal\media_entity\MediaInterface;
  *     },
  *     "list_builder" = "Drupal\media_entity\MediaBundleListBuilder",
  *   },
- *   admin_permission = "administer media",
+ *   admin_permission = "administer media bundles",
  *   config_prefix = "bundle",
  *   bundle_of = "media",
  *   entity_keys = {

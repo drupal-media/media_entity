@@ -46,9 +46,7 @@ class MediaUITest extends WebTestBase {
     $this->drupalPlaceBlock('local_tasks_block');
     $this->adminUser = $this->drupalCreateUser([
       'administer media',
-      'administer media fields',
-      'administer media form display',
-      'administer media display',
+      'administer media bundles',
       // Media entity permissions.
       'view media',
       'create media',

@@ -51,21 +51,21 @@ entity.media_bundle.collection:
     _entity_list: 'media_bundle'
     _title: 'Media bundles'
   requirements:
-    _permission: 'administer media'
+    _permission: 'administer media bundles'
 
 media.bundle_add:
   path: '/admin/structure/media/add'
   defaults:
     _entity_form: 'media_bundle.add'
   requirements:
-    _permission: 'administer media'
+    _permission: 'administer media bundles'
 
 entity.media_bundle.edit_form:
   path: '/admin/structure/media/manage/{media_bundle}'
   defaults:
     _entity_form: 'media_bundle.edit'
   requirements:
-    _permission: 'administer media'
+    _permission: 'administer media bundles'
 
 entity.media_bundle.delete_form:
   path: '/admin/structure/media/manage/{media_bundle}/delete'
@@ -73,4 +73,4 @@ entity.media_bundle.delete_form:
     _entity_form: 'media_bundle.delete'
     _title: 'Delete'
   requirements:
-    _permission: 'administer media'
+    _permission: 'administer media bundles'
