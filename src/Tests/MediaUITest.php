@@ -40,9 +40,7 @@ class MediaUITest extends MediaEntityTestBase {
 
     $this->adminUser = $this->drupalCreateUser(array(
       'administer media',
-      'administer media fields',
-      'administer media form display',
-      'administer media display',
+      'administer media types',
       // Media entity permissions.
       'view media',
       'create media',
