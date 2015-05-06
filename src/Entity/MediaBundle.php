@@ -34,6 +34,15 @@ use Drupal\media_entity\MediaInterface;
  *     "id" = "id",
  *     "label" = "label"
  *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "description",
+ *     "type",
+ *     "third_party_settings",
+ *     "type_configuration",
+ *     "field_map",
+ *   },
  *   links = {
  *     "edit-form" = "/admin/structure/media/manage/{media_bundle}",
  *     "delete-form" = "/admin/structure/media/manage/{media_bundle}/delete",
