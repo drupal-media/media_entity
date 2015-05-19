@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\media_entity\MediaInterface;
+use Drupal\Core\Entity\EntityChangedTrait;
 
 /**
  * Defines the media entity class.
@@ -58,6 +59,8 @@ use Drupal\media_entity\MediaInterface;
  * )
  */
 class Media extends ContentEntityBase implements MediaInterface {
+
+  use EntityChangedTrait;
 
   /**
    * Value that represents the media being published.
