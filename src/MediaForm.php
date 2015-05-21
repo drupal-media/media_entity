@@ -99,7 +99,9 @@ class MediaForm extends ContentEntityForm {
     /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = $this->buildEntity($form, $form_state);
     /** @var \Drupal\media_entity\MediaInterface $entity_unchanged */
-    $entity_unchanged = $this->entityManager->getStorage('media')->loadUnchanged($entity->id());
+    if ($entity->id()) {    
+      $entity_unchanged = $this->entityManager->getStorage('media')->loadUnchanged($entity->id());
+    }
 
     if ($entity->id() && $entity_unchanged && $entity_unchanged->getChangedTime() > $entity->getChangedTime()) {
       $form_state->setErrorByName('changed', $this->t('The media on this page has either been modified by another user, or you have already submitted modifications using this form. As a result, your changes cannot be saved.'));
