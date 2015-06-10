@@ -7,6 +7,8 @@
 
 namespace Drupal\media_entity\Tests;
 
+use Drupal\media_entity\Entity\Media;
+
 /**
  * Ensures that basic functions work correctly.
  *
@@ -47,7 +49,7 @@ class BasicTest extends MediaEntityTestBase {
    * Tests creating a media entity programmatically.
    */
   public function testMediaEntityCreation() {
-    $media = entity_create('media', array(
+    $media = Media::create(array(
       'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
     ));
@@ -64,7 +66,7 @@ class BasicTest extends MediaEntityTestBase {
    * Runs basic tests for media_access function.
    */
   public function testMediaAccess() {
-    $media = entity_create('media', array(
+    $media = Media::create(array(
       'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
     ));
