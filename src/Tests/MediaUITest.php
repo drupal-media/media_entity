@@ -158,7 +158,7 @@ class MediaUITest extends MediaEntityTestBase {
       'langcode' => \Drupal::languageManager()->getDefaultLanguage()->getId(),
       'status' => Media::PUBLISHED,
     );
-    $media = entity_create('media', $data);
+    $media = Media::create($data);
     $media->save();
 
     // Test the Media wizard.

@@ -9,6 +9,7 @@
 namespace Drupal\media_entity\Tests;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\media_entity\Entity\MediaBundle;
 
 /**
  * Base test class for media entity tests.
@@ -55,7 +56,7 @@ abstract class MediaEntityTestBase extends WebTestBase {
       'field_map' => array(),
     );
 
-    $bundle = entity_create('media_bundle', $values);
+    $bundle = MediaBundle::create($values);
     $status = $bundle->save();
 
     $this->assertEqual($status, SAVED_NEW, t('Created media bundle %bundle.', array('%bundle' => $bundle->id())));
