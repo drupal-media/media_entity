@@ -30,7 +30,8 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *       "delete" = "Drupal\media_entity\Form\MediaDeleteForm",
  *       "edit" = "Drupal\media_entity\MediaForm"
  *     },
- *     "translation" = "Drupal\content_translation\ContentTranslationHandler"
+ *     "translation" = "Drupal\content_translation\ContentTranslationHandler",
+ *     "views_data" = "Drupal\views\EntityViewsData"
  *   },
  *   base_table = "media",
  *   data_table = "media_field_data",
