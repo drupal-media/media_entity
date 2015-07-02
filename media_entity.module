@@ -24,6 +24,23 @@ function media_entity_theme() {
 }
 
 /**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function media_entity_theme_suggestions_media(array $variables) {
+  $suggestions = array();
+  $media = $variables['elements']['#media'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'media__' . $sanitized_view_mode;
+  $suggestions[] = 'media__' . $media->bundle();
+  $suggestions[] = 'media__' . $media->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'media__' . $media->id();
+  $suggestions[] = 'media__' . $media->id() . '__' . $sanitized_view_mode;
+
+  return $suggestions;
+}
+
+/**
  * Copy the media file icons to files directory for use with image styles.
  *
  * @param $source string
