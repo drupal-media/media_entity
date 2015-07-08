@@ -95,9 +95,9 @@ class MediaForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm(&$form, $form_state);
     /** @var \Drupal\media_entity\MediaInterface $entity */
-    $entity = $this->buildEntity($form, $form_state);
+    $entity = parent::validateForm($form, $form_state);
+
     /** @var \Drupal\media_entity\MediaInterface $entity_unchanged */
     if ($entity->id()) {
       $entity_unchanged = $this->entityManager->getStorage('media')->loadUnchanged($entity->id());
