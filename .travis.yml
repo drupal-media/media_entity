@@ -1,8 +1,8 @@
 language: php
 
 php:
-  - 5.4
   - 5.5
+  - 5.6
 
 env:
   global:
@@ -12,10 +12,6 @@ env:
     - DRUPAL_VERSION='8.0.x'
     - PHPCS_VERSION='2.0.*@dev'
     - CODER_VERSION='8.2.0-beta1'
-
-matrix:
-  allow-failures:
-    - php: 5.5
 
 before_install:
   # Ensure we have the latest sources.
