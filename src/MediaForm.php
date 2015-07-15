@@ -50,6 +50,46 @@ class MediaForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
+  public function form(array $form, FormStateInterface $form_state) {
+    $form = parent::form($form, $form_state);
+
+    $form['advanced'] = array(
+      '#type' => 'vertical_tabs',
+      '#attributes' => array('class' => array('entity-meta')),
+      '#weight' => 99,
+    );
+    // Node author information for administrators.
+    $form['author'] = array(
+      '#type' => 'details',
+      '#title' => t('Authoring information'),
+      '#group' => 'advanced',
+      '#attributes' => array(
+        'class' => array('node-form-author'),
+      ),
+      '#attached' => array(
+        'library' => array('node/drupal.node'),
+      ),
+      '#weight' => 90,
+      '#optional' => TRUE,
+    );
+
+    if (isset($form['uid'])) {
+      $form['uid']['#group'] = 'author';
+    }
+
+    if (isset($form['created'])) {
+      $form['created']['#group'] = 'author';
+    }
+
+    $form['#attached']['library'][] = 'node/form';
+
+    return $form;
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Build the media object from the submitted values.
     parent::submitForm($form, $form_state);
