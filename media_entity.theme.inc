@@ -22,8 +22,8 @@ function template_preprocess_media_add_list(&$variables) {
   $variables['bundles'] = array();
   if (!empty($variables['content'])) {
     foreach ($variables['content'] as $bundle) {
-      $link_text = '<span class="label">' . $bundle->label . '</span><div class="description">' . $bundle->description . '</div>';
-      $link_url = Url::fromRoute('media.add', array('media_bundle' => $bundle->id))->setOption('html', TRUE);
+      $link_text = SafeMarkup::format('<span class="label">@label</span><div class="description">@description</div>', ['@label' => $bundle->label, '@description' => $bundle->description]);
+      $link_url = Url::fromRoute('media.add', array('media_bundle' => $bundle->id));
       $variables['bundles'][$bundle->id] = array(
         'add_link' => \Drupal::l($link_text, $link_url),
       );
