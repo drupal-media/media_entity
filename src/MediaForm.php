@@ -139,7 +139,7 @@ class MediaForm extends ContentEntityForm {
     $entity = parent::validateForm($form, $form_state);
 
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
-    $bundle = $this->entityManager->getStorage('media_bundle')->load($entity->bundle());
+    /**$bundle = $this->entityManager->getStorage('media_bundle')->load($entity->bundle());
     if ($type = $bundle->getType()) {
       try {
         $type->validate($entity);
@@ -147,7 +147,7 @@ class MediaForm extends ContentEntityForm {
       catch (MediaTypeException $e) {
         $form_state->setErrorByName($e->getElement(), $e->getMessage());
       }
-    }
+    }*/
 
   }
 
