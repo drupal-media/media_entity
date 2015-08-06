@@ -1,5 +1,5 @@
 media_entity.settings:
-  type: mapping
+  type: config_object
   label: 'Media entity settings'
   mapping:
     icon_base:
