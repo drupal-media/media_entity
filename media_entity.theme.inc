@@ -30,7 +30,6 @@ function template_preprocess_media_add_list(&$variables) {
           '#markup' => $bundle->getDescription(),
         ),
       );
-
     }
   }
 }
