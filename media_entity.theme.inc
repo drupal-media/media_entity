@@ -22,11 +22,15 @@ function template_preprocess_media_add_list(&$variables) {
   $variables['bundles'] = array();
   if (!empty($variables['content'])) {
     foreach ($variables['content'] as $bundle) {
-      $link_text = '<span class="label">' . $bundle->label . '</span><div class="description">' . $bundle->description . '</div>';
-      $link_url = Url::fromRoute('media.add', array('media_bundle' => $bundle->id))->setOption('html', TRUE);
-      $variables['bundles'][$bundle->id] = array(
-        'add_link' => \Drupal::l($link_text, $link_url),
+      /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
+      $variables['bundles'][$bundle->id()] = array(
+        'type' => $bundle->id(),
+        'add_link' => \Drupal::l($bundle->label(), new Url('media.add', array('media_bundle' => $bundle->id()))),
+        'description' => array(
+          '#markup' => $bundle->getDescription(),
+        ),
       );
+
     }
   }
 }

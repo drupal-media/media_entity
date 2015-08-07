@@ -149,6 +149,7 @@ class MediaForm extends ContentEntityForm {
       }
     }
 
+    return $entity;
   }
 
 }

@@ -17,13 +17,12 @@
  */
 #}
 {% if bundles is not empty %}
-    <ul class="admin-list">
+    <dl>
         {% for bundle in bundles %}
-            <li class="clearfix">
-                {{ bundle.add_link }}
-            </li>
+            <dt>{{ bundle.add_link }}</dt>
+            <dd>{{ bundle.description }}</dd>
         {% endfor %}
-    </ul>
+    </dl>
 {% else %}
 <p>
     {% set create_media_bundle = url('media.bundle_add') %}
