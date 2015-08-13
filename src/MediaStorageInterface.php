@@ -7,9 +7,11 @@
 
 namespace Drupal\media_entity;
 
+use Drupal\Core\Entity\EntityStorageInterface;
+
 /**
  * Provides an interface defining a media storage controller.
  */
-interface MediaStorageInterface {
+interface MediaStorageInterface extends EntityStorageInterface {
 
 }
