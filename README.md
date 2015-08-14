@@ -1,4 +1,6 @@
-## About Media entity[![Build Status](https://travis-ci.org/drupal-media/media_entity.svg?branch=8.x-1.x)](https://travis-ci.org/drupal-media/media_entity)
+## About Media entity
+
+[![Travis](https://img.shields.io/travis/drupal-media/media_entity.svg)]() [![Scrutinizer](https://img.shields.io/scrutinizer/g/drupal-media/media_entity.svg)]()
 
 Media entity provides a 'base' entity for a media element. This is a very basic
 entity which can reference to all kinds of media-objects (local files, YouTube
