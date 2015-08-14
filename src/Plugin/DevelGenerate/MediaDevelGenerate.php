@@ -95,6 +95,8 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   protected $database;
 
   /**
+   * Constructs MediaDevelGenerate class.
+   *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
@@ -152,7 +154,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
 
     if (empty($bundles)) {
       $create_url = $this->urlGenerator->generateFromRoute('media.bundle_add');
-      $this->setMessage($this->t('You do not have any media bundles that can be generated. <a href="@create-bundle">Go create a new media bundle</a>', array('@create-bundle' => $create_url)), 'error', FALSE);
+      $this->setMessage($this->t('You do not have any media bundles that can be generated. <a href="@create-bundle">Go create a new media bundle</a>', ['@create-bundle' => $create_url]), 'error', FALSE);
       return [];
     }
 
@@ -239,6 +241,9 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Method responsible for creating media when
    * the number of elements is less than 50.
+   *
+   * @param $values array
+   *   Array of values submitted through a form.
    */
   private function generateMedia($values) {
     $values['media_bundles'] = array_filter($values['media_bundles']);
@@ -254,7 +259,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
         $this->createMediaItem($values);
         if (function_exists('drush_log') && $i % drush_get_option('feedback', 1000) == 0) {
           $now = time();
-          drush_log(dt('Completed !feedback media items (!rate media/min)', array('!feedback' => drush_get_option('feedback', 1000), '!rate' => (drush_get_option('feedback', 1000) * 60) / ($now - $start))), 'ok');
+          drush_log(dt('Completed !feedback media items (!rate media/min)', ['!feedback' => drush_get_option('feedback', 1000), '!rate' => (drush_get_option('feedback', 1000) * 60) / ($now - $start)]), 'ok');
           $start = $now;
         }
       }
@@ -265,42 +270,69 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Method responsible for creating media when
    * the number of elements is greater than 50.
+   *
+   * @param $values array
+   *   The input values from the settings form.
    */
   private function generateBatchMedia($values) {
     // Setup the batch operations and save the variables.
-    $operations[] = array('devel_generate_operation', array($this, 'batchPreGenerate', $values));
+    $operations[] = ['devel_generate_operation', [$this, 'batchPreGenerate', $values]];
 
     // Add the kill operation.
     if ($values['kill']) {
-      $operations[] = array('devel_generate_operation', array($this, 'batchMediaKill', $values));
+      $operations[] = ['devel_generate_operation', [$this, 'batchMediaKill', $values]];
     }
 
     // Add the operations to create the media.
     for ($num = 0; $num < $values['num']; $num ++) {
-      $operations[] = array('devel_generate_operation', array($this, 'batchCreateMediaItem', $values));
+      $operations[] = ['devel_generate_operation', [$this, 'batchCreateMediaItem', $values]];
     }
 
     // Start the batch.
-    $batch = array(
+    $batch = [
       'title' => $this->t('Generating media'),
       'operations' => $operations,
       'finished' => 'devel_generate_batch_finished',
       'file' => drupal_get_path('module', 'devel_generate') . '/devel_generate.batch.inc',
-    );
+    ];
     batch_set($batch);
   }
 
+  /**
+   * Batch version of preGenerate().
+   *
+   * @param $vars array
+   *   The input values from the settings form.
+   * @param $context array
+   *   Batch job context
+   */
   public function batchPreGenerate($vars, &$context) {
     $context['results'] = $vars;
     $context['results']['num'] = 0;
     $this->preGenerate($context['results']);
   }
 
+  /**
+   * Batch version of createMediaItem().
+   *
+   * @param $vars array
+   *   The input values from the settings form.
+   * @param $context array
+   *   Batch job context
+   */
   public function batchCreateMediaItem($vars, &$context) {
     $this->createMediaItem($context['results']);
     $context['results']['num']++;
   }
 
+  /**
+   * Batch version of mediaKill().
+   *
+   * @param $vars array
+   *   The input values from the settings form.
+   * @param $context array
+   *   Batch job context
+   */
   public function batchMediaKill($vars, &$context) {
     $this->mediaKill($context['results']);
   }
@@ -318,7 +350,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
     }
 
     $values['kill'] = drush_get_option('kill');
-    $values['title_length'] = 6;
+    $values['title_length'] = drush_get_option('title_length', 6);
     $values['num'] = array_shift($args);
     $selected_bundles = _convert_csv_to_array(drush_get_option('bundles', []));
 
@@ -334,7 +366,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Deletes all media of given media bundles.
    *
-   * @param array $values
+   * @param $values array
    *   The input values from the settings form.
    */
   protected function mediaKill($values) {
@@ -345,25 +377,31 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
     if (!empty($mids)) {
       $media = $this->mediaStorage->loadMultiple($mids);
       $this->mediaStorage->delete($media);
-      $this->setMessage($this->t('Deleted %count media items.', array('%count' => count($mids))));
+      $this->setMessage($this->t('Deleted %count media items.', ['%count' => count($mids)]));
     }
   }
 
   /**
    * Return the same array passed as parameter
    * but with an array of uids for the key 'users'.
+   *
+   * @param $results array
+   *   The input values from the settings form.
    */
   protected function preGenerate(&$results) {
     // Get user id.
     $users = $this->userStorage->getQuery()
       ->range(0, 50)
       ->execute();
-    $users = array_merge($users, array('0'));
+    $users = array_merge($users, ['0']);
     $results['users'] = $users;
   }
 
   /**
    * Create one media item. Used by both batch and non-batch code branches.
+   *
+   * @param $results array
+   *   The input values from the settings form.
    */
   protected function createMediaItem(&$results) {
     if (!isset($results['time_range'])) {
@@ -395,6 +433,9 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
 
   /**
    * Determine language based on $results.
+   *
+   * @param $results array
+   *   The input values from the settings form.
    */
   protected function getLangcode($results) {
     if (isset($results['add_language'])) {
