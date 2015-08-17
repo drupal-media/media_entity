@@ -30,6 +30,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *       "delete" = "Drupal\media_entity\Form\MediaDeleteForm",
  *       "edit" = "Drupal\media_entity\MediaForm"
  *     },
+ *     "inline entity form" = "Drupal\media_entity\InlineEntityForm\MediaInlineEntityFormHandler",
  *     "translation" = "Drupal\content_translation\ContentTranslationHandler",
  *     "views_data" = "Drupal\views\EntityViewsData"
  *   },
@@ -168,27 +169,7 @@ class Media extends ContentEntityBase implements MediaInterface {
 
     // Set thumbnail.
     if (!$this->get('thumbnail')->entity) {
-      $thumbnail_uri = $bundle->getType()->thumbnail($this);
-
-      $existing = \Drupal::entityQuery('file')
-        ->condition('uri', $thumbnail_uri)
-        ->execute();
-
-      if ($existing) {
-        $this->thumbnail->target_id = reset($existing);
-      }
-      else {
-        /** @var \Drupal\file\FileInterface $file */
-        $file = $this->entityManager()->getStorage('file')->create(['uri' => $thumbnail_uri]);
-        $file->setOwner($this->getPublisher());
-        $file->setPermanent();
-        $file->save();
-        $this->thumbnail->target_id = $file->id();
-      }
-
-      // TODO - We should probably use something smarter (tokens, ...).
-      $this->thumbnail->alt = t('Thumbnail');
-      $this->thumbnail->title = $this->label();
+      $this->automaticallySetThumbnail();
     }
 
     // Try to set fields provided by type plugin and mapped in bundle
@@ -202,6 +183,36 @@ class Media extends ContentEntityBase implements MediaInterface {
       }
     }
 
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function automaticallySetThumbnail() {
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
+    $bundle = $this->entityManager()->getStorage('media_bundle')->load($this->bundle());
+
+    $thumbnail_uri = $bundle->getType()->thumbnail($this);
+
+    $existing = \Drupal::entityQuery('file')
+      ->condition('uri', $thumbnail_uri)
+      ->execute();
+
+    if ($existing) {
+      $this->thumbnail->target_id = reset($existing);
+    }
+    else {
+      /** @var \Drupal\file\FileInterface $file */
+      $file = $this->entityManager()->getStorage('file')->create(['uri' => $thumbnail_uri]);
+      $file->setOwner($this->getPublisher());
+      $file->setPermanent();
+      $file->save();
+      $this->thumbnail->target_id = $file->id();
+    }
+
+    // TODO - We should probably use something smarter (tokens, ...).
+    $this->thumbnail->alt = t('Thumbnail');
+    $this->thumbnail->title = $this->label();
   }
 
   /**
