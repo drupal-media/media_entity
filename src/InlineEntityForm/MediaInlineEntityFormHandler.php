@@ -31,9 +31,9 @@ class MediaInlineEntityFormHandler extends EntityInlineEntityFormHandler {
       'weight' => 1,
       'display_options' => [
         'type' => 'image',
-        'settings' => array(
+        'settings' => [
           'image_style' => 'thumbnail',
-        ),
+        ],
       ],
     ];
 
