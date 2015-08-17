@@ -101,4 +101,8 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
    */
   public function setType($type);
 
+  /**
+   * Automatically determines the most appropriate thumbnail and sets "thumbnail" field.
+   */
+  public function automaticallySetThumbnail();
 }
