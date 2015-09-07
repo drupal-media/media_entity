@@ -30,14 +30,14 @@ class MediaUITest extends MediaEntityTestBase {
    *
    * @var array
    */
-  public static $modules = array('media_entity', 'field_ui', 'views_ui', 'node');
+  public static $modules = array('media_entity', 'field_ui', 'views_ui', 'node', 'block');
 
   /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
-
+    $this->drupalPlaceBlock('local_actions_block');
     $this->adminUser = $this->drupalCreateUser(array(
       'administer media',
       'administer media fields',
