@@ -8,7 +8,6 @@
 namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\EntityForm;
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -28,7 +27,7 @@ class MediaBundleForm extends EntityForm {
     $form['#entity'] = $bundle = $this->entity;
 
     if ($this->operation == 'add') {
-      $form['#title'] = SafeMarkup::checkPlain($this->t('Add media bundle'));
+      $form['#title'] = $this->t('Add media bundle');
     }
     elseif ($this->operation == 'edit') {
       $form['#title'] = $this->t('Edit %label media bundle', array('%label' => $bundle->label()));
