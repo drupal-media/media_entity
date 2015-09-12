@@ -5,82 +5,81 @@
  * Builds placeholder replacement tokens for media_entity-related data.
  */
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\BubbleableMetadata;
-use Drupal\user\Entity\User;
 
 /**
  * Implements hook_token_info().
  */
 function media_entity_token_info() {
-  $type = array(
+  $type = [
     'name' => t('Media'),
     'description' => t('Tokens related to individual media items.'),
     'needs-data' => 'media',
-  );
+  ];
 
   // Core tokens for media.
-  $media['mid'] = array(
+  $media['mid'] = [
     'name' => t("Media ID"),
     'description' => t('The unique ID of the media item.'),
-  );
-  $media['uuid'] = array(
+  ];
+  $media['uuid'] = [
     'name' => t("Media UUID"),
     'description' => t('The unique UUID of the media item.'),
-  );
-  $media['vid'] = array(
+  ];
+  $media['vid'] = [
     'name' => t("Revision ID"),
     'description' => t("The unique ID of the media's latest revision."),
-  );
-  $media['bundle'] = array(
+  ];
+  $media['bundle'] = [
     'name' => t("Media bundle"),
-  );
-  $media['bundle-name'] = array(
+  ];
+  $media['bundle-name'] = [
     'name' => t("Media bundle name"),
     'description' => t("The human-readable name of the media bundle."),
-  );
-  $media['langcode'] = array(
+  ];
+  $media['langcode'] = [
     'name' => t('Language code'),
     'description' => t('The language code of the language the media is written in.'),
-  );
-  $media['name'] = array(
+  ];
+  $media['name'] = [
     'name' => t('Name'),
     'description' => t('The name of this media.'),
-  );
-  $media['type'] = array(
+  ];
+  $media['type'] = [
     'name' => t("Type"),
     'description' => t("The type of this media."),
-  );
-  $node['author'] = array(
+  ];
+  $node['author'] = [
     'name' => t("Author"),
     'type' => 'user',
-  );
-  $media['url'] = array(
+  ];
+  $media['url'] = [
     'name' => t("URL"),
     'description' => t("The URL of the media."),
-  );
-  $media['edit-url'] = array(
+  ];
+  $media['edit-url'] = [
     'name' => t("Edit URL"),
     'description' => t("The URL of the media's edit page."),
-  );
+  ];
 
   // Chained tokens for media.
-  $media['created'] = array(
+  $media['created'] = [
     'name' => t("Date created"),
     'type' => 'date',
-  );
-  $media['changed'] = array(
+  ];
+  $media['changed'] = [
     'name' => t("Date changed"),
     'description' => t("The date the media was most recently updated."),
     'type' => 'date',
-  );
+  ];
 
-  return array(
-    'types' => array('media' => $type),
-    'tokens' => array('media' => $media),
-  );
+  return [
+    'types' => ['media' => $type],
+    'tokens' => ['media' => $media],
+  ];
 }
 
 /**
@@ -89,7 +88,7 @@ function media_entity_token_info() {
 function media_entity_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $token_service = \Drupal::token();
 
-  $url_options = array('absolute' => TRUE);
+  $url_options = ['absolute' => TRUE];
   if (isset($options['langcode'])) {
     $url_options['language'] = \Drupal::languageManager()->getLanguage($options['langcode']);
     $langcode = $options['langcode'];
@@ -121,26 +120,26 @@ function media_entity_tokens($type, $tokens, array $data, array $options, Bubble
           break;
 
         case 'bundle':
-          $replacements[$original] = $sanitize ? SafeMarkup::checkPlain($media->bundle()) : $media->bundle();
+          $replacements[$original] = $sanitize ? Html::escape($media->bundle()) : $media->bundle();
           break;
 
         case 'bundle-name':
           $bundle_name = entity_load('media_bundle', $media->bundle())->label();
-          $replacements[$original] = $sanitize ? SafeMarkup::checkPlain($bundle_name) : $bundle_name;
+          $replacements[$original] = $sanitize ? Html::escape($bundle_name) : $bundle_name;
           break;
 
         case 'langcode':
-          $replacements[$original] = $sanitize ? SafeMarkup::checkPlain($media->language()->getId()) : $media->language()->getId();
+          $replacements[$original] = $sanitize ? Html::escape($media->language()->getId()) : $media->language()->getId();
           break;
 
         case 'name':
           $media_name = $media->get('name')->value;
-          $replacements[$original] = $sanitize ? SafeMarkup::checkPlain($media_name) : $media_name;
+          $replacements[$original] = $sanitize ? Html::escape($media_name) : $media_name;
           break;
 
         case 'type':
           $media_type = $media->get('name')->value;
-          $replacements[$original] = $sanitize ? SafeMarkup::checkPlain($media_type) : $media_type;
+          $replacements[$original] = $sanitize ? Html::escape($media_type) : $media_type;
           break;
 
         case 'url':
@@ -153,21 +152,24 @@ function media_entity_tokens($type, $tokens, array $data, array $options, Bubble
 
         // Default values for the chained tokens handled below.
         case 'author':
+          /** @var \Drupal\user\UserInterface $account */
           $account = $media->get('uid')->entity;
           $bubbleable_metadata->addCacheableDependency($account);
-          $replacements[$original] = $sanitize ? SafeMarkup::checkPlain($account->label()) : $account->label();
+          $replacements[$original] = $sanitize ? Html::escape($account->label()) : $account->label();
           break;
 
         case 'created':
           $date_format = DateFormat::load('medium');
           $bubbleable_metadata->addCacheableDependency($date_format);
-          $replacements[$original] = format_date($media->getCreatedTime(), 'medium', '', NULL, $langcode);
+          $replacements[$original] = \Drupal::service('date.formatter')
+            ->format($media->getCreatedTime(), 'medium', '', NULL, $langcode);
           break;
 
         case 'changed':
           $date_format = DateFormat::load('medium');
           $bubbleable_metadata->addCacheableDependency($date_format);
-          $replacements[$original] = format_date($media->getChangedTime(), 'medium', '', NULL, $langcode);
+          $replacements[$original] = \Drupal::service('date.formatter')
+            ->format($media->getChangedTime(), 'medium', '', NULL, $langcode);
           break;
       }
     }
