@@ -81,4 +81,9 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
   public function label() {
     return $this->label;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function attachConstraints(MediaInterface $media) {}
 }

@@ -55,15 +55,12 @@ interface MediaTypeInterface extends PluginInspectionInterface {
   public function settingsForm(MediaBundleInterface $bundle);
 
   /**
-   * Validates media.
+   * Attaches type-specific constraints to media.
    *
    * @param MediaInterface $media
-   *   Media.
-   *
-   * @throws MediaTypeException
-   *   Exception in case of failed validation.
+   *   Media entity.
    */
-  public function validate(MediaInterface $media);
+  public function attachConstraints(MediaInterface $media);
 
   /**
    * Gets thumbnail image.

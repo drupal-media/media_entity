@@ -233,6 +233,19 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
+  public function validate() {
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
+    $bundle = $this->bundle->entity;
+    if ($type = $bundle->getType()) {
+      $type->attachConstraints($this);
+    }
+
+    return parent::validate();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['mid'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Media ID'))
