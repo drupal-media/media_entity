@@ -46,7 +46,9 @@ class MediaUITest extends MediaEntityTestBase {
       'view media',
       'create media',
       'update media',
+      'update any media',
       'delete media',
+      'delete any media',
       // Other permissions.
       'administer views',
     ));

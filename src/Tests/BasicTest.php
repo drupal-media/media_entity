@@ -21,7 +21,7 @@ class BasicTest extends MediaEntityTestBase {
    *
    * @var array
    */
-  public static $modules = array('media_entity');
+  public static $modules = array('system', 'node', 'media_entity');
 
   /**
    * Tests creating a media bundle programmatically.
@@ -66,22 +66,101 @@ class BasicTest extends MediaEntityTestBase {
    * Runs basic tests for media_access function.
    */
   public function testMediaAccess() {
+    // Create users and roles.
+    $admin = $this->drupalCreateUser(['administer media'], 'editor');
+    $user = $this->drupalCreateUser([], 'user');
+
+    $permissions = [
+      'view media',
+      'create media',
+      'update media',
+      'update any media',
+      'delete media',
+      'delete any media',
+    ];
+
+    $roles = [];
+    foreach ($permissions as $permission) {
+      $roles[$permission] = $this->createRole([$permission]);
+    }
+
+    // Create media.
     $media = Media::create(array(
       'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
     ));
     $media->save();
 
-    // Ensures user without 'view media' permission can't access media pages.
-    $web_user1 = $this->drupalCreateUser();
-    $this->drupalLogin($web_user1);
+    $user_media = Media::create(array(
+      'bundle' => $this->testBundle->id(),
+      'name' => 'Unnamed',
+      'uid' => $user->id(),
+    ));
+    $user_media->save();
+
+    // Test 'administer media' permission.
+    $this->drupalLogin($admin);
+    $this->drupalGet('media/' . $user_media->id());
+    $this->assertResponse(200);
+    $this->drupalGet('media/' . $user_media->id() . '/edit');
+    $this->assertResponse(200);
+    $this->drupalGet('media/' . $user_media->id() . '/delete');
+    $this->assertResponse(200);
+
+    // Test 'view media' permission.
+    $this->drupalLogin($user);
     $this->drupalGet('media/' . $media->id());
     $this->assertResponse(403);
 
-    // Ensures user with 'view media' permission can access media pages.
-    $web_user2 = $this->drupalCreateUser(array('view media'));
-    $this->drupalLogin($web_user2);
+    $user->addRole($roles['view media']);
+    $user->save();
+
     $this->drupalGet('media/' . $media->id());
+    $this->assertResponse(200);
+
+    // Test 'create media' permissions.
+    $this->drupalLogin($user);
+    $this->drupalGet('media/add/' . $this->testBundle->id());
+    $this->assertResponse(403);
+
+    $user->addRole($roles['create media']);
+    $user->save();
+
+    $this->drupalGet('media/add/' . $this->testBundle->id());
+    $this->assertResponse(200);
+
+    // Test 'update media' and 'delete media' permissions.
+    $this->drupalGet('media/' . $user_media->id() . '/edit');
+    $this->assertResponse(403);
+
+    $this->drupalGet('media/' . $user_media->id() . '/delete');
+    $this->assertResponse(403);
+
+    $user->addRole($roles['update media']);
+    $user->addRole($roles['delete media']);
+    $user->save();
+
+    $this->drupalGet('media/' . $user_media->id() . '/edit');
+    $this->assertResponse(200);
+
+    $this->drupalGet('media/' . $user_media->id() . '/delete');
+    $this->assertResponse(200);
+
+    // Test 'update any media' and 'delete any media' permissions.
+    $this->drupalGet('media/' . $media->id() . '/edit');
+    $this->assertResponse(403);
+
+    $this->drupalGet('media/' . $media->id() . '/delete');
+    $this->assertResponse(403);
+
+    $user->addRole($roles['update any media']);
+    $user->addRole($roles['delete any media']);
+    $user->save();
+
+    $this->drupalGet('media/' . $media->id() . '/edit');
+    $this->assertResponse(200);
+
+    $this->drupalGet('media/' . $media->id() . '/delete');
     $this->assertResponse(200);
   }
 

@@ -22,19 +22,24 @@ class MediaAccessController extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
+    if ($account->hasPermission('administer media')) {
+      return AccessResult::allowed()->cachePerPermissions();
+    }
+
+    $is_owner = ($account->id() && $account->id() == $entity->getPublisherId()) ? TRUE : FALSE;
     switch ($operation) {
       case 'view':
         return AccessResult::allowedIfHasPermission($account, 'view media');
 
       case 'update':
-        return AccessResult::allowedIfHasPermission($account, 'update media');
+        return AccessResult::allowedIf(($account->hasPermission('update media') && $is_owner) || $account->hasPermission('update any media'))->cachePerPermissions()->cachePerUser()->cacheUntilEntityChanges($entity);
 
       case 'delete':
-        return AccessResult::allowedIfHasPermission($account, 'delete media');
+        return AccessResult::allowedIf(($account->hasPermission('delete media') && $is_owner) ||  $account->hasPermission('delete any media'))->cachePerPermissions()->cachePerUser()->cacheUntilEntityChanges($entity);
     }
 
     // No opinion.
-    return AccessResult::create();
+    return AccessResult::neutral()->cachePerPermissions();
   }
 
   /**

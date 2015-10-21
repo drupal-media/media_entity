@@ -5,7 +5,11 @@ view media:
   title: 'View media'
 update media:
   title: 'Update media'
+update any media:
+  title: 'Update any media'
 delete media:
   title:  'Delete media'
+delete any media:
+  title:  'Delete any media'
 create media:
   title: 'Create media'
