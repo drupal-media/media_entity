@@ -18,7 +18,7 @@ use Drupal\views\Plugin\views\wizard\WizardPluginBase;
  *
  * @ViewsWizard(
  *   id = "media",
- *   base_table = "media",
+ *   base_table = "media_field_data",
  *   title = @Translation("Media")
  * )
  */
