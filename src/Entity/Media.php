@@ -30,7 +30,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *       "delete" = "Drupal\media_entity\Form\MediaDeleteForm",
  *       "edit" = "Drupal\media_entity\MediaForm"
  *     },
- *     "inline entity form" = "Drupal\media_entity\InlineEntityForm\MediaInlineEntityFormHandler",
+ *     "inline_form" = "Drupal\media_entity\Form\MediaInlineForm",
  *     "translation" = "Drupal\content_translation\ContentTranslationHandler",
  *     "views_data" = "Drupal\media_entity\MediaViewsData"
  *   },

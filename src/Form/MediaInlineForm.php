@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Contains \Drupal\media_entity\InlineEntityForm\MediaInlineEntityFormHandler.
+ * Contains \Drupal\media_entity\Form\MediaInlineForm.
  */
 
-namespace Drupal\media_entity\InlineEntityForm;
+namespace Drupal\media_entity\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\inline_entity_form\InlineEntityForm\EntityInlineEntityFormHandler;
+use Drupal\inline_entity_form\Form\EntityInlineForm;
 
 /**
  * Media inline form handler.
  */
-class MediaInlineEntityFormHandler extends EntityInlineEntityFormHandler {
+class MediaInlineForm extends EntityInlineForm {
 
   use StringTranslationTrait;
 
