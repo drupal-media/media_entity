@@ -8,20 +8,31 @@
 namespace Drupal\media_entity\Tests;
 
 use Drupal\media_entity\Entity\Media;
+use Drupal\simpletest\WebTestBase;
 
 /**
  * Ensures that basic functions work correctly.
  *
  * @group media_entity
  */
-class BasicTest extends MediaEntityTestBase {
+class BasicTest extends WebTestBase {
+
+  use MediaTestTrait;
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = array('system', 'node', 'media_entity');
+  public static $modules = ['system', 'node', 'media_entity'];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $this->testBundle = $this->drupalCreateMediaBundle();
+  }
 
   /**
    * Tests creating a media bundle programmatically.
@@ -35,30 +46,30 @@ class BasicTest extends MediaEntityTestBase {
     $this->assertTrue($bundle_exists, 'The new media bundle has been created in the database.');
 
     // Test default bundle created from default configuration.
-    $this->container->get('module_installer')->install(array('media_entity_test'));
+    $this->container->get('module_installer')->install(['media_entity_test']);
     $test_bundle = $bundle_storage->load('test');
     $this->assertTrue((bool) $test_bundle, 'The media bundle from default configuration has been created in the database.');
     $this->assertEqual($test_bundle->get('label'), 'Test bundle', 'Correct label detected.');
     $this->assertEqual($test_bundle->get('description'), 'Test bundle.', 'Correct description detected.');
     $this->assertEqual($test_bundle->get('type'), 'generic', 'Correct plugin ID detected.');
-    $this->assertEqual($test_bundle->get('type_configuration'), array(), 'Correct plugin configuration detected.');
-    $this->assertEqual($test_bundle->get('field_map'), array(), 'Correct field map detected.');
+    $this->assertEqual($test_bundle->get('type_configuration'), [], 'Correct plugin configuration detected.');
+    $this->assertEqual($test_bundle->get('field_map'), [], 'Correct field map detected.');
   }
 
   /**
    * Tests creating a media entity programmatically.
    */
   public function testMediaEntityCreation() {
-    $media = Media::create(array(
+    $media = Media::create([
       'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
-    ));
+    ]);
     $media->save();
 
-    $media_not_exist = (bool) entity_load('media', rand(1000, 9999));
+    $media_not_exist = (bool) Media::load(rand(1000, 9999));
     $this->assertFalse($media_not_exist, 'The media entity does not exist.');
 
-    $media_exists = (bool) entity_load('media', $media->id());
+    $media_exists = (bool) Media::load($media->id());
     $this->assertTrue($media_exists, 'The new media entity has been created in the database.');
   }
 
@@ -85,17 +96,17 @@ class BasicTest extends MediaEntityTestBase {
     }
 
     // Create media.
-    $media = Media::create(array(
+    $media = Media::create([
       'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
-    ));
+    ]);
     $media->save();
 
-    $user_media = Media::create(array(
+    $user_media = Media::create([
       'bundle' => $this->testBundle->id(),
       'name' => 'Unnamed',
       'uid' => $user->id(),
-    ));
+    ]);
     $user_media->save();
 
     // Test 'administer media' permission.

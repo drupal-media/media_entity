@@ -9,13 +9,16 @@ namespace Drupal\media_entity\Tests;
 
 use Drupal\Component\Utility\Xss;
 use Drupal\media_entity\Entity\Media;
+use Drupal\simpletest\WebTestBase;
 
 /**
  * Ensures that media UI work correctly.
  *
  * @group media_entity
  */
-class MediaUITest extends MediaEntityTestBase {
+class MediaUITest extends WebTestBase {
+
+  use MediaTestTrait;
 
   /**
    * The test user.
@@ -29,15 +32,16 @@ class MediaUITest extends MediaEntityTestBase {
    *
    * @var array
    */
-  public static $modules = array('media_entity', 'field_ui', 'views_ui', 'node', 'block');
+  public static $modules = ['media_entity', 'field_ui', 'views_ui', 'node', 'block'];
 
   /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
+    $this->testBundle = $this->drupalCreateMediaBundle();
     $this->drupalPlaceBlock('local_actions_block');
-    $this->adminUser = $this->drupalCreateUser(array(
+    $this->adminUser = $this->drupalCreateUser([
       'administer media',
       'administer media fields',
       'administer media form display',
@@ -51,7 +55,7 @@ class MediaUITest extends MediaEntityTestBase {
       'delete any media',
       // Other permissions.
       'administer views',
-    ));
+    ]);
     $this->drupalLogin($this->adminUser);
   }
 
@@ -90,9 +94,9 @@ class MediaUITest extends MediaEntityTestBase {
     // Tests media bundle delete form.
     $this->clickLink(t('Delete'));
     $this->assertUrl('admin/structure/media/manage/' . $bundle['id'] . '/delete');
-    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
     $this->assertUrl('admin/structure/media');
-    $this->assertRaw(t('The media bundle %name has been deleted.', array('%name' => $bundle['label'])));
+    $this->assertRaw(t('The media bundle %name has been deleted.', ['%name' => $bundle['label']]));
     $this->assertNoRaw(Xss::filterAdmin($bundle['description']));
   }
 
@@ -110,9 +114,9 @@ class MediaUITest extends MediaEntityTestBase {
     $this->assertUrl('media/add/' . $this->testBundle->id());
 
     // Tests media item add form.
-    $edit = array(
+    $edit = [
       'name[0][value]' => $this->randomMachineName(),
-    );
+    ];
     $this->drupalPostForm('media/add', $edit, t('Save'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
     $media_id = \Drupal::entityQuery('media')->execute();
@@ -151,31 +155,31 @@ class MediaUITest extends MediaEntityTestBase {
    */
   public function atestMediaViewsWizard() {
 
-    $data = array(
+    $data = [
       'name' => $this->randomMachineName(),
       'bundle' => $this->testBundle->id(),
       'type' => 'Unknown',
       'uid' => $this->adminUser->id(),
       'langcode' => \Drupal::languageManager()->getDefaultLanguage()->getId(),
       'status' => Media::PUBLISHED,
-    );
+    ];
     $media = Media::create($data);
     $media->save();
 
     // Test the Media wizard.
-    $this->drupalPostForm('admin/structure/views/add', array(
+    $this->drupalPostForm('admin/structure/views/add', [
       'label' => 'media view',
       'id' => 'media_test',
       'show[wizard_key]' => 'media',
       'page[create]' => 1,
       'page[title]' => 'media_test',
       'page[path]' => 'media_test',
-    ), t('Save and edit'));
+    ], t('Save and edit'));
 
     $this->drupalGet('media_test');
     $this->assertText($data['name']);
 
-    user_role_revoke_permissions('anonymous', array('access content'));
+    user_role_revoke_permissions('anonymous', ['access content']);
     $this->drupalLogout();
     $this->drupalGet('media_test');
     $this->assertResponse(403);
@@ -183,21 +187,21 @@ class MediaUITest extends MediaEntityTestBase {
     $this->drupalLogin($this->adminUser);
 
     // Test the MediaRevision wizard.
-    $this->drupalPostForm('admin/structure/views/add', array(
+    $this->drupalPostForm('admin/structure/views/add', [
       'label' => 'media revision view',
       'id' => 'media_revision',
       'show[wizard_key]' => 'media_revision',
       'page[create]' => 1,
       'page[title]' => 'media_revision',
       'page[path]' => 'media_revision',
-    ), t('Save and edit'));
+    ], t('Save and edit'));
 
     $this->drupalGet('media_revision');
     // Check only for the label of the changed field as we want to only test
     // if the field is present and not its value.
     $this->assertText($data['name']);
 
-    user_role_revoke_permissions('anonymous', array('view revisions'));
+    user_role_revoke_permissions('anonymous', ['view revisions']);
     $this->drupalLogout();
     $this->drupalGet('media_revision');
     $this->assertResponse(403);
@@ -240,12 +244,12 @@ class MediaUITest extends MediaEntityTestBase {
   public function createMediaBundle() {
     // Generates and holds all media bundle fields.
     $name = $this->randomMachineName();
-    $edit = array(
+    $edit = [
       'id' => strtolower($name),
       'label' => $name,
       'type' => 'generic',
       'description' => $this->randomMachineName(),
-    );
+    ];
 
     // Create new media bundle.
     $this->drupalPostForm('admin/structure/media/add', $edit, t('Save media bundle'));
@@ -272,9 +276,9 @@ class MediaUITest extends MediaEntityTestBase {
   public function createMediaItem($media_bundle) {
     // Define the media item name.
     $name = $this->randomMachineName();
-    $edit = array(
+    $edit = [
       'name[0][value]' => $name,
-    );
+    ];
     // Save it and retrieve new media item ID, then return all information.
     $this->drupalPostForm('media/add/' . $media_bundle['id'], $edit, t('Save'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
@@ -307,24 +311,25 @@ class MediaUITest extends MediaEntityTestBase {
     $this->assertText($second_media_bundle['label']);
 
     // Filter for each bundle and assert that the list has been updated.
-    $this->drupalGet('admin/content/media', array('query' => array('bundle' => $first_media_bundle['id'])));
+    $this->drupalGet('admin/content/media', ['query' => ['bundle' => $first_media_bundle['id']]]);
     $this->assertResponse(200);
     $this->assertText($first_media_item['name[0][value]']);
     $this->assertText($first_media_bundle['label']);
     $this->assertNoText($second_media_item['name[0][value]']);
 
-    $this->drupalGet('admin/content/media', array('query' => array('bundle' => $second_media_bundle['id'])));
+    $this->drupalGet('admin/content/media', ['query' => ['bundle' => $second_media_bundle['id']]]);
     $this->assertResponse(200);
     $this->assertNoText($first_media_item['name[0][value]']);
     $this->assertText($second_media_item['name[0][value]']);
     $this->assertText($second_media_bundle['label']);
 
     // Filter all and check for all items again.
-    $this->drupalGet('admin/content/media', array('query' => array('bundle' => 'All')));
+    $this->drupalGet('admin/content/media', ['query' => ['bundle' => 'All']]);
     $this->assertResponse(200);
     $this->assertText($first_media_item['name[0][value]']);
     $this->assertText($first_media_bundle['label']);
     $this->assertText($second_media_item['name[0][value]']);
     $this->assertText($second_media_bundle['label']);
   }
+
 }

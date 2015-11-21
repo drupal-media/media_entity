@@ -3,18 +3,17 @@
 
 /**
  * @file
- * Contains \Drupal\media_entity\Tests\MediaEntityTestBase.
+ * Contains \Drupal\media_entity\Tests\MediaTestTrait.
  */
 
 namespace Drupal\media_entity\Tests;
 
-use Drupal\simpletest\WebTestBase;
 use Drupal\media_entity\Entity\MediaBundle;
 
 /**
- * Base test class for media entity tests.
+ * Provides common functionality for media entity test classes.
  */
-abstract class MediaEntityTestBase extends WebTestBase {
+trait MediaTestTrait {
 
   /**
    * The test media bundle.
@@ -22,15 +21,6 @@ abstract class MediaEntityTestBase extends WebTestBase {
    * @var \Drupal\media_entity\MediaBundleInterface
    */
   protected $testBundle;
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    $this->testBundle = $this->drupalCreateMediaBundle();
-  }
 
   /**
    * Creates media bundle.

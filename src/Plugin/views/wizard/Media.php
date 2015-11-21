@@ -10,10 +10,6 @@ namespace Drupal\media_entity\Plugin\views\wizard;
 use Drupal\views\Plugin\views\wizard\WizardPluginBase;
 
 /**
- * @todo: replace numbers with constants.
- */
-
-/**
  * Tests creating media views with the wizard.
  *
  * @ViewsWizard(
@@ -30,39 +26,26 @@ class Media extends WizardPluginBase {
   protected $createdColumn = 'media_field_data-created';
 
   /**
-   * Set default values for the path field options.
-   */
-  protected $pathField = array(
-    'id' => 'mid',
-    'table' => 'mid',
-    'field' => 'mid',
-    'exclude' => TRUE,
-    'alter' => array(
-      'alter_text' => TRUE,
-      'text' => 'media/[mid]'
-    )
-  );
-
-  /**
    * Set default values for the filters.
    */
-  protected $filters = array(
-    'status' => array(
+  protected $filters = [
+    'status' => [
       'value' => TRUE,
       'table' => 'media_field_data',
       'field' => 'status',
-      'provider' => 'media'
-    )
-  );
+      'plugin_id' => 'boolean',
+      'entity_type' => 'media',
+      'entity_field' => 'status',
+    ],
+  ];
 
   /**
    * {@inheritdoc}
    */
   public function getAvailableSorts() {
-    // You can't execute functions in properties, so override the method
-    return array(
-      'media_field_data-name:DESC' => t('Name')
-    );
+    return [
+      'media_field_data-name:DESC' => t('Media name'),
+    ];
   }
 
   /**
@@ -73,8 +56,7 @@ class Media extends WizardPluginBase {
 
     // Add permission-based access control.
     $display_options['access']['type'] = 'perm';
-    $display_options['access']['provider'] = 'user';
-    $display_options['access']['perm'] = 'access content';
+    $display_options['access']['options']['perm'] = 'access content';
 
     // Remove the default fields, since we are customizing them here.
     unset($display_options['fields']);
@@ -85,7 +67,8 @@ class Media extends WizardPluginBase {
     $display_options['fields']['name']['id'] = 'name';
     $display_options['fields']['name']['table'] = 'media_field_data';
     $display_options['fields']['name']['field'] = 'name';
-    $display_options['fields']['name']['provider'] = 'media';
+    $display_options['fields']['name']['entity_type'] = 'media';
+    $display_options['fields']['name']['entity_field'] = 'media';
     $display_options['fields']['name']['label'] = '';
     $display_options['fields']['name']['alter']['alter_text'] = 0;
     $display_options['fields']['name']['alter']['make_link'] = 0;
@@ -97,6 +80,8 @@ class Media extends WizardPluginBase {
     $display_options['fields']['name']['alter']['html'] = 0;
     $display_options['fields']['name']['hide_empty'] = 0;
     $display_options['fields']['name']['empty_zero'] = 0;
+    $display_options['fields']['name']['settings']['link_to_entity'] = 1;
+    $display_options['fields']['name']['plugin_id'] = 'field';
 
     return $display_options;
   }

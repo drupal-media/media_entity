@@ -32,7 +32,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *     },
  *     "inline entity form" = "Drupal\media_entity\InlineEntityForm\MediaInlineEntityFormHandler",
  *     "translation" = "Drupal\content_translation\ContentTranslationHandler",
- *     "views_data" = "Drupal\views\EntityViewsData"
+ *     "views_data" = "Drupal\media_entity\MediaViewsData"
  *   },
  *   base_table = "media",
  *   data_table = "media_field_data",
