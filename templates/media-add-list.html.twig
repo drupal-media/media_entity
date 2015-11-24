@@ -17,12 +17,16 @@
  */
 #}
 {% if bundles is not empty %}
-    <dl>
+    <ul class="admin-list">
         {% for bundle in bundles %}
-            <dt>{{ bundle.add_link }}</dt>
-            <dd>{{ bundle.description }}</dd>
+            <li class="clearfix">
+                <a href="{{ bundle.url }}">
+                    <span class="label">{{ bundle.label }}</span>
+                    <div class="description">{{ bundle.description }}</div>
+                </a>
+            </li>
         {% endfor %}
-    </dl>
+    </ul>
 {% else %}
 <p>
     {% set create_media_bundle = path('media.bundle_add') %}

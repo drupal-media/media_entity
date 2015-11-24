@@ -24,7 +24,8 @@ function template_preprocess_media_add_list(&$variables) {
       /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
       $variables['bundles'][$bundle->id()] = array(
         'type' => $bundle->id(),
-        'add_link' => \Drupal::l($bundle->label(), new Url('media.add', array('media_bundle' => $bundle->id()))),
+        'label' => $bundle->label(),
+        'url' => \Drupal::url('media.add', array('media_bundle' => $bundle->id())),
         'description' => array(
           '#markup' => $bundle->getDescription(),
         ),

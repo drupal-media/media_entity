@@ -113,10 +113,13 @@ class MediaController extends ControllerBase {
       return $this->redirect('media.add', array('media_bundle' => $type->id));
     }
 
-    return array(
+    return [
       '#theme' => 'media_add_list',
       '#content' => $content,
-    );
+      '#cache' => [
+        'tags' => $this->entityManager()->getDefinition('media_bundle')->getListCacheTags(),
+      ],
+    ];
   }
 
   /**
