@@ -8,4 +8,5 @@ media.add:
   route_name: media.add_page
   title: 'Add media'
   appears_on:
-    - view.media.page_1
+    - view.media.media_page_list
+
