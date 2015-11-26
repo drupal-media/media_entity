@@ -9,6 +9,7 @@ namespace Drupal\media_entity\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,13 +27,23 @@ class MediaController extends ControllerBase {
   protected $languageManager;
 
   /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * Constructs a new class instance.
    *
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    *   The language manager.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
    */
-  public function __construct(LanguageManagerInterface $language_manager) {
+  public function __construct(LanguageManagerInterface $language_manager, RendererInterface $renderer) {
     $this->languageManager = $language_manager;
+    $this->renderer = $renderer;
   }
 
   /**
@@ -40,7 +51,8 @@ class MediaController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('language_manager')
+      $container->get('language_manager'),
+      $container->get('renderer')
     );
   }
 
@@ -98,13 +110,22 @@ class MediaController extends ControllerBase {
    *   RedirectResponse.
    */
   public function addPage() {
+    $build = [
+      '#theme' => 'media_add_list',
+      '#cache' => [
+        'tags' => $this->entityManager()->getDefinition('media_bundle')->getListCacheTags(),
+      ]
+    ];
+
     $content = array();
 
     // Only use media bundles the user has access to.
     foreach ($this->entityManager()->getStorage('media_bundle')->loadMultiple() as $type) {
-      if ($this->entityManager()->getAccessControlHandler('media')->createAccess($type->id)) {
-        $content[$type->id] = $type;
+      $access = $this->entityManager()->getAccessControlHandler('media')->createAccess($type->id(), NULL, [], TRUE);
+      if ($access->isAllowed()) {
+        $content[$type->id()] = $type;
       }
+      $this->renderer->addCacheableDependency($build, $access);
     }
 
     // Bypass the media/add listing if only one bundle is available.
@@ -113,13 +134,9 @@ class MediaController extends ControllerBase {
       return $this->redirect('media.add', array('media_bundle' => $type->id));
     }
 
-    return [
-      '#theme' => 'media_add_list',
-      '#content' => $content,
-      '#cache' => [
-        'tags' => $this->entityManager()->getDefinition('media_bundle')->getListCacheTags(),
-      ],
-    ];
+    $build['#content'] = $content;
+
+    return $build;
   }
 
   /**
