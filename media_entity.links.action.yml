@@ -7,5 +7,6 @@ media.bundle_add:
 media.add:
   route_name: media.add_page
   title: 'Add media'
+  weight: 10
   appears_on:
-    - view.media.page_1
+    - system.admin_content
