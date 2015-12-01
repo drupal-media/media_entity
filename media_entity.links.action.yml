@@ -9,4 +9,4 @@ media.add:
   title: 'Add media'
   weight: 10
   appears_on:
-    - system.admin_content
+    - view.media.media_page_list

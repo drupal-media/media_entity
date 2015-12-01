@@ -24,6 +24,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *   handlers = {
  *     "storage" = "Drupal\media_entity\MediaStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "list_builder" = "Drupal\Core\Entity\EntityListBuilder",
  *     "access" = "Drupal\media_entity\MediaAccessController",
  *     "form" = {
  *       "default" = "Drupal\media_entity\MediaForm",

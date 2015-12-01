@@ -41,6 +41,7 @@ class MediaUITest extends WebTestBase {
     parent::setUp();
     $this->testBundle = $this->drupalCreateMediaBundle();
     $this->drupalPlaceBlock('local_actions_block');
+    $this->drupalPlaceBlock('local_tasks_block');
     $this->adminUser = $this->drupalCreateUser([
       'administer media',
       'administer media fields',
@@ -55,6 +56,8 @@ class MediaUITest extends WebTestBase {
       'delete any media',
       // Other permissions.
       'administer views',
+      'access content overview',
+      'view all revisions',
     ]);
     $this->drupalLogin($this->adminUser);
   }
@@ -103,11 +106,11 @@ class MediaUITest extends WebTestBase {
   /**
    * Tests the media actions (add/edit/delete).
    */
-  public function atestMediaWithOnlyOneBundle() {
+  public function testMediaWithOnlyOneBundle() {
     // Assert that media item list is empty.
     $this->drupalGet('admin/content/media');
     $this->assertResponse(200);
-    $this->assertText('No media items.');
+    $this->assertText('No content available.');
 
     $this->drupalGet('media/add');
     $this->assertResponse(200);
@@ -147,13 +150,13 @@ class MediaUITest extends WebTestBase {
     $this->drupalGet('admin/content/media');
     $this->assertResponse(200);
     $this->assertNoText($edit['name[0][value]']);
-    $this->assertText('No media items.');
+    $this->assertText('No content available.');
   }
 
   /**
    * Tests the views wizards provided by the media module.
    */
-  public function atestMediaViewsWizard() {
+  public function testMediaViewsWizard() {
 
     $data = [
       'name' => $this->randomMachineName(),
@@ -208,12 +211,25 @@ class MediaUITest extends WebTestBase {
   }
 
   /**
-   * Tests the "media/add" page.
+   * Tests the "media/add" and "admin/content/media" pages.
    *
    * Tests if the "media/add" page gives you a selecting option if there are
    * multiple media bundles available.
    */
-  public function atestMediaWithMultipleBundles() {
+  public function testMediaWithMultipleBundles() {
+    // Test access to media overview page.
+    $this->drupalLogout();
+    $this->drupalGet('admin/content/media');
+    $this->assertResponse(403);
+
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/content');
+
+    // Test there is a media tab in the menu.
+    $this->clickLink('Media');
+    $this->assertResponse(200);
+    $this->assertText('No content available.');
+
     // Tests and creates the first media bundle.
     $first_media_bundle = $this->createMediaBundle();
 
@@ -303,6 +319,7 @@ class MediaUITest extends WebTestBase {
     // Go to media item list.
     $this->drupalGet('admin/content/media');
     $this->assertResponse(200);
+    $this->assertLink('Add media');
 
     // Assert that all available media items are in the list.
     $this->assertText($first_media_item['name[0][value]']);
@@ -311,20 +328,20 @@ class MediaUITest extends WebTestBase {
     $this->assertText($second_media_bundle['label']);
 
     // Filter for each bundle and assert that the list has been updated.
-    $this->drupalGet('admin/content/media', ['query' => ['bundle' => $first_media_bundle['id']]]);
+    $this->drupalGet('admin/content/media', ['query' => ['provider' => $first_media_bundle['id']]]);
     $this->assertResponse(200);
     $this->assertText($first_media_item['name[0][value]']);
     $this->assertText($first_media_bundle['label']);
     $this->assertNoText($second_media_item['name[0][value]']);
 
-    $this->drupalGet('admin/content/media', ['query' => ['bundle' => $second_media_bundle['id']]]);
+    $this->drupalGet('admin/content/media', ['query' => ['provider' => $second_media_bundle['id']]]);
     $this->assertResponse(200);
     $this->assertNoText($first_media_item['name[0][value]']);
     $this->assertText($second_media_item['name[0][value]']);
     $this->assertText($second_media_bundle['label']);
 
     // Filter all and check for all items again.
-    $this->drupalGet('admin/content/media', ['query' => ['bundle' => 'All']]);
+    $this->drupalGet('admin/content/media', ['query' => ['provider' => 'All']]);
     $this->assertResponse(200);
     $this->assertText($first_media_item['name[0][value]']);
     $this->assertText($first_media_bundle['label']);

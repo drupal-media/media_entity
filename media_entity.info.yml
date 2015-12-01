@@ -5,3 +5,5 @@ package: Media
 core: 8.x
 dependencies:
   - image
+  - user
+  - views
