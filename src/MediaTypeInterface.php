@@ -8,11 +8,12 @@
 namespace Drupal\media_entity;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 
 /**
  * Defines the interface for media types.
  */
-interface MediaTypeInterface extends PluginInspectionInterface {
+interface MediaTypeInterface extends PluginInspectionInterface, ConfigurablePluginInterface {
 
   /**
    * Returns the display label.
