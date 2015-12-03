@@ -12,6 +12,7 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Entity\EntityManager;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Component\Utility\NestedArray;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
@@ -60,6 +61,7 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityManager = $entity_manager;
     $this->config = $config;
+    $this->setConfiguration($configuration);
   }
 
   /**
@@ -78,6 +80,30 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
   /**
    * {@inheritdoc}
    */
+  public function setConfiguration(array $configuration) {
+    $this->configuration = NestedArray::mergeDeep(
+      $this->defaultConfiguration(),
+      $configuration
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function label() {
     return $this->label;
   }
@@ -86,4 +112,11 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
    * {@inheritdoc}
    */
   public function attachConstraints(MediaInterface $media) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    return [];
+  }
 }
