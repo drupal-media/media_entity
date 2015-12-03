@@ -147,10 +147,6 @@ class Media extends ContentEntityBase implements MediaInterface {
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
-    // If no owner has been set explicitly, make the current user the owner.
-    if (!$this->getPublisher()) {
-      $this->setPublisherId(\Drupal::currentUser()->id());
-    }
     // If no revision author has been set explicitly, make the media owner the
     // revision author.
     if (!$this->get('revision_uid')->entity) {
@@ -298,7 +294,7 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setLabel(t('Publisher ID'))
       ->setDescription(t('The user ID of the media publisher.'))
       ->setRevisionable(TRUE)
-      ->setDefaultValue(0)
+      ->setDefaultValueCallback('Drupal\media_entity\Entity\Media::getCurrentUserId')
       ->setSetting('target_type', 'user')
       ->setTranslatable(TRUE)
       ->setDisplayOptions('view', array(
@@ -368,6 +364,18 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setTranslatable(TRUE);
 
     return $fields;
+  }
+
+  /**
+   * Default value callback for 'uid' base field definition.
+   *
+   * @see ::baseFieldDefinitions()
+   *
+   * @return array
+   *   An array of default values.
+   */
+  public static function getCurrentUserId() {
+    return array(\Drupal::currentUser()->id());
   }
 
 }
