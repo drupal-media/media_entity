@@ -28,10 +28,10 @@ trait EmbedCodeValueTrait {
       return $value;
     }
     elseif ($value instanceof FieldItemInterface) {
-      $class = $value->getFieldDefinition()->getClass();
+      $class = get_class($value);
       $property = $class::mainPropertyName();
       if ($property) {
-        return $value->get($property);
+        return $value->$property;
       }
     }
   }
