@@ -28,10 +28,14 @@ trait MediaTestTrait {
    * @param array $values
    *   The media bundle values.
    *
+   * @param string $type_name
+   *   (optional) The media type provider plugin that is responsible for
+   *   additional logic related to this media).
+   *
    * @return \Drupal\Core\Entity\EntityInterface
    *   Returns newly created media bundle.
    */
-  protected function drupalCreateMediaBundle(array $values = array()) {
+  protected function drupalCreateMediaBundle(array $values = array(), $type_name = 'generic') {
     if (!isset($values['bundle'])) {
       $id = strtolower($this->randomMachineName());
     }
@@ -41,7 +45,7 @@ trait MediaTestTrait {
     $values += array(
       'id' => $id,
       'label' => $id,
-      'type' => 'generic',
+      'type' => $type_name,
       'type_configuration' => array(),
       'field_map' => array(),
     );
