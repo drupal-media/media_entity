@@ -16,13 +16,6 @@ use Drupal\media_entity\Entity\MediaBundle;
 trait MediaTestTrait {
 
   /**
-   * The test media bundle.
-   *
-   * @var \Drupal\media_entity\MediaBundleInterface
-   */
-  protected $testBundle;
-
-  /**
    * Creates media bundle.
    *
    * @param array $values

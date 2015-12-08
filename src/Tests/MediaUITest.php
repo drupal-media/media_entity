@@ -28,6 +28,13 @@ class MediaUITest extends WebTestBase {
   protected $adminUser;
 
   /**
+   * The test media bundle.
+   *
+   * @var \Drupal\media_entity\MediaBundleInterface
+   */
+  protected $testBundle;
+
+  /**
    * Modules to enable.
    *
    * @var array
