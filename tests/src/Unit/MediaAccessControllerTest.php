@@ -24,11 +24,15 @@ use Prophecy\Argument;
 class MediaAccessControllerTest extends UnitTestCase {
 
   /**
+   * The mocked entity type definition.
+   *
    * @var \Drupal\Core\Entity\EntityTypeInterface
    */
   protected $entityType;
 
   /**
+   * The media entity access controller.
+   *
    * @var \Drupal\media_entity\MediaAccessController
    */
   protected $accessController;
@@ -50,17 +54,22 @@ class MediaAccessControllerTest extends UnitTestCase {
   }
 
   /**
-   * Tests
+   * Tests that users with the 'create media' permission (but not the
+   * 'administer media' permission) actually have proper permission to create
+   * media entities.
    */
   public function testCreateAccessNotAdministrator() {
     $entity = $this->prophesize(MediaInterface::class);
     $entity->getPublisherId()->willReturn(42);
 
+    // Mock a user account with the permission to create, but not administer,
+    // media entities.
     $account = $this->prophesize(AccountInterface::class);
     $account->id()->willReturn(42);
     $account->hasPermission('administer media')->willReturn(FALSE);
     $account->hasPermission('create media')->willReturn(TRUE);
 
+    // Ensure that the access controller will grant create access.
     $result = $this->accessController->checkAccess($entity->reveal(), 'create', $account->reveal());
     $this->assertInstanceOf(AccessResultAllowed::class, $result);
   }
