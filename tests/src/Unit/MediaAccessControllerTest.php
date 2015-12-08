@@ -37,6 +37,9 @@ class MediaAccessControllerTest extends UnitTestCase {
    */
   protected $accessController;
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp() {
     $this->entityType = $this->prophesize(EntityTypeInterface::class);
     $this->entityType->id()->willReturn('media');
@@ -54,7 +57,9 @@ class MediaAccessControllerTest extends UnitTestCase {
   }
 
   /**
-   * Tests that users with the 'create media' permission (but not the
+   * Tests the 'create media' permission.
+   *
+   * Ensures that users with the 'create media' permission (but not the
    * 'administer media' permission) actually have proper permission to create
    * media entities.
    */
@@ -76,8 +81,14 @@ class MediaAccessControllerTest extends UnitTestCase {
 
 }
 
+/**
+ * Test-only version of MediaAccessController, for testing protected methods.
+ */
 class TestMediaAccessController extends MediaAccessController {
 
+  /**
+   * {@inheritdoc}
+   */
   public function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
     return parent::checkAccess($entity, $operation, $account);
   }
