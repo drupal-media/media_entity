@@ -28,9 +28,6 @@ class MediaAccessController extends EntityAccessControlHandler {
 
     $is_owner = ($account->id() && $account->id() == $entity->getPublisherId()) ? TRUE : FALSE;
     switch ($operation) {
-      case 'create':
-        return AccessResult::allowedIfHasPermission($account, 'create media');
-
       case 'view':
         return AccessResult::allowedIfHasPermission($account, 'view media');
 

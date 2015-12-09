@@ -15,7 +15,7 @@ media.add_page:
     _access_mode: 'ANY'
     _admin_route: TRUE
   requirements:
-    _permission: 'administer media'
+    _entity_create_access: 'media'
 
 media.add:
   path: '/media/add/{media_bundle}'
