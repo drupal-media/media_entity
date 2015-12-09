@@ -20,6 +20,13 @@ class BasicTest extends WebTestBase {
   use MediaTestTrait;
 
   /**
+   * The test media bundle.
+   *
+   * @var \Drupal\media_entity\MediaBundleInterface
+   */
+  protected $testBundle;
+
+  /**
    * Modules to enable.
    *
    * @var array
