@@ -11,11 +11,45 @@ use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\media_entity\MediaTypeManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form controller for node type forms.
  */
 class MediaBundleForm extends EntityForm {
+
+  /**
+   * The instantiated plugin instances that have configuration forms.
+   *
+   * @var \Drupal\Core\Plugin\PluginFormInterface[]
+   */
+  protected $configurableInstances = [];
+
+  /**
+   * Manager for media entity type plugins.
+   *
+   * @var \Drupal\media_entity\MediaTypeManager
+   */
+  protected $mediaTypeManager;
+
+  /**
+   * Constructs a new class instance.
+   *
+   * @param \Drupal\media_entity\MediaTypeManager $media_type_manager
+   */
+  public function __construct(MediaTypeManager $media_type_manager) {
+    $this->mediaTypeManager = $media_type_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.media_entity.type')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -62,7 +96,7 @@ class MediaBundleForm extends EntityForm {
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     );
 
-    $plugins = \Drupal::service('plugin.manager.media_entity.type')->getDefinitions();
+    $plugins = $this->mediaTypeManager->getDefinitions();
     $options = array();
     foreach ($plugins as $plugin => $definition) {
       $options[$plugin] = $definition['label'];
@@ -92,10 +126,36 @@ class MediaBundleForm extends EntityForm {
           ),
         ),
       );
-      $form['type_configuration'][$plugin] += \Drupal::service('plugin.manager.media_entity.type')->createInstance($plugin, $plugin_configuration)->settingsForm($this->entity);
+      /** @var \Drupal\media_entity\MediaTypeBase $instance */
+      $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+      $form['type_configuration'][$plugin] += $instance->buildConfigurationForm([], $form_state);
+      // Store the instance for validate and submit handlers.
+      $this->configurableInstances[$plugin] = $instance;
     }
 
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    // Let the selected plugin validate its settings.
+    $plugin = $this->entity->getType()->getPluginId();
+    $this->configurableInstances[$plugin]->validateConfigurationForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    parent::submitForm($form, $form_state);
+
+    // Let the selected plugin save its settings.
+    $plugin = $this->entity->getType()->getPluginId();
+    $this->configurableInstances[$plugin]->submitConfigurationForm($form, $form_state);
   }
 
   /**

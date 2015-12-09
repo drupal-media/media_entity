@@ -14,6 +14,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Component\Utility\NestedArray;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 
 /**
@@ -119,4 +120,21 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
   public function calculateDependencies() {
     return [];
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) { }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) { }
 }

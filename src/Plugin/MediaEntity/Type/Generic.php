@@ -6,15 +6,10 @@
 
 namespace Drupal\media_entity\Plugin\MediaEntity\Type;
 
-use Drupal\Component\Plugin\PluginBase;
-use Drupal\Core\Config\Config;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\media_entity\MediaTypeBase;
-use Drupal\media_entity\MediaTypeInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides generic media type.
@@ -46,6 +41,13 @@ class Generic extends MediaTypeBase {
    */
   public function settingsForm(MediaBundleInterface $bundle) {
     return array();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    return [];
   }
 
   /**
