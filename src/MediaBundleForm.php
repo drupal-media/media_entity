@@ -59,6 +59,7 @@ class MediaBundleForm extends EntityForm {
 
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $form['#entity'] = $bundle = $this->entity;
+    $form_state->set('bundle', $bundle->id());
 
     if ($this->operation == 'add') {
       $form['#title'] = $this->t('Add media bundle');

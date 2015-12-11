@@ -26,7 +26,7 @@ class Generic extends MediaTypeBase {
    * {@inheritdoc}
    */
   public function providedFields() {
-    return array();
+    return [];
   }
 
   /**
@@ -35,25 +35,6 @@ class Generic extends MediaTypeBase {
   public function getField(MediaInterface$media, $name) {
     return FALSE;
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsForm(MediaBundleInterface $bundle) {
-    return array();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    return [];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validate(MediaInterface $media) { }
 
   /**
    * {@inheritdoc}
