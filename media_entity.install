@@ -13,3 +13,11 @@ function media_entity_install() {
   $destination = \Drupal::config('media_entity.settings')->get('icon_base');
   media_entity_copy_icons($source, $destination);
 }
+
+/**
+ * Remove "type" base field.
+ */
+function media_entity_update_8001() {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+  $manager->uninstallFieldStorageDefinition($manager->getFieldStorageDefinition('type', 'media'));
+}
