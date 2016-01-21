@@ -19,5 +19,7 @@ function media_entity_install() {
  */
 function media_entity_update_8001() {
   $manager = \Drupal::entityDefinitionUpdateManager();
-  $manager->uninstallFieldStorageDefinition($manager->getFieldStorageDefinition('type', 'media'));
+  if ($field = $manager->getFieldStorageDefinition('type', 'media')) {
+    $manager->uninstallFieldStorageDefinition($field);
+  }
 }
