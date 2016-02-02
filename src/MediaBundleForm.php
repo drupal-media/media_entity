@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\language\Entity\ContentLanguageSettings;
 use Drupal\media_entity\MediaTypeManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -132,6 +133,25 @@ class MediaBundleForm extends EntityForm {
       $form['type_configuration'][$plugin] += $instance->buildConfigurationForm([], $form_state);
       // Store the instance for validate and submit handlers.
       $this->configurableInstances[$plugin] = $instance;
+    }
+
+    if ($this->moduleHandler->moduleExists('language')) {
+      $form['language'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Language settings'),
+        '#group' => 'additional_settings',
+      );
+
+      $language_configuration = ContentLanguageSettings::loadByEntityTypeBundle('media', $bundle->id());
+
+      $form['language']['language_configuration'] = array(
+        '#type' => 'language_configuration',
+        '#entity_information' => array(
+          'entity_type' => 'media',
+          'bundle' => $bundle->id(),
+        ),
+        '#default_value' => $language_configuration,
+      );
     }
 
     return $form;
