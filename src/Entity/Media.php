@@ -251,7 +251,7 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setReadOnly(TRUE);
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
-      ->setLabel(t('Language code'))
+      ->setLabel(t('Language'))
       ->setDescription(t('The media language code.'))
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE)
