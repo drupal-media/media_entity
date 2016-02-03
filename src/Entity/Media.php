@@ -251,9 +251,17 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setReadOnly(TRUE);
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
-      ->setLabel(t('Language code'))
+      ->setLabel(t('Language'))
       ->setDescription(t('The media language code.'))
-      ->setRevisionable(TRUE);
+      ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('view', array(
+        'type' => 'hidden',
+      ))
+      ->setDisplayOptions('form', array(
+        'type' => 'language_select',
+        'weight' => 2,
+      ));
 
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Media name'))
