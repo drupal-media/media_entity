@@ -39,6 +39,7 @@ use Drupal\media_entity\MediaInterface;
  *     "label",
  *     "description",
  *     "type",
+ *     "new_revision",
  *     "third_party_settings",
  *     "type_configuration",
  *     "field_map",
@@ -79,6 +80,13 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * @var string
    */
   public $type = 'generic';
+
+  /**
+   * Default value of the 'Create new revision' checkbox of this media bundle.
+   *
+   * @var bool
+   */
+  protected $new_revision = FALSE;
 
   /**
    * The type plugin configuration.
@@ -172,6 +180,20 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
       $this->typePluginCollection = new DefaultSingleLazyPluginCollection(\Drupal::service('plugin.manager.media_entity.type'), $this->type, $this->type_configuration);
     }
     return $this->typePluginCollection;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isNewRevision() {
+    return $this->new_revision;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setNewRevision($new_revision) {
+    $this->new_revision = $new_revision;
   }
 
 }

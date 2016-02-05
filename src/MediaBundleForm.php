@@ -154,8 +154,14 @@ class MediaBundleForm extends EntityForm {
       );
     }
 
-    return $form;
-  }
+    $form['new_revision'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Create new revision'),
+      '#default_value' => $bundle->isNewRevision(),
+    ];
+
+     return $form;
+   }
 
   /**
    * {@inheritdoc}
@@ -209,6 +215,7 @@ class MediaBundleForm extends EntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     /** @var  \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $this->entity;
+    $bundle->setNewRevision($form_state->getValue('new_revision'));
     $status = $bundle->save();
 
     $t_args = array('%name' => $bundle->label());
