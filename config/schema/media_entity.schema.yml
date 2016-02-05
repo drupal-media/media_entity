@@ -22,11 +22,6 @@ media_entity.bundle.*:
     type:
       type: string
       label: 'Type plugin ID'
-    third_party_settings:
-      type: sequence
-      label: 'Third party settings'
-      sequence:
-        type: media_entity.bundle.third_party.[%key]
     type_configuration:
       type: media_entity.bundle.type.[%parent.type]
     field_map:
