@@ -160,8 +160,8 @@ class MediaBundleForm extends EntityForm {
       '#default_value' => $bundle->isNewRevision(),
     ];
 
-     return $form;
-   }
+    return $form;
+  }
 
   /**
    * {@inheritdoc}
