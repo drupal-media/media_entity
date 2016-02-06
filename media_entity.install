@@ -18,6 +18,9 @@ function media_entity_install() {
  * Remove "type" base field.
  */
 function media_entity_update_8001() {
+  \Drupal::database()->update('media_field_data')
+    ->fields(['type' => NULL])
+    ->execute();
   $manager = \Drupal::entityDefinitionUpdateManager();
   if ($field = $manager->getFieldStorageDefinition('type', 'media')) {
     $manager->uninstallFieldStorageDefinition($field);
