@@ -67,4 +67,12 @@ interface MediaTypeInterface extends PluginInspectionInterface, ConfigurablePlug
    */
   public function thumbnail(MediaInterface $media);
 
+  /**
+   * Gets the default thumbnail image.
+   *
+   * @return string
+   *   Uri of the default thumbnail image.
+   */
+  public function getDefaultThumbnail();
+
 }
