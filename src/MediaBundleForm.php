@@ -158,6 +158,7 @@ class MediaBundleForm extends EntityForm {
       '#type' => 'checkbox',
       '#title' => t('Create new revision'),
       '#default_value' => $bundle->isNewRevision(),
+      '#description' => t('Automatically create a new revision of media entities. Users with the <em>Administer media</em> permission will be able to override this option.'),
     ];
 
     return $form;
