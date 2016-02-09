@@ -76,6 +76,13 @@ class Media extends ContentEntityBase implements MediaInterface {
   const NOT_PUBLISHED = 0;
 
   /**
+   * A queue based media operation to download thumbnails is being performed.
+   *
+   * @var boolean
+   */
+  protected $queued_thumbnail_download = FALSE;
+
+  /**
    * {@inheritdoc}
    */
   public function getCreatedTime() {
@@ -122,6 +129,13 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
+  public function setQueuedThumbnailDownload() {
+    $this->queued_thumbnail_download = TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPublisherId() {
     return $this->get('uid')->target_id;
   }
@@ -154,7 +168,7 @@ class Media extends ContentEntityBase implements MediaInterface {
     }
 
     // Set thumbnail.
-    if (!$this->get('thumbnail')->entity) {
+    if (!$this->get('thumbnail')->entity || !empty($this->queued_thumbnail_download)) {
       $this->automaticallySetThumbnail();
     }
 
@@ -168,7 +182,17 @@ class Media extends ContentEntityBase implements MediaInterface {
         $this->set($destination_field, $value);
       }
     }
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+    if (!$update && $this->bundle->entity->getQueueThumbnailDownloads()) {
+      $queue = \Drupal::queue('media_entity_thumbnail');
+      $queue->createItem(['id' => $this->id()]);
+    }
   }
 
   /**
@@ -176,9 +200,12 @@ class Media extends ContentEntityBase implements MediaInterface {
    */
   public function automaticallySetThumbnail() {
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
-
-    $thumbnail_uri = $this->getType()->thumbnail($this);
-
+    if ($this->bundle->entity->getQueueThumbnailDownloads() && $this->isNew()) {
+      $thumbnail_uri = $this->getType()->getDefaultImage();
+    }
+    else {
+      $thumbnail_uri = $this->getType()->thumbnail($this);
+    }
     $existing = \Drupal::entityQuery('file')
       ->condition('uri', $thumbnail_uri)
       ->execute();

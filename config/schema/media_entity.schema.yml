@@ -22,6 +22,9 @@ media_entity.bundle.*:
     type:
       type: string
       label: 'Type plugin ID'
+    queue_thumbnail_downloads:
+      type: boolean
+      label: 'Queue thumbnail downloads'
     third_party_settings:
       type: sequence
       label: 'Third party settings'

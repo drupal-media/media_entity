@@ -117,6 +117,13 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
   /**
    * {@inheritdoc}
    */
+  public function getDefaultThumbnail() {
+    return '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function label() {
     return $this->label;
   }
