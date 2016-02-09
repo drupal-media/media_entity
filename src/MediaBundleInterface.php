@@ -37,6 +37,22 @@ interface MediaBundleInterface extends ConfigEntityInterface {
   public static function exists($id);
 
   /**
+   * Returns whether thumbnail downloads are queued.
+   *
+   * @return bool
+   *   Returns download now or later.
+   */
+  public function getQueueThumbnailDownloads();
+
+  /**
+   * Sets a flag to indicate that thumbnails should be downloaded via a queue.
+   *
+   * @param bool $queue_thumbnail_downloads
+   *   The queue downloads flag.
+   */
+  public function setQueueThumbnailDownloads($queue_thumbnail_downloads);
+
+  /**
    * Returns the Media bundle description.
    *
    * @return string

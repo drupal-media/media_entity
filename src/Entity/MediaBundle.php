@@ -39,6 +39,7 @@ use Drupal\media_entity\MediaInterface;
  *     "label",
  *     "description",
  *     "type",
+ *     "queue_thumbnail_downloads",
  *     "third_party_settings",
  *     "type_configuration",
  *     "field_map",
@@ -79,6 +80,13 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * @var string
    */
   public $type = 'generic';
+
+  /**
+   * Are thumbnail downloads queued.
+   *
+   * @var bool
+   */
+  public $queue_thumbnail_downloads = FALSE;
 
   /**
    * The type plugin configuration.
@@ -152,6 +160,20 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   public function setTypeConfiguration($configuration) {
     $this->type_configuration = $configuration;
     $this->typePluginCollection = NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getQueueThumbnailDownloads() {
+    return $this->queue_thumbnail_downloads;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setQueueThumbnailDownloads($queue_thumbnail_downloads) {
+    $this->queue_thumbnail_downloads = $queue_thumbnail_downloads;
   }
 
   /**

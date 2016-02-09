@@ -35,6 +35,11 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface 
   public function setCreatedTime($timestamp);
 
   /**
+   * Sets a flag to indicate the thumbnail will be retrieved via a queue.
+   */
+  public function setQueuedThumbnailDownload();
+
+  /**
    * Returns the media publisher user entity.
    *
    * @return \Drupal\user\UserInterface

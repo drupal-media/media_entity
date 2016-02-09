@@ -98,6 +98,17 @@ class MediaBundleForm extends EntityForm {
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     );
 
+     $form['queue_thumbail_downloads'] = array(
+       '#type' => 'radios',
+       '#title' => t('Queue thumbnail downloads'),
+       '#default_value' => $bundle->getQueueThumbnailDownloads(),
+       '#options' => [
+         0 => $this->t('No'),
+         1 => $this->t('Yes'),
+       ],
+       '#description' => t('Download thumbnails via a queue.'),
+     );
+
     $plugins = $this->mediaTypeManager->getDefinitions();
     $options = array();
     foreach ($plugins as $plugin => $definition) {
