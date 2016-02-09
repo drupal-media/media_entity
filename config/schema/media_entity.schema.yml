@@ -22,6 +22,9 @@ media_entity.bundle.*:
     type:
       type: string
       label: 'Type plugin ID'
+    new_revision:
+      type: boolean
+      label: 'Whether a new revision should be created by default'
     third_party_settings:
       type: sequence
       label: 'Third party settings'

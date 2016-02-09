@@ -78,14 +78,14 @@ class MediaForm extends ContentEntityForm {
     $form['revision_information']['revision'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Create new revision'),
-      '#default_value' => $media->isNewRevision(),
+      '#default_value' => $media->bundle->entity->isNewRevision(),
       '#access' => $account->hasPermission('administer media'),
     );
 
     // Check the revision log checkbox when the log textarea is filled in.
     // This must not happen if "Create new revision" is enabled by default,
     // since the state would auto-disable the checkbox otherwise.
-    if (!$media->isNewRevision()) {
+    if (!$media->bundle->entity->isNewRevision()) {
       $form['revision_information']['revision']['#states'] = array(
         'checked' => array(
           'textarea[name="revision_log"]' => array('empty' => FALSE),
