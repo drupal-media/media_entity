@@ -20,8 +20,8 @@ class MediaInlineForm extends EntityInlineForm {
   /**
    * {@inheritdoc}
    */
-  public function tableFields($bundles) {
-    $fields = parent::tableFields($bundles);
+  public function getTableFields($bundles) {
+    $fields = parent::getTableFields($bundles);
 
     unset($fields['name']);
 
@@ -43,7 +43,7 @@ class MediaInlineForm extends EntityInlineForm {
   /**
    * {@inheritdoc}
    */
-  public static function entityFormSubmit(&$entity_form, FormStateInterface $form_state) {
+  public function entityFormSubmit(&$entity_form, FormStateInterface $form_state) {
     parent::entityFormSubmit($entity_form, $form_state);
 
     /** @var \Drupal\media_entity\MediaInterface $entity */
