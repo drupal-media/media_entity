@@ -35,7 +35,7 @@ class SaveMedia extends ActionBase {
    * {@inheritdoc}
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
-    /** @var \Drupal\media_entity\Entity\Media $object */
+    /** @var \Drupal\media_entity\MediaInterface $object */
     return $object->access('update', $account, $return_as_object);
   }
 

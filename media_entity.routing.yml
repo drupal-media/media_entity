@@ -50,7 +50,7 @@ entity.media.multiple_delete_confirm:
   defaults:
     _form: '\Drupal\media_entity\Form\DeleteMultiple'
   requirements:
-    _permission: 'administer media'
+    _permission: 'delete any media'
 
 entity.media_bundle.collection:
   path: '/admin/structure/media'
