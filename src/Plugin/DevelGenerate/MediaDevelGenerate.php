@@ -350,7 +350,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
     }
 
     $values['kill'] = drush_get_option('kill');
-    $values['title_length'] = drush_get_option('title_length', 6);
+    $values['name_length'] = drush_get_option('name_length', 6);
     $values['num'] = array_shift($args);
     $selected_bundles = _convert_csv_to_array(drush_get_option('bundles', []));
 
@@ -414,7 +414,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
 
     $media = $this->mediaStorage->create([
       'bundle' => $bundle,
-      'name' => $this->getRandom()->sentences(mt_rand(1, $results['title_length']), TRUE),
+      'name' => $this->getRandom()->sentences(mt_rand(1, $results['name_length']), TRUE),
       'uid' => $uid,
       'revision' => mt_rand(0, 1),
       'status' => TRUE,
