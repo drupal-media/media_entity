@@ -43,7 +43,7 @@ class MediaInlineForm extends EntityInlineForm {
   /**
    * {@inheritdoc}
    */
-  public function entityFormSubmit(&$entity_form, FormStateInterface $form_state) {
+  public function entityFormSubmit(array &$entity_form, FormStateInterface $form_state) {
     parent::entityFormSubmit($entity_form, $form_state);
 
     /** @var \Drupal\media_entity\MediaInterface $entity */
