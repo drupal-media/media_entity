@@ -11,6 +11,7 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 
@@ -153,6 +154,17 @@ class Media extends ContentEntityBase implements MediaInterface {
    */
   public function getType() {
     return $this->bundle->entity->getType();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postCreate(EntityStorageInterface $storage) {
+    parent::postCreate($storage);
+
+    /** @var MediaBundleInterface $bundle */
+    $bundle = $this->entityTypeManager()->getStorage('media_bundle')->load($this->bundle());;
+    $this->setPublished($bundle->getStatus());
   }
 
   /**

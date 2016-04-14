@@ -146,9 +146,37 @@ class MediaBundleForm extends EntityForm {
       $this->configurableInstances[$plugin] = $instance;
     }
 
+    $form['additional_settings'] = array(
+      '#type' => 'vertical_tabs',
+      '#attached' => array(
+        'library' => array('node/drupal.content_types'),
+      ),
+    );
+
+    $form['workflow'] = array(
+      '#type' => 'details',
+      '#title' => t('Publishing options'),
+      '#group' => 'additional_settings',
+    );
+
+    $workflow_options = array(
+      'status' => $bundle->getStatus(),
+    );
+    // Prepare workflow options to be used for 'checkboxes' form element.
+    $keys = array_keys(array_filter($workflow_options));
+    $workflow_options = array_combine($keys, $keys);
+    $form['workflow']['options'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Default options'),
+      '#default_value' => $workflow_options,
+      '#options' => array(
+        'status' => t('Published'),
+      ),
+    );
+
     if ($this->moduleHandler->moduleExists('language')) {
       $form['language'] = array(
-        '#type' => 'fieldset',
+        '#type' => 'details',
         '#title' => t('Language settings'),
         '#group' => 'additional_settings',
       );
@@ -184,6 +212,11 @@ class MediaBundleForm extends EntityForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
+
+    $workflow_options = ['status'];
+    foreach ($workflow_options as $option) {
+      $this->entity->$option = (bool) $form_state->getValue(['options', $option]);
+    }
 
     // Let the selected plugin save its settings.
     $plugin = $this->entity->getType()->getPluginId();
