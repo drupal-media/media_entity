@@ -201,7 +201,7 @@ class Media extends ContentEntityBase implements MediaInterface {
   public function automaticallySetThumbnail() {
     /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     if ($this->bundle->entity->getQueueThumbnailDownloads() && $this->isNew()) {
-      $thumbnail_uri = $this->getType()->getDefaultImage();
+      $thumbnail_uri = $this->getType()->getDefaultThumbnail();
     }
     else {
       $thumbnail_uri = $this->getType()->thumbnail($this);
