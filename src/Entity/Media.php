@@ -216,7 +216,9 @@ class Media extends ContentEntityBase implements MediaInterface {
     else {
       /** @var \Drupal\file\FileInterface $file */
       $file = $this->entityManager()->getStorage('file')->create(['uri' => $thumbnail_uri]);
-      $file->setOwner($this->getPublisher());
+      if ($publisher = $this->getPublisher()) {
+        $file->setOwner($publisher);
+      }
       $file->setPermanent();
       $file->save();
       $this->thumbnail->target_id = $file->id();
