@@ -41,6 +41,7 @@ trait MediaTestTrait {
       'type' => $type_name,
       'type_configuration' => array(),
       'field_map' => array(),
+      'status' => 1,
     );
 
     $bundle = MediaBundle::create($values);

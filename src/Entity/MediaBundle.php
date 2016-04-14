@@ -43,6 +43,7 @@ use Drupal\media_entity\MediaInterface;
  *     "third_party_settings",
  *     "type_configuration",
  *     "field_map",
+ *     "status",
  *   },
  *   links = {
  *     "edit-form" = "/admin/structure/media/manage/{media_bundle}",
@@ -108,6 +109,13 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * @var array
    */
   public $field_map = array();
+
+  /**
+   * Default status of this media bundle.
+   *
+   * @var array
+   */
+  public $status = TRUE;
 
   /**
    * {@inheritdoc}
@@ -196,4 +204,10 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
     return $this->typePluginCollection;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getStatus() {
+    return $this->status;
+  }
 }

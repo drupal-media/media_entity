@@ -127,7 +127,7 @@ class MediaUITest extends WebTestBase {
     $edit = [
       'name[0][value]' => $this->randomMachineName(),
     ];
-    $this->drupalPostForm('media/add', $edit, t('Save'));
+    $this->drupalPostForm('media/add', $edit, t('Save and publish'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
     $media_id = \Drupal::entityQuery('media')->execute();
     $media_id = reset($media_id);
@@ -140,7 +140,7 @@ class MediaUITest extends WebTestBase {
     // Tests media edit form.
     $this->drupalGet('media/' . $media_id . '/edit');
     $edit['name[0][value]'] = $this->randomMachineName();
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->drupalPostForm(NULL, $edit, t('Save and keep published'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
 
     // Assert that the media list updates after an edit.
@@ -303,7 +303,7 @@ class MediaUITest extends WebTestBase {
       'name[0][value]' => $name,
     ];
     // Save it and retrieve new media item ID, then return all information.
-    $this->drupalPostForm('media/add/' . $media_bundle['id'], $edit, t('Save'));
+    $this->drupalPostForm('media/add/' . $media_bundle['id'], $edit, t('Save and publish'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
     $media_id = \Drupal::entityQuery('media')->execute();
     $media_id = reset($media_id);
