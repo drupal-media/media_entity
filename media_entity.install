@@ -30,3 +30,29 @@ function media_entity_update_8001() {
     $manager->uninstallFieldStorageDefinition($field);
   }
 }
+
+/**
+ * Ensure media entity status value (defaulting to 1).
+ */
+function media_entity_update_8002() {
+  // Ensure status values in 'media_field_data' table.
+  if (\Drupal::database()->schema()->tableExists('media_field_data')) {
+    \Drupal::database()
+      ->update('media_field_data')
+      ->fields(['status' => 1])
+      ->condition('status', NULL, 'IS NULL')
+      ->execute();
+  }
+
+  // Ensure status values in 'media_field_revision' table.
+  if (\Drupal::database()->schema()->tableExists('media_field_revision')) {
+    \Drupal::database()
+      ->update('media_field_revision')
+      ->fields(['status' => 1])
+      ->condition('status', NULL, 'IS NULL')
+      ->execute();
+  }
+
+  // Flush all caches.
+  drupal_flush_all_caches();
+}
