@@ -23,7 +23,7 @@ display:
       access:
         type: perm
         options:
-          perm: 'view media'
+          perm: 'access media overview'
       cache:
         type: tag
         options: {  }
