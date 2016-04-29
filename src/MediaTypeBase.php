@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\MediaTypeBase.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Component\Plugin\PluginBase;
@@ -16,7 +11,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Component\Utility\NestedArray;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
-
 
 /**
  * Base implementation of media type plugin.

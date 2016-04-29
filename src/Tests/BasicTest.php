@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Tests\BasicTest.
- */
-
 namespace Drupal\media_entity\Tests;
 
 use Drupal\media_entity\Entity\Media;
@@ -53,7 +48,7 @@ class BasicTest extends WebTestBase {
     $this->assertTrue($bundle_exists, 'The new media bundle has been created in the database.');
 
     // Test default bundle created from default configuration.
-    $this->container->get('module_installer')->install(['media_entity_test']);
+    $this->container->get('module_installer')->install(['media_entity_test_bundle']);
     $test_bundle = $bundle_storage->load('test');
     $this->assertTrue((bool) $test_bundle, 'The media bundle from default configuration has been created in the database.');
     $this->assertEqual($test_bundle->get('label'), 'Test bundle', 'Correct label detected.');

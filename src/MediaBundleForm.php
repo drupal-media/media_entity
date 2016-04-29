@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\MediaBundleForm.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\EntityForm;
@@ -12,7 +7,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\language\Entity\ContentLanguageSettings;
-use Drupal\media_entity\MediaTypeManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -53,6 +47,22 @@ class MediaBundleForm extends EntityForm {
   }
 
   /**
+   * Ajax callback triggered by the type provider select element.
+   *
+   * @param array $form
+   *   The form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Current form state.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The ajax response.
+   */
+  public function ajaxTypeProviderData(array $form, FormStateInterface $form_state) {
+    $plugin = $this->entity->getType()->getPluginId();
+    return $form['type_configuration'][$plugin];
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
@@ -66,39 +76,39 @@ class MediaBundleForm extends EntityForm {
       $form['#title'] = $this->t('Add media bundle');
     }
     elseif ($this->operation == 'edit') {
-      $form['#title'] = $this->t('Edit %label media bundle', array('%label' => $bundle->label()));
+      $form['#title'] = $this->t('Edit %label media bundle', ['%label' => $bundle->label()]);
     }
 
-    $form['label'] = array(
+    $form['label'] = [
       '#title' => t('Label'),
       '#type' => 'textfield',
       '#default_value' => $bundle->label(),
       '#description' => t('The human-readable name of this media bundle.'),
       '#required' => TRUE,
       '#size' => 30,
-    );
+    ];
 
     // @todo: '#disabled' not always FALSE.
-    $form['id'] = array(
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $bundle->id(),
       '#maxlength' => 32,
       '#disabled' => FALSE,
-      '#machine_name' => array(
-        'exists' => array('\Drupal\media_entity\Entity\MediaBundle', 'exists'),
-        'source' => array('label'),
-      ),
+      '#machine_name' => [
+        'exists' => ['\Drupal\media_entity\Entity\MediaBundle', 'exists'],
+        'source' => ['label'],
+      ],
       '#description' => t('A unique machine-readable name for this media bundle.'),
-    );
+    ];
 
-    $form['description'] = array(
+    $form['description'] = [
       '#title' => t('Description'),
       '#type' => 'textarea',
       '#default_value' => $bundle->getDescription(),
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
-    );
+    ];
 
-    $form['queue_thumbnail_downloads'] = array(
+    $form['queue_thumbnail_downloads'] = [
       '#type' => 'radios',
       '#title' => t('Queue thumbnail downloads'),
       '#default_value' => (int) $bundle->getQueueThumbnailDownloads(),
@@ -107,90 +117,97 @@ class MediaBundleForm extends EntityForm {
         1 => $this->t('Yes'),
       ],
       '#description' => t('Download thumbnails via a queue.'),
-    );
+    ];
 
     $plugins = $this->mediaTypeManager->getDefinitions();
-    $options = array();
+    $options = [];
     foreach ($plugins as $plugin => $definition) {
       $options[$plugin] = $definition['label'];
     }
 
-    $form['type'] = array(
+    $form['type'] = [
       '#type' => 'select',
       '#title' => t('Type provider'),
       '#default_value' => $bundle->getType()->getPluginId(),
       '#options' => $options,
       '#description' => t('Media type provider plugin that is responsible for additional logic related to this media.'),
-    );
+      '#ajax' => [
+        'callback' => '::ajaxTypeProviderData',
+        'progress' => [
+          'type' => 'throbber',
+          'message' => $this->t('Updating type provider configuration form.'),
+        ],
+        'wrapper' => 'edit-type-configuration-plugin-wrapper',
+      ]
+    ];
 
-    $form['type_configuration'] = array(
+    $form['type_configuration'] = [
       '#type' => 'fieldset',
       '#title' => t('Type provider configuration'),
       '#tree' => TRUE,
-    );
+    ];
 
-    foreach ($plugins as $plugin => $definition) {
-      $plugin_configuration = $bundle->getType()->getPluginId() == $plugin ? $bundle->type_configuration : array();
-      $form['type_configuration'][$plugin] = array(
-        '#type' => 'container',
-        '#states' => array(
-          'visible' => array(
-            ':input[name="type"]' => array('value' => $plugin),
-          ),
-        ),
-      );
+    if ($plugin = $bundle->getType()->getPluginId()) {
+      $plugin_configuration = (empty($this->configurableInstances[$plugin]['plugin_config'])) ? $bundle->type_configuration : $this->configurableInstances[$plugin]['plugin_config'];
       /** @var \Drupal\media_entity\MediaTypeBase $instance */
       $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+      // Store the configuration for validate and submit handlers.
+      $this->configurableInstances[$plugin]['plugin_config'] = $plugin_configuration;
+
+      $form['type_configuration'][$plugin] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'id' => 'edit-type-configuration-plugin-wrapper',
+        ]
+      ];
       $form['type_configuration'][$plugin] += $instance->buildConfigurationForm([], $form_state);
-      // Store the instance for validate and submit handlers.
-      $this->configurableInstances[$plugin] = $instance;
     }
 
-    $form['additional_settings'] = array(
+    $form['additional_settings'] = [
       '#type' => 'vertical_tabs',
-      '#attached' => array(
-        'library' => array('node/drupal.content_types'),
-      ),
-    );
+      '#attached' => [
+        'library' => ['node/drupal.content_types'],
+      ],
+    ];
 
-    $form['workflow'] = array(
+    $form['workflow'] = [
       '#type' => 'details',
       '#title' => t('Publishing options'),
       '#group' => 'additional_settings',
-    );
+    ];
 
-    $workflow_options = array(
+    $workflow_options = [
       'status' => $bundle->getStatus(),
-    );
+    ];
     // Prepare workflow options to be used for 'checkboxes' form element.
     $keys = array_keys(array_filter($workflow_options));
     $workflow_options = array_combine($keys, $keys);
-    $form['workflow']['options'] = array(
+    $form['workflow']['options'] = [
       '#type' => 'checkboxes',
       '#title' => t('Default options'),
       '#default_value' => $workflow_options,
-      '#options' => array(
+      '#options' => [
         'status' => t('Published'),
-      ),
-    );
+      ],
+    ];
 
     if ($this->moduleHandler->moduleExists('language')) {
-      $form['language'] = array(
+      $form['language'] = [
         '#type' => 'details',
         '#title' => t('Language settings'),
         '#group' => 'additional_settings',
-      );
+      ];
 
       $language_configuration = ContentLanguageSettings::loadByEntityTypeBundle('media', $bundle->id());
 
-      $form['language']['language_configuration'] = array(
+      $form['language']['language_configuration'] = [
         '#type' => 'language_configuration',
-        '#entity_information' => array(
+        '#entity_information' => [
           'entity_type' => 'media',
           'bundle' => $bundle->id(),
-        ),
+        ],
         '#default_value' => $language_configuration,
-      );
+      ];
     }
 
     return $form;
@@ -204,7 +221,9 @@ class MediaBundleForm extends EntityForm {
 
     // Let the selected plugin validate its settings.
     $plugin = $this->entity->getType()->getPluginId();
-    $this->configurableInstances[$plugin]->validateConfigurationForm($form, $form_state);
+    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : array();
+    $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+    $instance->validateConfigurationForm($form, $form_state);
   }
 
   /**
@@ -220,7 +239,9 @@ class MediaBundleForm extends EntityForm {
 
     // Let the selected plugin save its settings.
     $plugin = $this->entity->getType()->getPluginId();
-    $this->configurableInstances[$plugin]->submitConfigurationForm($form, $form_state);
+    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : array();
+    $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+    $instance->submitConfigurationForm($form, $form_state);
   }
 
   /**
@@ -238,13 +259,19 @@ class MediaBundleForm extends EntityForm {
    * {@inheritdoc}
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    $configuration = $form_state->getValue('type_configuration');
+
+    // Store previous plugin config.
+    $plugin = $entity->getType()->getPluginId();
+    $this->configurableInstances[$plugin]['plugin_config'] = empty($configuration[$plugin]) ? [] : $configuration[$plugin];
+
     /** @var \Drupal\media_entity\MediaBundleInterface $entity */
     parent::copyFormValuesToEntity($entity, $form, $form_state);
 
     // Use type configuration for the plugin that was chosen.
-    $configuration = $form_state->getValue('type_configuration');
-    $configuration = empty($configuration[$entity->getType()->getPluginId()]) ? [] : $configuration[$entity->getType()->getPluginId()];
-    $entity->set('type_configuration', $configuration);
+    $plugin = $entity->getType()->getPluginId();
+    $plugin_configuration = empty($configuration[$plugin]) ? [] : $configuration[$plugin];
+    $entity->set('type_configuration', $plugin_configuration);
   }
 
   /**
@@ -255,7 +282,7 @@ class MediaBundleForm extends EntityForm {
     $bundle = $this->entity;
     $status = $bundle->save();
 
-    $t_args = array('%name' => $bundle->label());
+    $t_args = ['%name' => $bundle->label()];
     if ($status == SAVED_UPDATED) {
       drupal_set_message(t('The media bundle %name has been updated.', $t_args));
     }
@@ -264,7 +291,7 @@ class MediaBundleForm extends EntityForm {
       $this->logger('media')->notice('Added bundle %name.', $t_args);
     }
 
-    $form_state->setRedirectUrl($bundle->urlInfo('collection'));
+    $form_state->setRedirectUrl($bundle->toUrl('collection'));
   }
 
 }

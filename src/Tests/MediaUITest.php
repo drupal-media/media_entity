@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Tests\MediaUITest.
- */
-
 namespace Drupal\media_entity\Tests;
 
 use Drupal\Component\Utility\Xss;
@@ -74,6 +69,8 @@ class MediaUITest extends WebTestBase {
    * Tests a media bundle administration.
    */
   public function testMediaBundles() {
+    $this->container->get('module_installer')->install(['media_entity_test_type']);
+
     // Test and create one media bundle.
     $bundle = $this->createMediaBundle();
 
@@ -88,19 +85,35 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('label', $bundle['label']);
     $this->assertFieldByName('description', $bundle['description']);
     $this->assertFieldByName('type', $bundle['type']);
+    $this->assertText("This type provider doesn't need configuration.");
+
+    // Try to change media type and check if new configuration sub-form appears.
+    $this->drupalPostAjaxForm(NULL, ['type' => 'test_type'], 'type');
+    $this->assertFieldByName('type_configuration[test_type][test_config_value]', 'This is default value.');
 
     // Edit and save media bundle form fields with new values.
     $bundle['label'] = $this->randomMachineName();
     $bundle['description'] = $this->randomMachineName();
-    $bundle['type'] = 'generic';
+    $bundle['type'] = 'test_type';
+    $bundle['type_configuration[test_type][test_config_value]'] = 'This is new config value.';
     $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
 
-    // Test if edit worked and if new field values have been saved as
-    // expected.
+    // Test if edit worked and if new field values have been saved as expected.
     $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
     $this->assertFieldByName('label', $bundle['label']);
     $this->assertFieldByName('description', $bundle['description']);
     $this->assertFieldByName('type', $bundle['type']);
+    $this->assertFieldByName('type_configuration[test_type][test_config_value]', 'This is new config value.');
+
+    /** @var \Drupal\media_entity\MediaBundleInterface $loaded_bundle */
+    $loaded_bundle = $this->container->get('entity_type.manager')
+      ->getStorage('media_bundle')
+      ->load($bundle['id']);
+    $this->assertEqual($loaded_bundle->id(), $bundle['id'], 'Media bundle ID saved correctly.');
+    $this->assertEqual($loaded_bundle->label(), $bundle['label'], 'Media bundle label saved correctly.');
+    $this->assertEqual($loaded_bundle->getDescription(), $bundle['description'], 'Media bundle description saved correctly.');
+    $this->assertEqual($loaded_bundle->getType()->getPluginId(), $bundle['type'], 'Media bundle type saved correctly.');
+    $this->assertEqual($loaded_bundle->getType()->getConfiguration()['test_config_value'], $bundle['type_configuration[test_type][test_config_value]'], 'Media bundle type configuration saved correctly.');
 
     // Tests media bundle delete form.
     $this->clickLink(t('Delete'));
