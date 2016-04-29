@@ -61,6 +61,7 @@ class MediaUITest extends WebTestBase {
       'update any media',
       'delete media',
       'delete any media',
+      'access media overview',
       // Other permissions.
       'administer views',
       'access content overview',
