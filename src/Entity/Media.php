@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Entity\Media.
- */
-
 namespace Drupal\media_entity\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;

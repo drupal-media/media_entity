@@ -1,17 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\MediaAccessController;
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
-
 
 /**
  * Defines an access controller for the media entity.

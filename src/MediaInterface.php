@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\MediaInterface.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\EntityChangedInterface;

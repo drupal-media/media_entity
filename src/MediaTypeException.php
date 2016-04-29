@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\media_entity\MediaTypeException.
- */
-
 namespace Drupal\media_entity;
 
 /**

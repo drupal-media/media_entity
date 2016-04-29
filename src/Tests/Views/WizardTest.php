@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Tests\Views\WizardTest.
- */
-
 namespace Drupal\media_entity\Tests\Views;
 
 use Drupal\views\Views;

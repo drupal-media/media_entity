@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Contains \Drupal\media_entity\Form\MediaInlineForm.
- */
-
 namespace Drupal\media_entity\Form;
 
 use Drupal\Core\Form\FormStateInterface;

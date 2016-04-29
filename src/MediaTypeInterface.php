@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\MediaTypeInterface.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;

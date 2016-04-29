@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Plugin\DevelGenerate\MediaDevelGenerate.
- */
-
 namespace Drupal\media_entity\Plugin\DevelGenerate;
 
 use Drupal\Core\Database\Connection;

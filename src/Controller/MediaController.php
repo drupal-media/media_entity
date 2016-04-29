@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Controller\MediaController.
- */
-
 namespace Drupal\media_entity\Controller;
 
 use Drupal\Core\Controller\ControllerBase;

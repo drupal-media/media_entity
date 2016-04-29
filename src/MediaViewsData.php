@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\MediaViewsData.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\views\EntityViewsData;

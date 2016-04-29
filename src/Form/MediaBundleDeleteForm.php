@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Form\MediaBundleDeleteForm.
- */
-
 namespace Drupal\media_entity\Form;
 
 use Drupal\Core\Entity\EntityDeleteForm;

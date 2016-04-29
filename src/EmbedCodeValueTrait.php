@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\EmbedCodeValueTrait.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Core\Field\FieldItemInterface;

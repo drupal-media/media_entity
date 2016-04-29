@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\media_entity\Plugin\Field\FieldFormatter\MediaThumbnailFormatter.
- */
-
 namespace Drupal\media_entity\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;

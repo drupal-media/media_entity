@@ -1,11 +1,5 @@
 <?php
 
-
-/**
- * @file
- * Contains \Drupal\media_entity\Tests\MediaTestTrait.
- */
-
 namespace Drupal\media_entity\Tests;
 
 use Drupal\media_entity\Entity\MediaBundle;

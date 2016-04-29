@@ -4,7 +4,6 @@ namespace Drupal\media_entity\Plugin\MediaEntity\Type;
 
 use Drupal\media_entity\MediaInterface;
 use Drupal\media_entity\MediaTypeBase;
-use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides generic media type.

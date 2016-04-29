@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains of \Drupal\media_entity\MediaStorage.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;

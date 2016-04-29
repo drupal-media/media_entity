@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\media_entity\MediaBundleListController.
- */
 
 namespace Drupal\media_entity;
 

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\media_entity\MediaForm.
- */
-
 namespace Drupal\media_entity;
 
 use Drupal\Core\Entity\ContentEntityForm;
@@ -37,7 +32,7 @@ class MediaForm extends ContentEntityForm {
 
     // If this is a new media, fill in the default values.
     if ($media->isNew()) {
-      
+
       $media->setPublisherId($this->currentUser()->id());
       $media->setCreatedTime(REQUEST_TIME);
     }

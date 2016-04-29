@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Annotation\MediaType.
- */
-
 namespace Drupal\media_entity\Annotation;
 
 use Drupal\Component\Annotation\Plugin;

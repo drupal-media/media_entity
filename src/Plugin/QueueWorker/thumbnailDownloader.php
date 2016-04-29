@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity\Plugin\QueueWorker\thumbnailDownloader.
- */
-
 namespace Drupal\media_entity\Plugin\QueueWorker;
 
 use Drupal\media_entity\Entity\Media;
