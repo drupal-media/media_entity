@@ -53,6 +53,22 @@ class MediaBundleForm extends EntityForm {
   }
 
   /**
+   * Ajax callback triggered by the type provider select element.
+   *
+   * @param array $form
+   *   The form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Current form state.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The ajax response.
+   */
+  public function ajaxTypeProviderData(array $form, FormStateInterface $form_state) {
+    $plugin = $this->entity->getType()->getPluginId();
+    return $form['type_configuration'][$plugin];
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
@@ -121,6 +137,14 @@ class MediaBundleForm extends EntityForm {
       '#default_value' => $bundle->getType()->getPluginId(),
       '#options' => $options,
       '#description' => t('Media type provider plugin that is responsible for additional logic related to this media.'),
+      '#ajax' => [
+        'callback' => '::ajaxTypeProviderData',
+        'progress' => array(
+          'type' => 'throbber',
+          'message' => $this->t('Updating type provider configuration form.'),
+        ),
+        'wrapper' => 'edit-type-configuration-plugin-wrapper',
+      ]
     );
 
     $form['type_configuration'] = array(
@@ -129,21 +153,20 @@ class MediaBundleForm extends EntityForm {
       '#tree' => TRUE,
     );
 
-    foreach ($plugins as $plugin => $definition) {
-      $plugin_configuration = $bundle->getType()->getPluginId() == $plugin ? $bundle->type_configuration : array();
-      $form['type_configuration'][$plugin] = array(
-        '#type' => 'container',
-        '#states' => array(
-          'visible' => array(
-            ':input[name="type"]' => array('value' => $plugin),
-          ),
-        ),
-      );
+    if ($plugin = $bundle->getType()->getPluginId()) {
+      $plugin_configuration = (empty($this->configurableInstances[$plugin]['plugin_config'])) ? $bundle->type_configuration : $this->configurableInstances[$plugin]['plugin_config'];
       /** @var \Drupal\media_entity\MediaTypeBase $instance */
       $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+      // Store the configuration for validate and submit handlers.
+      $this->configurableInstances[$plugin]['plugin_config'] = $plugin_configuration;
+
+      $form['type_configuration'][$plugin] = array(
+        '#type' => 'container',
+        '#attributes' => [
+          'id' => 'edit-type-configuration-plugin-wrapper',
+        ]
+      );
       $form['type_configuration'][$plugin] += $instance->buildConfigurationForm([], $form_state);
-      // Store the instance for validate and submit handlers.
-      $this->configurableInstances[$plugin] = $instance;
     }
 
     $form['additional_settings'] = array(
@@ -204,7 +227,9 @@ class MediaBundleForm extends EntityForm {
 
     // Let the selected plugin validate its settings.
     $plugin = $this->entity->getType()->getPluginId();
-    $this->configurableInstances[$plugin]->validateConfigurationForm($form, $form_state);
+    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : array();
+    $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+    $instance->validateConfigurationForm($form, $form_state);
   }
 
   /**
@@ -220,7 +245,9 @@ class MediaBundleForm extends EntityForm {
 
     // Let the selected plugin save its settings.
     $plugin = $this->entity->getType()->getPluginId();
-    $this->configurableInstances[$plugin]->submitConfigurationForm($form, $form_state);
+    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : array();
+    $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+    $instance->submitConfigurationForm($form, $form_state);
   }
 
   /**
@@ -238,13 +265,19 @@ class MediaBundleForm extends EntityForm {
    * {@inheritdoc}
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    $configuration = $form_state->getValue('type_configuration');
+
+    // Store previous plugin config.
+    $plugin = $entity->getType()->getPluginId();
+    $this->configurableInstances[$plugin]['plugin_config'] = empty($configuration[$plugin]) ? [] : $configuration[$plugin];
+
     /** @var \Drupal\media_entity\MediaBundleInterface $entity */
     parent::copyFormValuesToEntity($entity, $form, $form_state);
 
     // Use type configuration for the plugin that was chosen.
-    $configuration = $form_state->getValue('type_configuration');
-    $configuration = empty($configuration[$entity->getType()->getPluginId()]) ? [] : $configuration[$entity->getType()->getPluginId()];
-    $entity->set('type_configuration', $configuration);
+    $plugin = $entity->getType()->getPluginId();
+    $plugin_configuration = empty($configuration[$plugin]) ? [] : $configuration[$plugin];
+    $entity->set('type_configuration', $plugin_configuration);
   }
 
   /**

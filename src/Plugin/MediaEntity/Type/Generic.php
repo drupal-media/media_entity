@@ -43,4 +43,16 @@ class Generic extends MediaTypeBase {
     return $this->config->get('icon_base') . '/generic.png';
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form['text'] = [
+      '#type' => 'markup',
+      '#markup' => $this->t('This type provider doesn\'t need configuration.'),
+    ];
+
+    return $form;
+  }
+
 }
