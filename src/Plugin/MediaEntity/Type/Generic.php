@@ -2,6 +2,7 @@
 
 namespace Drupal\media_entity\Plugin\MediaEntity\Type;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\media_entity\MediaTypeBase;
 
