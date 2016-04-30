@@ -19,6 +19,16 @@ class TestType extends Generic {
   /**
    * {@inheritdoc}
    */
+  public function providedFields() {
+    return [
+      'field_1' => $this->t('Field 1'),
+      'field_2' => $this->t('Field 2'),
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function defaultConfiguration() {
     return [
       'test_config_value' => 'This is default value.',

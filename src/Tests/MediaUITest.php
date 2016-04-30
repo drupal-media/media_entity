@@ -23,13 +23,6 @@ class MediaUITest extends WebTestBase {
   protected $adminUser;
 
   /**
-   * The test media bundle.
-   *
-   * @var \Drupal\media_entity\MediaBundleInterface
-   */
-  protected $testBundle;
-
-  /**
    * Modules to enable.
    *
    * @var array
@@ -41,7 +34,6 @@ class MediaUITest extends WebTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->testBundle = $this->drupalCreateMediaBundle();
     $this->drupalPlaceBlock('local_actions_block');
     $this->drupalPlaceBlock('local_tasks_block');
     $this->adminUser = $this->drupalCreateUser([
@@ -87,16 +79,41 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('description', $bundle['description']);
     $this->assertFieldByName('type', $bundle['type']);
     $this->assertText("This type provider doesn't need configuration.");
+    $this->assertText('No metadata fields available.');
+    $this->assertText('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured blow. Information will only be mapped if the entity field is empty.');
 
     // Try to change media type and check if new configuration sub-form appears.
-    $this->drupalPostAjaxForm(NULL, ['type' => 'test_type'], 'type');
+    $commands = $this->drupalPostAjaxForm(NULL, ['type' => 'test_type'], 'type');
+    // WebTestBase::drupalProcessAjaxResponse() won't correctly execute our ajax
+    // commands so we have to do it manually. Code below is based on the logic
+    // in that function.
+    $content = $this->content;
+    $dom = new \DOMDocument();
+    @$dom->loadHTML($content);
+    $xpath = new \DOMXPath($dom);
+    foreach ($commands as $command) {
+      if ($command['command'] == 'insert' && $command['method'] == 'replaceWith') {
+        $wrapperNode = $xpath->query('//*[@id="' . ltrim($command['selector'], '#') . '"]')->item(0);
+        $newDom = new \DOMDocument();
+        @$newDom->loadHTML('<div>' . $command['data'] . '</div>');
+        $newNode = @$dom->importNode($newDom->documentElement->firstChild->firstChild, TRUE);
+        $wrapperNode->parentNode->replaceChild($newNode, $wrapperNode);
+        $content = $dom->saveHTML();
+        $this->setRawContent($content);
+      }
+    }
     $this->assertFieldByName('type_configuration[test_type][test_config_value]', 'This is default value.');
+    $this->assertText('Field 1', 'First metadata field found.');
+    $this->assertText('Field 2', 'Second metadata field found.');
+    $this->assertFieldByName('field_mapping[field_1]', '_none', 'First metadata field is not mapped by default.');
+    $this->assertFieldByName('field_mapping[field_2]', '_none', 'Second metadata field is not mapped by default.');
 
     // Edit and save media bundle form fields with new values.
     $bundle['label'] = $this->randomMachineName();
     $bundle['description'] = $this->randomMachineName();
     $bundle['type'] = 'test_type';
     $bundle['type_configuration[test_type][test_config_value]'] = 'This is new config value.';
+    $bundle['field_mapping[field_1]'] = 'name';
     $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
 
     // Test if edit worked and if new field values have been saved as expected.
@@ -105,6 +122,10 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('description', $bundle['description']);
     $this->assertFieldByName('type', $bundle['type']);
     $this->assertFieldByName('type_configuration[test_type][test_config_value]', 'This is new config value.');
+    $this->assertText('Field 1', 'First metadata field found.');
+    $this->assertText('Field 2', 'Second metadata field found.');
+    $this->assertFieldByName('field_mapping[field_1]', 'name', 'First metadata field is mapped to the name field.');
+    $this->assertFieldByName('field_mapping[field_2]', '_none', 'Second metadata field is not mapped.');
 
     /** @var \Drupal\media_entity\MediaBundleInterface $loaded_bundle */
     $loaded_bundle = $this->container->get('entity_type.manager')
@@ -115,6 +136,7 @@ class MediaUITest extends WebTestBase {
     $this->assertEqual($loaded_bundle->getDescription(), $bundle['description'], 'Media bundle description saved correctly.');
     $this->assertEqual($loaded_bundle->getType()->getPluginId(), $bundle['type'], 'Media bundle type saved correctly.');
     $this->assertEqual($loaded_bundle->getType()->getConfiguration()['test_config_value'], $bundle['type_configuration[test_type][test_config_value]'], 'Media bundle type configuration saved correctly.');
+    $this->assertEqual($loaded_bundle->field_map, ['field_1' => $bundle['field_mapping[field_1]']], 'Field mapping was saved correctly.');
 
     // Tests media bundle delete form.
     $this->clickLink(t('Delete'));
@@ -129,6 +151,8 @@ class MediaUITest extends WebTestBase {
    * Tests the media actions (add/edit/delete).
    */
   public function testMediaWithOnlyOneBundle() {
+    $bundle = $this->drupalCreateMediaBundle();
+
     // Assert that media item list is empty.
     $this->drupalGet('admin/content/media');
     $this->assertResponse(200);
@@ -136,7 +160,7 @@ class MediaUITest extends WebTestBase {
 
     $this->drupalGet('media/add');
     $this->assertResponse(200);
-    $this->assertUrl('media/add/' . $this->testBundle->id());
+    $this->assertUrl('media/add/' . $bundle->id());
 
     // Tests media item add form.
     $edit = [
@@ -179,10 +203,10 @@ class MediaUITest extends WebTestBase {
    * Tests the views wizards provided by the media module.
    */
   public function testMediaViewsWizard() {
-
+    $bundle = $this->drupalCreateMediaBundle();
     $data = [
       'name' => $this->randomMachineName(),
-      'bundle' => $this->testBundle->id(),
+      'bundle' => $bundle->id(),
       'type' => 'Unknown',
       'uid' => $this->adminUser->id(),
       'langcode' => \Drupal::languageManager()->getDefaultLanguage()->getId(),

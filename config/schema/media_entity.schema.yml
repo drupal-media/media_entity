@@ -28,8 +28,10 @@ media_entity.bundle.*:
     type_configuration:
       type: media_entity.bundle.type.[%parent.type]
     field_map:
-      type: mapping
+      type: sequence
       label: 'Field map'
+      sequence:
+        type: string
 
 action.configuration.media_delete_action:
   type: action_configuration_default

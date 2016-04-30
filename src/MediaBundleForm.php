@@ -2,6 +2,9 @@
 
 namespace Drupal\media_entity;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -29,12 +32,20 @@ class MediaBundleForm extends EntityForm {
   protected $mediaTypeManager;
 
   /**
+   * Entity field manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected $entityFieldManager;
+
+  /**
    * Constructs a new class instance.
    *
    * @param \Drupal\media_entity\MediaTypeManager $media_type_manager
    */
-  public function __construct(MediaTypeManager $media_type_manager) {
+  public function __construct(MediaTypeManager $media_type_manager, EntityFieldManagerInterface $entity_field_manager) {
     $this->mediaTypeManager = $media_type_manager;
+    $this->entityFieldManager = $entity_field_manager;
   }
 
   /**
@@ -42,7 +53,8 @@ class MediaBundleForm extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.media_entity.type')
+      $container->get('plugin.manager.media_entity.type'),
+      $container->get('entity_field.manager')
     );
   }
 
@@ -58,8 +70,13 @@ class MediaBundleForm extends EntityForm {
    *   The ajax response.
    */
   public function ajaxTypeProviderData(array $form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
     $plugin = $this->entity->getType()->getPluginId();
-    return $form['type_configuration'][$plugin];
+
+    $response->addCommand(new ReplaceCommand('#edit-type-configuration-plugin-wrapper', $form['type_configuration'][$plugin]));
+    $response->addCommand(new ReplaceCommand('#field-mapping-wrapper', $form['field_mapping']));
+
+    return $response;
   }
 
   /**
@@ -137,30 +154,81 @@ class MediaBundleForm extends EntityForm {
           'type' => 'throbber',
           'message' => $this->t('Updating type provider configuration form.'),
         ],
-        'wrapper' => 'edit-type-configuration-plugin-wrapper',
       ]
     ];
 
+    // Media type plugin configuration.
     $form['type_configuration'] = [
       '#type' => 'fieldset',
       '#title' => t('Type provider configuration'),
       '#tree' => TRUE,
     ];
 
-    if ($plugin = $bundle->getType()->getPluginId()) {
-      $plugin_configuration = (empty($this->configurableInstances[$plugin]['plugin_config'])) ? $bundle->type_configuration : $this->configurableInstances[$plugin]['plugin_config'];
+    /** @var \Drupal\media_entity\MediaTypeInterface $plugin */
+    if ($plugin = $bundle->getType()) {
+      $plugin_configuration = (empty($this->configurableInstances[$plugin->getPluginId()]['plugin_config'])) ? $bundle->type_configuration : $this->configurableInstances[$plugin->getPluginId()]['plugin_config'];
       /** @var \Drupal\media_entity\MediaTypeBase $instance */
-      $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
+      $instance = $this->mediaTypeManager->createInstance($plugin->getPluginId(), $plugin_configuration);
       // Store the configuration for validate and submit handlers.
-      $this->configurableInstances[$plugin]['plugin_config'] = $plugin_configuration;
+      $this->configurableInstances[$plugin->getPluginId()]['plugin_config'] = $plugin_configuration;
 
-      $form['type_configuration'][$plugin] = [
+      $form['type_configuration'][$plugin->getPluginId()] = [
         '#type' => 'container',
         '#attributes' => [
           'id' => 'edit-type-configuration-plugin-wrapper',
         ]
       ];
-      $form['type_configuration'][$plugin] += $instance->buildConfigurationForm([], $form_state);
+      $form['type_configuration'][$plugin->getPluginId()] += $instance->buildConfigurationForm([], $form_state);
+    }
+
+    // Field mapping configuration.
+    $form['field_mapping'] = [
+      '#type' => 'fieldset',
+      '#title' => t('Field mapping'),
+      '#tree' => TRUE,
+      '#attributes' => ['id' => 'field-mapping-wrapper'],
+      'description' => [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $this->t('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured blow. Information will only be mapped if the entity field is empty.'),
+      ],
+    ];
+
+    if (empty($plugin) || empty($plugin->providedFields())) {
+      $form['field_mapping']['empty_message'] = [
+        '#prefix' => '<em>',
+        '#suffix' => '</em>',
+        '#markup' => $this->t('No metadata fields available.'),
+      ];
+    }
+    else {
+      $skipped_fields = [
+        'mid',
+        'uuid',
+        'vid',
+        'bundle',
+        'langcode',
+        'default_langcode',
+        'uid',
+        'revision_timestamp',
+        'revision_log',
+        'revision_uid'
+      ];
+      $options = ['_none' => $this->t('- Skip field - ')];
+      foreach ($this->entityFieldManager->getFieldDefinitions('media', $bundle->id()) as $field_name => $field) {
+        if (!in_array($field_name, $skipped_fields)) {
+          $options[$field_name] = $field->getLabel();
+        }
+      }
+
+      foreach($plugin->providedFields() as $field_name => $field_label) {
+        $form['field_mapping'][$field_name] = [
+          '#type' => 'select',
+          '#title' => $field_label,
+          '#options' => $options,
+          '#default_value' => isset($bundle->field_map[$field_name]) ? $bundle->field_map[$field_name] : '_none',
+        ];
+      }
     }
 
     $form['additional_settings'] = [
@@ -272,6 +340,12 @@ class MediaBundleForm extends EntityForm {
     $plugin = $entity->getType()->getPluginId();
     $plugin_configuration = empty($configuration[$plugin]) ? [] : $configuration[$plugin];
     $entity->set('type_configuration', $plugin_configuration);
+
+    // Save field mapping.
+    $entity->field_map = array_filter(
+      $form_state->getValue('field_mapping', []),
+      function ($item) { return $item != '_none'; }
+    );
   }
 
   /**
