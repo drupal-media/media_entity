@@ -30,3 +30,11 @@ media_entity.bundle.*:
     field_map:
       type: mapping
       label: 'Field map'
+
+action.configuration.media_delete_action:
+  type: action_configuration_default
+  label: 'Delete media configuration'
+
+action.configuration.media_save_action:
+  type: action_configuration_default
+  label: 'Save media configuration'
