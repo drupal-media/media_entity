@@ -9,6 +9,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\user\UserInterface;
 
 /**
  * Defines the media entity class.
@@ -420,6 +421,66 @@ class Media extends ContentEntityBase implements MediaInterface {
    */
   public static function getCurrentUserId() {
     return array(\Drupal::currentUser()->id());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRevisionCreationTime() {
+    return $this->revision_timestamp->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRevisionCreationTime($timestamp) {
+    $this->revision_timestamp->value = $timestamp;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRevisionUser() {
+    return $this->revision_uid->entity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRevisionUser(UserInterface $account) {
+    $this->revision_uid->entity = $account;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRevisionUserId() {
+    return $this->revision_user->target_id;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRevisionUserId($user_id) {
+    $this->revision_user->target_id = $user_id;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRevisionLogMessage() {
+    return $this->revision_log->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRevisionLogMessage($revision_log_message) {
+    $this->revision_log->value = $revision_log_message;
+    return $this;
   }
 
 }

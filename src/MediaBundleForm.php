@@ -125,17 +125,6 @@ class MediaBundleForm extends EntityForm {
       '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     ];
 
-    $form['queue_thumbnail_downloads'] = [
-      '#type' => 'radios',
-      '#title' => t('Queue thumbnail downloads'),
-      '#default_value' => (int) $bundle->getQueueThumbnailDownloads(),
-      '#options' => [
-        0 => $this->t('No'),
-        1 => $this->t('Yes'),
-      ],
-      '#description' => t('Download thumbnails via a queue.'),
-    ];
-
     $plugins = $this->mediaTypeManager->getDefinitions();
     $options = [];
     foreach ($plugins as $plugin => $definition) {
@@ -246,6 +235,8 @@ class MediaBundleForm extends EntityForm {
 
     $workflow_options = [
       'status' => $bundle->getStatus(),
+      'new_revision' => $bundle->shouldCreateNewRevision(),
+      'queue_thumbnail_downloads' => $bundle->getQueueThumbnailDownloads(),
     ];
     // Prepare workflow options to be used for 'checkboxes' form element.
     $keys = array_keys(array_filter($workflow_options));
@@ -255,7 +246,17 @@ class MediaBundleForm extends EntityForm {
       '#title' => t('Default options'),
       '#default_value' => $workflow_options,
       '#options' => [
-        'status' => t('Published'),
+        'status' => $this->t('Published'),
+        'new_revision' => $this->t('Create new revision'),
+        'queue_thumbnail_downloads' => $this->t('Queue thumbnail downloads'),
+      ],
+      '#description' => [
+        '#theme' => 'item_list',
+        '#items' => [
+          ['#markup' => '<strong>' . $this->t('Published') .  ':</strong> ' . $this->t('Entities will be automatically published when they are created.')],
+          ['#markup' => '<strong>' . $this->t('Create new revision') .  ':</strong> ' . $this->t('Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.')],
+          ['#markup' => '<strong>' . $this->t('Queue thumbnail downloads') .  ':</strong> ' . $this->t('Download thumbnails via a queue.')],
+        ],
       ],
     ];
 
@@ -300,10 +301,12 @@ class MediaBundleForm extends EntityForm {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $workflow_options = ['status'];
+    $workflow_options = ['status', 'queue_thumbnail_downloads'];
     foreach ($workflow_options as $option) {
       $this->entity->$option = (bool) $form_state->getValue(['options', $option]);
     }
+
+    $this->entity->setNewRevision((bool) $form_state->getValue(['options', 'new_revision']));
 
     // Let the selected plugin save its settings.
     $plugin = $this->entity->getType()->getPluginId();

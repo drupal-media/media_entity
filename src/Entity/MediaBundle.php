@@ -35,6 +35,7 @@ use Drupal\media_entity\MediaInterface;
  *     "description",
  *     "type",
  *     "queue_thumbnail_downloads",
+ *     "new_revision",
  *     "third_party_settings",
  *     "type_configuration",
  *     "field_map",
@@ -83,6 +84,13 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * @var bool
    */
   public $queue_thumbnail_downloads = FALSE;
+
+  /**
+   * Default value of the 'Create new revision' checkbox of this media bundle.
+   *
+   * @var bool
+   */
+  protected $new_revision = FALSE;
 
   /**
    * The type plugin configuration.
@@ -205,4 +213,19 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   public function getStatus() {
     return $this->status;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function shouldCreateNewRevision() {
+    return $this->new_revision;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setNewRevision($new_revision) {
+    $this->new_revision = $new_revision;
+  }
+
 }

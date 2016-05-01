@@ -22,26 +22,27 @@ trait MediaTestTrait {
    * @return \Drupal\Core\Entity\EntityInterface
    *   Returns newly created media bundle.
    */
-  protected function drupalCreateMediaBundle(array $values = array(), $type_name = 'generic') {
+  protected function drupalCreateMediaBundle(array $values = [], $type_name = 'generic') {
     if (!isset($values['bundle'])) {
       $id = strtolower($this->randomMachineName());
     }
     else {
       $id = $values['bundle'];
     }
-    $values += array(
+    $values += [
       'id' => $id,
       'label' => $id,
       'type' => $type_name,
-      'type_configuration' => array(),
-      'field_map' => array(),
+      'type_configuration' => [],
+      'field_map' => [],
       'status' => 1,
-    );
+      'new_revision' => FALSE,
+    ];
 
     $bundle = MediaBundle::create($values);
     $status = $bundle->save();
 
-    $this->assertEqual($status, SAVED_NEW, t('Created media bundle %bundle.', array('%bundle' => $bundle->id())));
+    $this->assertEqual($status, SAVED_NEW, t('Created media bundle %bundle.', ['%bundle' => $bundle->id()]));
 
     return $bundle;
   }

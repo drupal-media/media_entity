@@ -6,6 +6,44 @@
  */
 
 /**
+ * Checks if required version of the Entity API is installed.
+ *
+ * @return bool
+ *   TRUE if dependency is met and FALSE if not.
+ */
+function _media_entity_check_entity_version() {
+  if (\Drupal::moduleHandler()->moduleExists('entity')) {
+    $info = system_get_info('module', 'entity');
+    if (version_compare($info['version'], '8.x-1.0-alpha3') >= 0) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+
+/**
+ * Implements hook_requirements().
+ */
+function media_entity_requirements($phase) {
+  if ($phase == 'update' && !_media_entity_check_entity_version()) {
+    return [
+      'entity' => [
+        'title' => t('Media entity'),
+        'value' => t('Entity API missing'),
+        'description' => t(
+          '<a href=":url">Entity API >= 8.x-1.0-alpha3</a> module is now a dependency and needs to be installed before running updates.',
+          [':url' => 'https://www.drupal.org/project/entity']
+        ),
+        'severity' => REQUIREMENT_ERROR,
+      ],
+    ];
+  }
+}
+
+
+/**
  * Implements hook_install().
  */
 function media_entity_install() {
@@ -55,4 +93,13 @@ function media_entity_update_8002() {
 
   // Flush all caches.
   drupal_flush_all_caches();
+}
+
+/**
+ * Ensure Entity API is installed.
+ */
+function media_entity_update_8003() {
+  if (!_media_entity_check_entity_version()) {
+    throw new \Drupal\Core\Utility\UpdateException('Entity API >= 8.x-1.0-alpha3 (drupal.org/project/entity) module is now a dependency and needs to be installed before running updates.');
+  }
 }
