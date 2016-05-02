@@ -27,19 +27,19 @@ function _media_entity_check_entity_version() {
  * Implements hook_requirements().
  */
 function media_entity_requirements($phase) {
+  $requirements = [];
   if ($phase == 'update' && !_media_entity_check_entity_version()) {
-    return [
-      'entity' => [
-        'title' => t('Media entity'),
-        'value' => t('Entity API missing'),
-        'description' => t(
-          '<a href=":url">Entity API >= 8.x-1.0-alpha3</a> module is now a dependency and needs to be installed before running updates.',
-          [':url' => 'https://www.drupal.org/project/entity']
-        ),
-        'severity' => REQUIREMENT_ERROR,
-      ],
+    $requirements['entity'] = [
+      'title' => t('Media entity'),
+      'value' => t('Entity API missing'),
+      'description' => t(
+        '<a href=":url">Entity API >= 8.x-1.0-alpha3</a> module is now a dependency and needs to be installed before running updates.',
+        [':url' => 'https://www.drupal.org/project/entity']
+      ),
+      'severity' => REQUIREMENT_ERROR,
     ];
   }
+  return $requirements;
 }
 
 
