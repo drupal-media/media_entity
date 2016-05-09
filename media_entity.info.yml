@@ -8,5 +8,4 @@ dependencies:
   - user
   - views
   - entity (>=8.x-1.0-alpha3)
-test_dependencies:
-  - entity
+  - system (>=8.1.0)
