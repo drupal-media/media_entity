@@ -10,11 +10,6 @@
  */
 function media_entity_theme() {
   return array(
-    'media_add_list' => array(
-      'variables' => array('content' => NULL),
-      'file' => 'media_entity.theme.inc',
-      'template' => 'media-add-list',
-    ),
     'media' => array(
       'render element' => 'elements',
       'file' => 'media_entity.theme.inc',

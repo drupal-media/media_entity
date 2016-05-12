@@ -1,50 +1,3 @@
-entity.media.canonical:
-  path: '/media/{media}'
-  defaults:
-    _controller: '\Drupal\media_entity\Controller\MediaController::page'
-    _title_callback: '\Drupal\media_entity\Controller\MediaController::pageTitle'
-  requirements:
-    _entity_access: 'media.view'
-
-media.add_page:
-  path: '/media/add'
-  defaults:
-    _title: 'Add media'
-    _controller: '\Drupal\media_entity\Controller\MediaController::addPage'
-  options:
-    _access_mode: 'ANY'
-    _admin_route: TRUE
-  requirements:
-    _entity_create_access: 'media'
-
-media.add:
-  path: '/media/add/{media_bundle}'
-  defaults:
-    _controller: '\Drupal\media_entity\Controller\MediaController::add'
-    _title_callback: '\Drupal\media_entity\Controller\MediaController::addPageTitle'
-  options:
-    _admin_route: TRUE
-  requirements:
-    _entity_create_access: 'media:{media_bundle}'
-
-entity.media.edit_form:
-  path: '/media/{media}/edit'
-  defaults:
-    _entity_form: 'media.edit'
-  options:
-    _admin_route: TRUE
-  requirements:
-    _entity_access: 'media.update'
-
-entity.media.delete_form:
-  path: '/media/{media}/delete'
-  defaults:
-    _entity_form: 'media.delete'
-  options:
-    _admin_route: TRUE
-  requirements:
-    _entity_access: 'media.delete'
-
 entity.media.multiple_delete_confirm:
   path: '/admin/content/media/delete'
   defaults:
@@ -57,27 +10,5 @@ entity.media_bundle.collection:
   defaults:
     _entity_list: 'media_bundle'
     _title: 'Media bundles'
-  requirements:
-    _permission: 'administer media bundles'
-
-media.bundle_add:
-  path: '/admin/structure/media/add'
-  defaults:
-    _entity_form: 'media_bundle.add'
-  requirements:
-    _permission: 'administer media bundles'
-
-entity.media_bundle.edit_form:
-  path: '/admin/structure/media/manage/{media_bundle}'
-  defaults:
-    _entity_form: 'media_bundle.edit'
-  requirements:
-    _permission: 'administer media bundles'
-
-entity.media_bundle.delete_form:
-  path: '/admin/structure/media/manage/{media_bundle}/delete'
-  defaults:
-    _entity_form: 'media_bundle.delete'
-    _title: 'Delete'
   requirements:
     _permission: 'administer media bundles'

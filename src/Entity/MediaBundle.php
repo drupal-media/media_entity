@@ -2,6 +2,7 @@
 
 namespace Drupal\media_entity\Entity;
 
+use Drupal\Core\Entity\EntityDescriptionInterface;
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
@@ -18,9 +19,12 @@ use Drupal\media_entity\MediaInterface;
  *     "form" = {
  *       "add" = "Drupal\media_entity\MediaBundleForm",
  *       "edit" = "Drupal\media_entity\MediaBundleForm",
- *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteForm"
+ *       "delete" = "Drupal\Core\Entity\EntityDeleteForm"
  *     },
  *     "list_builder" = "Drupal\media_entity\MediaBundleListBuilder",
+ *     "route_provider" = {
+ *       "html" = "Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider",
+ *     }
  *   },
  *   admin_permission = "administer media bundles",
  *   config_prefix = "bundle",
@@ -42,13 +46,14 @@ use Drupal\media_entity\MediaInterface;
  *     "status",
  *   },
  *   links = {
+ *     "add-form" = "/admin/structure/media/add",
  *     "edit-form" = "/admin/structure/media/manage/{media_bundle}",
  *     "delete-form" = "/admin/structure/media/manage/{media_bundle}/delete",
  *     "collection" = "/admin/structure/media",
  *   }
  * )
  */
-class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface, EntityWithPluginCollectionInterface {
+class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface, EntityWithPluginCollectionInterface, EntityDescriptionInterface {
 
   /**
    * The machine name of this media bundle.
@@ -156,6 +161,14 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    */
   public function getDescription() {
     return $this->description;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDescription($description) {
+    $this->description = $description;
+    return $this;
   }
 
   /**
