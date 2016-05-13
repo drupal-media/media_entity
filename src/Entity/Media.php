@@ -2,6 +2,7 @@
 
 namespace Drupal\media_entity\Entity;
 
+use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -9,7 +10,6 @@ use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\user\UserInterface;
-use Drupal\entity\Revision\RevisionableContentEntityBase;
 
 /**
  * Defines the media entity class.
@@ -33,7 +33,6 @@ use Drupal\entity\Revision\RevisionableContentEntityBase;
  *     "views_data" = "Drupal\media_entity\MediaViewsData",
  *     "route_provider" = {
  *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
- *       "revision" = "\Drupal\entity\Routing\RevisionRouteProvider",
  *     }
  *   },
  *   base_table = "media",
@@ -60,14 +59,11 @@ use Drupal\entity\Revision\RevisionableContentEntityBase;
  *     "canonical" = "/media/{media}",
  *     "delete-form" = "/media/{media}/delete",
  *     "edit-form" = "/media/{media}/edit",
- *     "version-history" = "/media/{media}/revisions",
- *     "revision" = "/media/{media}/revisions/{media_revision}/view",
- *     "revision-revert-form" = "/media/{media}/revisions/{media_revision}/revert",
  *     "admin-form" = "/admin/structure/media/manage/{media_bundle}"
  *   }
  * )
  */
-class Media extends RevisionableContentEntityBase implements MediaInterface {
+class Media extends ContentEntityBase implements MediaInterface {
 
   use EntityChangedTrait;
 

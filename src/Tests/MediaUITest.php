@@ -54,7 +54,6 @@ class MediaUITest extends WebTestBase {
       'administer views',
       'access content overview',
       'view all revisions',
-      'view all media revisions',
     ]);
     $this->drupalLogin($this->adminUser);
   }
@@ -191,16 +190,6 @@ class MediaUITest extends WebTestBase {
       ->getStorage('media')
       ->loadUnchanged($media_id);
     $this->assertEqual($media->getRevisionLogMessage(), $edit['revision_log'], 'Revision log was saved.');
-
-    // Check for presence of revision UI.
-    $this->drupalGet('media/' . $media_id);
-    $this->assertResponse(200);
-    $this->assertLinkByHref('media/' . $media_id . '/revisions', 0, 'Revisions tab is present.');
-
-    // Check that the revisions table is accessible and contains current revision.
-    $this->drupalGet('media/' . $media_id . '/revisions');
-    $this->assertResponse(200);
-    $this->assertText('Current revision');
 
     // Test if the media list contains exactly 1 media bundle.
     $this->drupalGet('admin/content/media');

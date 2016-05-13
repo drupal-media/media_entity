@@ -19,12 +19,3 @@ delete any media:
   title:  'Delete any media'
 create media:
   title: 'Create media'
-view all media revisions:
-  title: 'View all media revisions'
-  restrict access: TRUE
-revert all media revisions:
-  title: 'Update all media revisions'
-  restrict access: TRUE
-delete all media revisions:
-  title: 'Delete all media revisions'
-  restrict access: TRUE
