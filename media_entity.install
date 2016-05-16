@@ -56,7 +56,7 @@ function media_entity_install() {
  * Remove "type" base field.
  */
 function media_entity_update_8001() {
-  $fields = \Drupal::database()->query('DESCRIBE media_field_data')->fetchCol();
+  $fields = \Drupal::database()->query('DESCRIBE {media_field_data}')->fetchCol();
   if (in_array('type', $fields)) {
     \Drupal::database()->update('media_field_data')
       ->fields(['type' => NULL])
