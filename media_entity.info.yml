@@ -4,10 +4,10 @@ type: module
 package: Media
 core: 8.x
 dependencies:
-  - image
-  - user
-  - views
-  - entity (>=8.x-1.0-alpha3)
-  - system (>=8.1.0)
+  - drupal:image
+  - drupal:user
+  - drupal:views
+  - entity:entity (>=8.x-1.0-alpha3)
+  - drupal:system (>=8.1.0)
 test_dependencies:
-  - entity
+  - entity:entity
