@@ -179,7 +179,7 @@ class MediaBundleForm extends EntityForm {
       'description' => [
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#value' => $this->t('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured blow. Information will only be mapped if the entity field is empty.'),
+        '#value' => $this->t('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured below. Information will only be mapped if the entity field is empty.'),
       ],
     ];
 

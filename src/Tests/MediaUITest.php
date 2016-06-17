@@ -86,7 +86,7 @@ class MediaUITest extends WebTestBase {
     $this->assertText('Published: Entities will be automatically published when they are created.', 'Published help text found');
     $this->assertText("This type provider doesn't need configuration.");
     $this->assertText('No metadata fields available.');
-    $this->assertText('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured blow. Information will only be mapped if the entity field is empty.');
+    $this->assertText('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured below. Information will only be mapped if the entity field is empty.');
 
     // Try to change media type and check if new configuration sub-form appears.
     $commands = $this->drupalPostAjaxForm(NULL, ['type' => 'test_type'], 'type');
