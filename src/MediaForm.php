@@ -46,19 +46,21 @@ class MediaForm extends RevisionableContentEntityForm {
     $form = parent::form($form, $form_state);
 
     // Node author information for administrators.
-    $form['author'] = array(
-      '#type' => 'details',
-      '#title' => t('Authoring information'),
-      '#group' => 'advanced',
-      '#attributes' => array(
-        'class' => array('node-form-author'),
-      ),
-      '#attached' => array(
-        'library' => array('node/drupal.node'),
-      ),
-      '#weight' => 90,
-      '#optional' => TRUE,
-    );
+    if (isset($form['uid']) || isset($form['created'])) {
+      $form['author'] = array(
+        '#type' => 'details',
+        '#title' => t('Authoring information'),
+        '#group' => 'advanced',
+        '#attributes' => array(
+          'class' => array('node-form-author'),
+        ),
+        '#attached' => array(
+          'library' => array('node/drupal.node'),
+        ),
+        '#weight' => 90,
+        '#optional' => TRUE,
+      );
+    }
 
     if (isset($form['uid'])) {
       $form['uid']['#group'] = 'author';
