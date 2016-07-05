@@ -43,3 +43,11 @@ action.configuration.media_delete_action:
 action.configuration.media_save_action:
   type: action_configuration_default
   label: 'Save media configuration'
+
+action.configuration.media_publish_action:
+  type: action_configuration_default
+  label: 'Publish media configuration'
+
+action.configuration.media_unpublish_action:
+  type: action_configuration_default
+  label: 'Unpublish media configuration'
