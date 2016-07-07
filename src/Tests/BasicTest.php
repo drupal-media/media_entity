@@ -73,6 +73,19 @@ class BasicTest extends WebTestBase {
 
     $media_exists = (bool) Media::load($media->id());
     $this->assertTrue($media_exists, 'The new media entity has been created in the database.');
+    $this->assertEqual($media->bundle(), $this->testBundle->id(), 'The media was created with correct bundle.');
+    $this->assertEqual($media->label(), 'Unnamed', 'The media was corrected with correct name.');
+
+    // Test the creation of a media without user-defined label and check if a
+    // default name is provided.
+    $media = Media::create([
+      'bundle' => $this->testBundle->id(),
+    ]);
+    $media->save();
+    $expected_name = 'media' . ':' . $this->testBundle->id() . ':' . $media->uuid();
+    $this->assertEqual($media->bundle(), $this->testBundle->id(), 'The media was created with correct bundle.');
+    $this->assertEqual($media->label(), $expected_name, 'The media was correctly created with a default name.');
+
   }
 
   /**

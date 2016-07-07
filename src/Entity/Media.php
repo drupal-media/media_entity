@@ -195,6 +195,12 @@ class Media extends ContentEntityBase implements MediaInterface {
         $this->set($destination_field, $value);
       }
     }
+
+    // Try to set a default name for this media, if there is no label provided.
+    if (empty($this->label())) {
+      $this->set('name', $this->getType()->getDefaultName($this));
+    }
+
   }
 
   /**
