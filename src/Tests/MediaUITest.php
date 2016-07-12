@@ -178,6 +178,15 @@ class MediaUITest extends WebTestBase {
     $this->assertUrl('admin/structure/media');
     $this->assertRaw(t('The media bundle %name has been deleted.', ['%name' => $bundle['label']]));
     $this->assertNoRaw(Xss::filterAdmin($bundle['description']));
+    // Test bundle delete prevention when there is existing media.
+    $bundle2 = $this->createMediaBundle();
+    $media = Media::create(['name' => 'lorem ipsum', 'bundle' => $bundle2['id']]);
+    $media->save();
+    $this->drupalGet('admin/structure/media/manage/' . $bundle2['id']);
+    $this->clickLink(t('Delete'));
+    $this->assertUrl('admin/structure/media/manage/' . $bundle2['id'] . '/delete');
+    $this->assertNoFieldById('edit-submit');
+    $this->assertRaw(t('%type is used by 1 piece of content on your site. You can not remove this content type until you have removed all of the %type content.', ['%type' => $bundle2['label']]));
   }
 
   /**

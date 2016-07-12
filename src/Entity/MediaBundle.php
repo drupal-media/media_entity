@@ -19,7 +19,7 @@ use Drupal\media_entity\MediaInterface;
  *     "form" = {
  *       "add" = "Drupal\media_entity\MediaBundleForm",
  *       "edit" = "Drupal\media_entity\MediaBundleForm",
- *       "delete" = "Drupal\Core\Entity\EntityDeleteForm"
+ *       "delete" = "Drupal\media_entity\Form\MediaBundleDeleteConfirm"
  *     },
  *     "list_builder" = "Drupal\media_entity\MediaBundleListBuilder",
  *     "route_provider" = {
