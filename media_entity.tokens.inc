@@ -102,7 +102,7 @@ function media_entity_tokens($type, $tokens, array $data, array $options, Bubble
 
   if ($type == 'media' && !empty($data['media'])) {
     /** @var \Drupal\media_entity\MediaInterface $media */
-    $media = \Drupal::entityManager()->getTranslationFromContext($data['media'], $langcode, array('operation' => 'media_entity_tokens'));
+    $media = \Drupal::entityTypeManager()->getTranslationFromContext($data['media'], $langcode, array('operation' => 'media_entity_tokens'));
 
     foreach ($tokens as $name => $original) {
       switch ($name) {
