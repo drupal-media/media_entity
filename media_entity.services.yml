@@ -2,3 +2,8 @@ services:
   plugin.manager.media_entity.type:
     class: Drupal\media_entity\MediaTypeManager
     parent: default_plugin_manager
+  media_entity.media_bundle_context:
+    class: Drupal\media_entity\ContextProvider\MediaRouteContext
+    arguments: ['@current_route_match']
+    tags:
+      - { name: 'context_provider' }

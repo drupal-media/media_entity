@@ -1,0 +1,6 @@
+name: 'Media entity test context'
+type: module
+description: 'Provides test media context plugin to test context.'
+core: 8.x
+package: Testing
+version: VERSION
