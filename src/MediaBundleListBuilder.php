@@ -17,9 +17,9 @@ class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityHa
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['title'] = t('Name');
+    $header['title'] = $this->t('Name');
     $header['description'] = array(
-      'data' => t('Description'),
+      'data' => $this->t('Description'),
       'class' => array(RESPONSIVE_PRIORITY_MEDIUM),
     );
     return $header + parent::buildHeader();
@@ -42,7 +42,7 @@ class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityHa
    */
   public function render() {
     $build = parent::render();
-    $build['#empty'] = t('No media bundle available. <a href="@link">Add media bundle</a>.', array(
+    $build['#empty'] = $this->t('No media bundle available. <a href="@link">Add media bundle</a>.', array(
       '@link' => Url::fromRoute('entity.media_bundle.add_form')->toString(),
     ));
     return $build;

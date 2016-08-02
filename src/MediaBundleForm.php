@@ -97,10 +97,10 @@ class MediaBundleForm extends EntityForm {
     }
 
     $form['label'] = [
-      '#title' => t('Label'),
+      '#title' => $this->t('Label'),
       '#type' => 'textfield',
       '#default_value' => $bundle->label(),
-      '#description' => t('The human-readable name of this media bundle.'),
+      '#description' => $this->t('The human-readable name of this media bundle.'),
       '#required' => TRUE,
       '#size' => 30,
     ];
@@ -115,14 +115,14 @@ class MediaBundleForm extends EntityForm {
         'exists' => ['\Drupal\media_entity\Entity\MediaBundle', 'exists'],
         'source' => ['label'],
       ],
-      '#description' => t('A unique machine-readable name for this media bundle.'),
+      '#description' => $this->t('A unique machine-readable name for this media bundle.'),
     ];
 
     $form['description'] = [
-      '#title' => t('Description'),
+      '#title' => $this->t('Description'),
       '#type' => 'textarea',
       '#default_value' => $bundle->getDescription(),
-      '#description' => t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
+      '#description' => $this->t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
     ];
 
     $plugins = $this->mediaTypeManager->getDefinitions();
@@ -133,10 +133,10 @@ class MediaBundleForm extends EntityForm {
 
     $form['type'] = [
       '#type' => 'select',
-      '#title' => t('Type provider'),
+      '#title' => $this->t('Type provider'),
       '#default_value' => $bundle->getType()->getPluginId(),
       '#options' => $options,
-      '#description' => t('Media type provider plugin that is responsible for additional logic related to this media.'),
+      '#description' => $this->t('Media type provider plugin that is responsible for additional logic related to this media.'),
       '#ajax' => [
         'callback' => '::ajaxTypeProviderData',
         'progress' => [
@@ -149,7 +149,7 @@ class MediaBundleForm extends EntityForm {
     // Media type plugin configuration.
     $form['type_configuration'] = [
       '#type' => 'fieldset',
-      '#title' => t('Type provider configuration'),
+      '#title' => $this->t('Type provider configuration'),
       '#tree' => TRUE,
     ];
 
@@ -173,7 +173,7 @@ class MediaBundleForm extends EntityForm {
     // Field mapping configuration.
     $form['field_mapping'] = [
       '#type' => 'fieldset',
-      '#title' => t('Field mapping'),
+      '#title' => $this->t('Field mapping'),
       '#tree' => TRUE,
       '#attributes' => ['id' => 'field-mapping-wrapper'],
       'description' => [
@@ -229,7 +229,7 @@ class MediaBundleForm extends EntityForm {
 
     $form['workflow'] = [
       '#type' => 'details',
-      '#title' => t('Publishing options'),
+      '#title' => $this->t('Publishing options'),
       '#group' => 'additional_settings',
     ];
 
@@ -243,7 +243,7 @@ class MediaBundleForm extends EntityForm {
     $workflow_options = array_combine($keys, $keys);
     $form['workflow']['options'] = [
       '#type' => 'checkboxes',
-      '#title' => t('Default options'),
+      '#title' => $this->t('Default options'),
       '#default_value' => $workflow_options,
       '#options' => [
         'status' => $this->t('Published'),
@@ -263,7 +263,7 @@ class MediaBundleForm extends EntityForm {
     if ($this->moduleHandler->moduleExists('language')) {
       $form['language'] = [
         '#type' => 'details',
-        '#title' => t('Language settings'),
+        '#title' => $this->t('Language settings'),
         '#group' => 'additional_settings',
       ];
 
@@ -320,8 +320,8 @@ class MediaBundleForm extends EntityForm {
    */
   protected function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
-    $actions['submit']['#value'] = t('Save media bundle');
-    $actions['delete']['#value'] = t('Delete media bundle');
+    $actions['submit']['#value'] = $this->t('Save media bundle');
+    $actions['delete']['#value'] = $this->t('Delete media bundle');
     $actions['delete']['#access'] = $this->entity->access('delete');
     return $actions;
   }

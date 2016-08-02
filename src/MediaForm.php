@@ -49,7 +49,7 @@ class MediaForm extends RevisionableContentEntityForm {
     if (isset($form['uid']) || isset($form['created'])) {
       $form['author'] = array(
         '#type' => 'details',
-        '#title' => t('Authoring information'),
+        '#title' => $this->t('Authoring information'),
         '#group' => 'advanced',
         '#attributes' => array(
           'class' => array('node-form-author'),
@@ -90,10 +90,10 @@ class MediaForm extends RevisionableContentEntityForm {
     $element['publish']['#published_status'] = TRUE;
     $element['publish']['#dropbutton'] = 'save';
     if ($media->isNew()) {
-      $element['publish']['#value'] = t('Save and publish');
+      $element['publish']['#value'] = $this->t('Save and publish');
     }
     else {
-      $element['publish']['#value'] = $media->isPublished() ? t('Save and keep published') : t('Save and publish');
+      $element['publish']['#value'] = $media->isPublished() ? $this->t('Save and keep published') : $this->t('Save and publish');
     }
     $element['publish']['#weight'] = 0;
 
@@ -103,10 +103,10 @@ class MediaForm extends RevisionableContentEntityForm {
     $element['unpublish']['#published_status'] = FALSE;
     $element['unpublish']['#dropbutton'] = 'save';
     if ($media->isNew()) {
-      $element['unpublish']['#value'] = t('Save as unpublished');
+      $element['unpublish']['#value'] = $this->t('Save as unpublished');
     }
     else {
-      $element['unpublish']['#value'] = !$media->isPublished() ? t('Save and keep unpublished') : t('Save and unpublish');
+      $element['unpublish']['#value'] = !$media->isPublished() ? $this->t('Save and keep unpublished') : $this->t('Save and unpublish');
     }
     $element['unpublish']['#weight'] = 10;
 
