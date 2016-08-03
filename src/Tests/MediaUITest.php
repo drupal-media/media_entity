@@ -87,15 +87,17 @@ class MediaUITest extends WebTestBase {
 
     // Test and create one media bundle.
     $bundle = $this->createMediaBundle();
+    $bundle_id = $bundle['id'];
+    unset($bundle['id']);
 
     // Check if all action links exist.
     $this->assertLinkByHref('admin/structure/media/add');
-    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle['id'] . '/fields');
-    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle['id'] . '/form-display');
-    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle['id'] . '/display');
+    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle_id . '/fields');
+    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle_id . '/form-display');
+    $this->assertLinkByHref('admin/structure/media/manage/' . $bundle_id . '/display');
 
     // Assert that fields have expected values before editing.
-    $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
+    $this->drupalGet('admin/structure/media/manage/' . $bundle_id);
     $this->assertFieldByName('label', $bundle['label'], 'Label field has correct value.');
     $this->assertFieldByName('description', $bundle['description'], 'Description field has a correct value.');
     $this->assertFieldByName('type', $bundle['type'], 'Generic plugin is selected.');
@@ -135,6 +137,10 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('field_mapping[field_1]', '_none', 'First metadata field is not mapped by default.');
     $this->assertFieldByName('field_mapping[field_2]', '_none', 'Second metadata field is not mapped by default.');
 
+    // Test if the edit machine name button is disabled.
+    $elements = $this->xpath('//*[@id="edit-label-machine-name-suffix"]/span[@class="admin-link"]');
+    $this->assertTrue(empty($elements), 'Edit machine name not found.');
+
     // Edit and save media bundle form fields with new values.
     $bundle['label'] = $this->randomMachineName();
     $bundle['description'] = $this->randomMachineName();
@@ -143,10 +149,11 @@ class MediaUITest extends WebTestBase {
     $bundle['field_mapping[field_1]'] = 'name';
     $bundle['options[new_revision]'] = TRUE;
     $bundle['options[queue_thumbnail_downloads]'] = TRUE;
+
     $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
 
     // Test if edit worked and if new field values have been saved as expected.
-    $this->drupalGet('admin/structure/media/manage/' . $bundle['id']);
+    $this->drupalGet('admin/structure/media/manage/' . $bundle_id);
     $this->assertFieldByName('label', $bundle['label'], 'Label field has correct value.');
     $this->assertFieldByName('description', $bundle['description'], 'Description field has correct value.');
     $this->assertFieldByName('type', $bundle['type'], 'Test type is selected.');
@@ -161,8 +168,8 @@ class MediaUITest extends WebTestBase {
     /** @var \Drupal\media_entity\MediaBundleInterface $loaded_bundle */
     $loaded_bundle = $this->container->get('entity_type.manager')
       ->getStorage('media_bundle')
-      ->load($bundle['id']);
-    $this->assertEqual($loaded_bundle->id(), $bundle['id'], 'Media bundle ID saved correctly.');
+      ->load($bundle_id);
+    $this->assertEqual($loaded_bundle->id(), $bundle_id, 'Media bundle ID saved correctly.');
     $this->assertEqual($loaded_bundle->label(), $bundle['label'], 'Media bundle label saved correctly.');
     $this->assertEqual($loaded_bundle->getDescription(), $bundle['description'], 'Media bundle description saved correctly.');
     $this->assertEqual($loaded_bundle->getType()->getPluginId(), $bundle['type'], 'Media bundle type saved correctly.');
@@ -173,7 +180,7 @@ class MediaUITest extends WebTestBase {
 
     // Tests media bundle delete form.
     $this->clickLink(t('Delete'));
-    $this->assertUrl('admin/structure/media/manage/' . $bundle['id'] . '/delete');
+    $this->assertUrl('admin/structure/media/manage/' . $bundle_id . '/delete');
     $this->drupalPostForm(NULL, [], t('Delete'));
     $this->assertUrl('admin/structure/media');
     $this->assertRaw(t('The media bundle %name has been deleted.', ['%name' => $bundle['label']]));

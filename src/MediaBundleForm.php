@@ -110,7 +110,7 @@ class MediaBundleForm extends EntityForm {
       '#type' => 'machine_name',
       '#default_value' => $bundle->id(),
       '#maxlength' => 32,
-      '#disabled' => FALSE,
+      '#disabled' => !$bundle->isNew(),
       '#machine_name' => [
         'exists' => ['\Drupal\media_entity\Entity\MediaBundle', 'exists'],
         'source' => ['label'],
