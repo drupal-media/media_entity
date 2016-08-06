@@ -41,7 +41,7 @@ class BasicTest extends WebTestBase {
    */
   public function testMediaBundleCreation() {
     $bundle = $this->drupalCreateMediaBundle();
-    /** @var $bundle_storage \Drupal\media_entity\MediaBundleInterface */
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle_storage */
     $bundle_storage = $this->container->get('entity.manager')->getStorage('media_bundle');
 
     $bundle_exists = (bool) $bundle_storage->load($bundle->id());

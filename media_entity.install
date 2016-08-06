@@ -22,7 +22,6 @@ function _media_entity_check_entity_version() {
   return FALSE;
 }
 
-
 /**
  * Implements hook_requirements().
  */
@@ -41,7 +40,6 @@ function media_entity_requirements($phase) {
   }
   return $requirements;
 }
-
 
 /**
  * Implements hook_install().

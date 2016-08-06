@@ -31,7 +31,7 @@ class MediaRevision extends WizardPluginBase {
       'plugin_id' => 'boolean',
       'entity_type' => 'media',
       'entity_field' => 'status',
-    ]
+    ],
   ];
 
   /**

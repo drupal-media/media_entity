@@ -27,7 +27,7 @@ class Generic extends MediaTypeBase {
   /**
    * {@inheritdoc}
    */
-  public function getField(MediaInterface$media, $name) {
+  public function getField(MediaInterface $media, $name) {
     return FALSE;
   }
 
@@ -44,7 +44,7 @@ class Generic extends MediaTypeBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['text'] = [
       '#type' => 'markup',
-      '#markup' => $this->t('This type provider doesn\'t need configuration.'),
+      '#markup' => $this->t("This type provider doesn't need configuration."),
     ];
 
     return $form;

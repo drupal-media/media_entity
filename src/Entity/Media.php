@@ -6,7 +6,6 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\user\UserInterface;
@@ -188,7 +187,8 @@ class Media extends ContentEntityBase implements MediaInterface {
     // Try to set fields provided by type plugin and mapped in bundle
     // configuration.
     foreach ($this->bundle->entity->field_map as $source_field => $destination_field) {
-      // Only save value in entity field if empty. Do not overwrite existing data.
+      // Only save value in entity field if empty. Do not overwrite existing
+      // data.
       // @TODO We might modify that in the future but let's leave it like this
       // for now.
       if ($this->hasField($destination_field) && $this->{$destination_field}->isEmpty() && ($value = $this->getType()->getField($this, $source_field))) {

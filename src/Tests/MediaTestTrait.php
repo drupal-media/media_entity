@@ -14,7 +14,6 @@ trait MediaTestTrait {
    *
    * @param array $values
    *   The media bundle values.
-   *
    * @param string $type_name
    *   (optional) The media type provider plugin that is responsible for
    *   additional logic related to this media).

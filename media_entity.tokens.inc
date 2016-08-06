@@ -94,7 +94,7 @@ function media_entity_tokens($type, $tokens, array $data, array $options, Bubble
     $langcode = $options['langcode'];
   }
   else {
-      $langcode = LanguageInterface::LANGCODE_DEFAULT;
+    $langcode = LanguageInterface::LANGCODE_DEFAULT;
   }
   $sanitize = !empty($options['sanitize']);
 

@@ -38,9 +38,9 @@ function media_entity_theme_suggestions_media(array $variables) {
 /**
  * Copy the media file icons to files directory for use with image styles.
  *
- * @param $source string
+ * @param string $source
  *   Source folder.
- * @param $destination string
+ * @param string $destination
  *   Destination folder.
  *
  * @throws Exception

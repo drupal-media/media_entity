@@ -14,7 +14,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
  *   cron = {"time" = 60}
  * )
  */
-class thumbnailDownloader extends QueueWorkerBase {
+class ThumbnailDownloader extends QueueWorkerBase {
 
   /**
    * {@inheritdoc}

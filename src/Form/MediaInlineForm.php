@@ -52,4 +52,5 @@ class MediaInlineForm extends EntityInlineForm {
       $entity->save();
     }
   }
+
 }

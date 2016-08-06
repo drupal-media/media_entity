@@ -144,18 +144,18 @@ abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, C
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) { }
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {}
 
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) { }
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {}
 
   /**
    * {@inheritdoc}
    */
   public function getDefaultName(MediaInterface $media) {
-    return 'media' . ':' . $media->bundle() . ':' . $media->uuid();
+    return 'media:' . $media->bundle() . ':' . $media->uuid();
   }
 
 }

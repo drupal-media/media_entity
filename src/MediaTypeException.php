@@ -18,7 +18,7 @@ class MediaTypeException extends \Exception {
   /**
    * Construct the exception.
    *
-   * @paran string $element
+   * @param string $element
    *   [optional] Name of form element that exception refers to.
    * @param string $message
    *   [optional] The Exception message to throw.
@@ -27,7 +27,7 @@ class MediaTypeException extends \Exception {
    * @param \Exception $previous
    *   [optional] The previous exception used for the exception chaining.
    */
-  public function __construct($element = NULL, $message = "", $code = 0, \Exception $previous = null) {
+  public function __construct($element = NULL, $message = "", $code = 0, \Exception $previous = NULL) {
     parent::__construct($message, $code, $previous);
     $this->element = $element;
   }

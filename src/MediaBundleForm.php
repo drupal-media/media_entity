@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\language\Entity\ContentLanguageSettings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -42,6 +41,7 @@ class MediaBundleForm extends EntityForm {
    * Constructs a new class instance.
    *
    * @param \Drupal\media_entity\MediaTypeManager $media_type_manager
+   *   Media type manager.
    */
   public function __construct(MediaTypeManager $media_type_manager, EntityFieldManagerInterface $entity_field_manager) {
     $this->mediaTypeManager = $media_type_manager;
@@ -143,7 +143,7 @@ class MediaBundleForm extends EntityForm {
           'type' => 'throbber',
           'message' => $this->t('Updating type provider configuration form.'),
         ],
-      ]
+      ],
     ];
 
     // Media type plugin configuration.
@@ -165,7 +165,7 @@ class MediaBundleForm extends EntityForm {
         '#type' => 'container',
         '#attributes' => [
           'id' => 'edit-type-configuration-plugin-wrapper',
-        ]
+        ],
       ];
       $form['type_configuration'][$plugin->getPluginId()] += $instance->buildConfigurationForm([], $form_state);
     }
@@ -201,16 +201,16 @@ class MediaBundleForm extends EntityForm {
         'uid',
         'revision_timestamp',
         'revision_log',
-        'revision_uid'
+        'revision_uid',
       ];
-      $options = ['_none' => $this->t('- Skip field - ')];
+      $options = ['_none' => $this->t('- Skip field -')];
       foreach ($this->entityFieldManager->getFieldDefinitions('media', $bundle->id()) as $field_name => $field) {
         if (!in_array($field_name, $skipped_fields)) {
           $options[$field_name] = $field->getLabel();
         }
       }
 
-      foreach($plugin->providedFields() as $field_name => $field_label) {
+      foreach ($plugin->providedFields() as $field_name => $field_label) {
         $form['field_mapping'][$field_name] = [
           '#type' => 'select',
           '#title' => $field_label,
@@ -253,9 +253,9 @@ class MediaBundleForm extends EntityForm {
       '#description' => [
         '#theme' => 'item_list',
         '#items' => [
-          ['#markup' => '<strong>' . $this->t('Published') .  ':</strong> ' . $this->t('Entities will be automatically published when they are created.')],
-          ['#markup' => '<strong>' . $this->t('Create new revision') .  ':</strong> ' . $this->t('Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.')],
-          ['#markup' => '<strong>' . $this->t('Queue thumbnail downloads') .  ':</strong> ' . $this->t('Download thumbnails via a queue.')],
+          ['#markup' => '<strong>' . $this->t('Published') . ':</strong> ' . $this->t('Entities will be automatically published when they are created.')],
+          ['#markup' => '<strong>' . $this->t('Create new revision') . ':</strong> ' . $this->t('Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.')],
+          ['#markup' => '<strong>' . $this->t('Queue thumbnail downloads') . ':</strong> ' . $this->t('Download thumbnails via a queue.')],
         ],
       ],
     ];
@@ -355,7 +355,7 @@ class MediaBundleForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /** @var  \Drupal\media_entity\MediaBundleInterface $bundle */
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $this->entity;
     $status = $bundle->save();
 

@@ -86,13 +86,15 @@ interface MediaInterface extends ContentEntityInterface, EntityChangedInterface,
   /**
    * Returns the media type.
    *
-   * @return  \Drupal\media_entity\MediaTypeInterface
+   * @return \Drupal\media_entity\MediaTypeInterface
    *   The media type.
    */
   public function getType();
 
   /**
-   * Automatically determines the most appropriate thumbnail and sets "thumbnail" field.
+   * Automatically determines the most appropriate thumbnail and sets
+   * "thumbnail" field.
    */
   public function automaticallySetThumbnail();
+
 }

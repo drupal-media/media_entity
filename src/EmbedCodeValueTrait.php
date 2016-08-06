@@ -17,6 +17,7 @@ trait EmbedCodeValueTrait {
    *   Typed Data API.
    *
    * @return string|null
+   *   The raw embed code.
    */
   protected function getEmbedCode($value) {
     if (is_string($value)) {

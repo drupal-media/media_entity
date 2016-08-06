@@ -2,7 +2,6 @@
 
 namespace Drupal\media_entity\Plugin\DevelGenerate;
 
-use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -97,12 +96,13 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
    * @param string $plugin_id
    *   The plugin ID for the plugin instance.
    * @param array $plugin_definition
+   *   The plugin definition.
    * @param \Drupal\media_entity\MediaStorageInterface $media_storage
    *   The media storage.
-   * @param \Drupal\Core\Entity\EntityStorageInterface $media_bundle_storage
-   *   The media bundle storage.
    * @param \Drupal\Core\Entity\EntityStorageInterface $user_storage
    *   The user storage.
+   * @param \Drupal\Core\Entity\EntityStorageInterface $media_bundle_storage
+   *   The media bundle storage.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
@@ -237,7 +237,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
    * Method responsible for creating media when
    * the number of elements is less than 50.
    *
-   * @param $values array
+   * @param array $values
    *   Array of values submitted through a form.
    */
   private function generateMedia($values) {
@@ -254,7 +254,10 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
         $this->createMediaItem($values);
         if (function_exists('drush_log') && $i % drush_get_option('feedback', 1000) == 0) {
           $now = time();
-          drush_log(dt('Completed !feedback media items (!rate media/min)', ['!feedback' => drush_get_option('feedback', 1000), '!rate' => (drush_get_option('feedback', 1000) * 60) / ($now - $start)]), 'ok');
+          drush_log(dt('Completed !feedback media items (!rate media/min)', [
+            '!feedback' => drush_get_option('feedback', 1000),
+            '!rate' => (drush_get_option('feedback', 1000) * 60) / ($now - $start),
+          ]), 'ok');
           $start = $now;
         }
       }
@@ -266,21 +269,30 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
    * Method responsible for creating media when
    * the number of elements is greater than 50.
    *
-   * @param $values array
+   * @param array $values
    *   The input values from the settings form.
    */
   private function generateBatchMedia($values) {
     // Setup the batch operations and save the variables.
-    $operations[] = ['devel_generate_operation', [$this, 'batchPreGenerate', $values]];
+    $operations[] = [
+      'devel_generate_operation',
+      [$this, 'batchPreGenerate', $values],
+    ];
 
     // Add the kill operation.
     if ($values['kill']) {
-      $operations[] = ['devel_generate_operation', [$this, 'batchMediaKill', $values]];
+      $operations[] = [
+        'devel_generate_operation',
+        [$this, 'batchMediaKill', $values],
+      ];
     }
 
     // Add the operations to create the media.
-    for ($num = 0; $num < $values['num']; $num ++) {
-      $operations[] = ['devel_generate_operation', [$this, 'batchCreateMediaItem', $values]];
+    for ($num = 0; $num < $values['num']; $num++) {
+      $operations[] = [
+        'devel_generate_operation',
+        [$this, 'batchCreateMediaItem', $values],
+      ];
     }
 
     // Start the batch.
@@ -296,10 +308,10 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Batch version of preGenerate().
    *
-   * @param $vars array
+   * @param array $vars
    *   The input values from the settings form.
-   * @param $context array
-   *   Batch job context
+   * @param array $context
+   *   Batch job context.
    */
   public function batchPreGenerate($vars, &$context) {
     $context['results'] = $vars;
@@ -310,10 +322,10 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Batch version of createMediaItem().
    *
-   * @param $vars array
+   * @param array $vars
    *   The input values from the settings form.
-   * @param $context array
-   *   Batch job context
+   * @param array $context
+   *   Batch job context.
    */
   public function batchCreateMediaItem($vars, &$context) {
     $this->createMediaItem($context['results']);
@@ -323,10 +335,10 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Batch version of mediaKill().
    *
-   * @param $vars array
+   * @param array $vars
    *   The input values from the settings form.
-   * @param $context array
-   *   Batch job context
+   * @param array $context
+   *   Batch job context.
    */
   public function batchMediaKill($vars, &$context) {
     $this->mediaKill($context['results']);
@@ -361,7 +373,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Deletes all media of given media bundles.
    *
-   * @param $values array
+   * @param array $values
    *   The input values from the settings form.
    */
   protected function mediaKill($values) {
@@ -380,7 +392,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
    * Return the same array passed as parameter
    * but with an array of uids for the key 'users'.
    *
-   * @param $results array
+   * @param array $results
    *   The input values from the settings form.
    */
   protected function preGenerate(&$results) {
@@ -395,7 +407,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Create one media item. Used by both batch and non-batch code branches.
    *
-   * @param $results array
+   * @param array $results
    *   The input values from the settings form.
    */
   protected function createMediaItem(&$results) {
@@ -429,7 +441,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   /**
    * Determine language based on $results.
    *
-   * @param $results array
+   * @param array $results
    *   The input values from the settings form.
    */
   protected function getLangcode($results) {

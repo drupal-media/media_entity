@@ -34,7 +34,14 @@ class MediaUITest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['media_entity', 'field_ui', 'views_ui', 'node', 'block', 'entity'];
+  public static $modules = [
+    'media_entity',
+    'field_ui',
+    'views_ui',
+    'node',
+    'block',
+    'entity',
+  ];
 
   /**
    * {@inheritdoc}

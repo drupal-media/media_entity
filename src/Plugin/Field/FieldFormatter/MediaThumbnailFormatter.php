@@ -26,6 +26,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 class MediaThumbnailFormatter extends ImageFormatter {
 
   /**
+   * The renderer service.
+   *
    * @var \Drupal\Core\Render\RendererInterface
    */
   protected $renderer;
@@ -79,8 +81,8 @@ class MediaThumbnailFormatter extends ImageFormatter {
    * {@inheritdoc}
    *
    * This has to be overriden because FileFormatterBase expects $item to be
-   * of type \Drupal\file\Plugin\Field\FieldType\FileItem and calls isDisplayed()
-   * which is not in FieldItemInterface.
+   * of type \Drupal\file\Plugin\Field\FieldType\FileItem and calls
+   * isDisplayed() which is not in FieldItemInterface.
    */
   protected function needsEntityLoad(EntityReferenceItem $item) {
     return !$item->hasNewEntity();

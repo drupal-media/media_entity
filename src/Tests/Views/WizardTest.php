@@ -91,5 +91,4 @@ class WizardTest extends WizardTestBase {
     $this->assertEqual($view->field['changed']->field, 'changed');
   }
 
-
 }

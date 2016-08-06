@@ -32,7 +32,7 @@ interface MediaTypeInterface extends PluginInspectionInterface, ConfigurablePlug
    *
    * @param MediaInterface $media
    *   Media object.
-   * @param $name
+   * @param string $name
    *   Name of field to fetch.
    *
    * @return mixed

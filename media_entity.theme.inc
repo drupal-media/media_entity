@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Theme functions for the media_entity module.
