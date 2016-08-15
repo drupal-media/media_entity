@@ -94,10 +94,10 @@ class MediaThumbnailFormatter extends ImageFormatter {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = parent::settingsForm($form, $form_state);
 
-    $link_types = array(
+    $link_types = [
       'content' => $this->t('Content'),
       'media' => $this->t('Media entity'),
-    );
+    ];
     $element['image_link']['#options'] = $link_types;
 
     return $element;
@@ -109,10 +109,10 @@ class MediaThumbnailFormatter extends ImageFormatter {
   public function settingsSummary() {
     $summary = parent::settingsSummary();
 
-    $link_types = array(
+    $link_types = [
       'content' => $this->t('Linked to content'),
       'media' => $this->t('Linked to media entity'),
-    );
+    ];
     // Display this setting only if image is linked.
     $image_link_setting = $this->getSetting('image_link');
     if (isset($link_types[$image_link_setting])) {

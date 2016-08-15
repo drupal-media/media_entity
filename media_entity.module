@@ -9,20 +9,20 @@
  * Implements hook_theme().
  */
 function media_entity_theme() {
-  return array(
-    'media' => array(
+  return [
+    'media' => [
       'render element' => 'elements',
       'file' => 'media_entity.theme.inc',
       'template' => 'media',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
  * Implements hook_theme_suggestions_HOOK().
  */
 function media_entity_theme_suggestions_media(array $variables) {
-  $suggestions = array();
+  $suggestions = [];
   $media = $variables['elements']['#media'];
   $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
 

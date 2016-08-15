@@ -102,7 +102,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    *
    * @var array
    */
-  public $type_configuration = array();
+  public $type_configuration = [];
 
   /**
    * Type lazy plugin collection.
@@ -116,7 +116,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    *
    * @var array
    */
-  public $field_map = array();
+  public $field_map = [];
 
   /**
    * Default status of this media bundle.
@@ -136,9 +136,9 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * {@inheritdoc}
    */
   public function getPluginCollections() {
-    return array(
+    return [
       'type_configuration' => $this->typePluginCollection(),
-    );
+    ];
   }
 
   /**

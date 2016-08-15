@@ -167,7 +167,7 @@ class DeleteMultiple extends ConfirmFormBase {
 
       if ($delete_entities) {
         $this->storage->delete($delete_entities);
-        $this->logger('media_entity')->notice('Deleted @count media entities.', array('@count' => count($delete_entities)));
+        $this->logger('media_entity')->notice('Deleted @count media entities.', ['@count' => count($delete_entities)]);
       }
 
       if ($delete_translations) {
@@ -182,7 +182,7 @@ class DeleteMultiple extends ConfirmFormBase {
         }
         if ($count) {
           $total_count += $count;
-          $this->logger('media_entity')->notice('Deleted @count media translations.', array('@count' => $count));
+          $this->logger('media_entity')->notice('Deleted @count media translations.', ['@count' => $count]);
         }
       }
 

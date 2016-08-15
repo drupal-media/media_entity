@@ -46,19 +46,19 @@ class MediaForm extends RevisionableContentEntityForm {
 
     // Node author information for administrators.
     if (isset($form['uid']) || isset($form['created'])) {
-      $form['author'] = array(
+      $form['author'] = [
         '#type' => 'details',
         '#title' => $this->t('Authoring information'),
         '#group' => 'advanced',
-        '#attributes' => array(
-          'class' => array('node-form-author'),
-        ),
-        '#attached' => array(
-          'library' => array('node/drupal.node'),
-        ),
+        '#attributes' => [
+          'class' => ['node-form-author'],
+        ],
+        '#attached' => [
+          'library' => ['node/drupal.node'],
+        ],
         '#weight' => 90,
         '#optional' => TRUE,
-      );
+      ];
     }
 
     if (isset($form['uid'])) {

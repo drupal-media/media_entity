@@ -290,7 +290,7 @@ class MediaBundleForm extends EntityForm {
 
     // Let the selected plugin validate its settings.
     $plugin = $this->entity->getType()->getPluginId();
-    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : array();
+    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : [];
     $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
     $instance->validateConfigurationForm($form, $form_state);
   }
@@ -310,7 +310,7 @@ class MediaBundleForm extends EntityForm {
 
     // Let the selected plugin save its settings.
     $plugin = $this->entity->getType()->getPluginId();
-    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : array();
+    $plugin_configuration = !empty($this->configurableInstances[$plugin]['plugin_config']) ? $this->configurableInstances[$plugin]['plugin_config'] : [];
     $instance = $this->mediaTypeManager->createInstance($plugin, $plugin_configuration);
     $instance->submitConfigurationForm($form, $form_state);
   }

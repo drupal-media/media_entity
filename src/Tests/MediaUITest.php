@@ -290,7 +290,7 @@ class MediaUITest extends WebTestBase {
     $this->assertEqual($media->getRevisionLogMessage(), $edit['revision_log'], 'Revision log was saved.');
 
     // Tests media delete form.
-    $this->drupalPostForm('media/' . $media_id . '/delete', array(), t('Delete'));
+    $this->drupalPostForm('media/' . $media_id . '/delete', [], t('Delete'));
     $media_id = \Drupal::entityQuery('media')->execute();
     $this->assertFalse($media_id);
 
