@@ -11,3 +11,4 @@ dependencies:
   - drupal:system (>=8.1.0)
 test_dependencies:
   - entity:entity
+  - inline_entity_form:inline_entity_form
