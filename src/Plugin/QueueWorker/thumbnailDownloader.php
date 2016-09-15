@@ -20,11 +20,12 @@ class ThumbnailDownloader extends QueueWorkerBase {
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $entity = Media::load($data['id']);
-    // Indicate that the entity is being processed from a queue and that
-    // thumbnail images should be downloaded.
-    $entity->setQueuedThumbnailDownload();
-    $entity->save();
+    if ($entity = Media::load($data['id'])) {
+      // Indicate that the entity is being processed from a queue and that
+      // thumbnail images should be downloaded.
+      $entity->setQueuedThumbnailDownload();
+      $entity->save();
+    }
   }
 
 }
