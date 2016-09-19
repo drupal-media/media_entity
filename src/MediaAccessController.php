@@ -26,10 +26,10 @@ class MediaAccessController extends EntityAccessControlHandler {
         return AccessResult::allowedIf($account->hasPermission('view media') && $entity->status->value);
 
       case 'update':
-        return AccessResult::allowedIf(($account->hasPermission('update media') && $is_owner) || $account->hasPermission('update any media'))->cachePerPermissions()->cachePerUser()->cacheUntilEntityChanges($entity);
+        return AccessResult::allowedIf(($account->hasPermission('update media') && $is_owner) || $account->hasPermission('update any media'))->cachePerPermissions()->cachePerUser()->addCacheableDependency($entity);
 
       case 'delete':
-        return AccessResult::allowedIf(($account->hasPermission('delete media') && $is_owner) ||  $account->hasPermission('delete any media'))->cachePerPermissions()->cachePerUser()->cacheUntilEntityChanges($entity);
+        return AccessResult::allowedIf(($account->hasPermission('delete media') && $is_owner) ||  $account->hasPermission('delete any media'))->cachePerPermissions()->cachePerUser()->addCacheableDependency($entity);
     }
 
     // No opinion.

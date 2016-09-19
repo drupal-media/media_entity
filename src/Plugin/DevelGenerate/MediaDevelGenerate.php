@@ -234,8 +234,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   }
 
   /**
-   * Method responsible for creating media when
-   * the number of elements is less than 50.
+   * Method for creating media when number of elements is less than 50.
    *
    * @param array $values
    *   Array of values submitted through a form.
@@ -266,8 +265,7 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   }
 
   /**
-   * Method responsible for creating media when
-   * the number of elements is greater than 50.
+   * Method for creating media when number of elements is greater than 50.
    *
    * @param array $values
    *   The input values from the settings form.
@@ -389,8 +387,10 @@ class MediaDevelGenerate extends DevelGenerateBase implements ContainerFactoryPl
   }
 
   /**
-   * Return the same array passed as parameter
-   * but with an array of uids for the key 'users'.
+   * Code to be run before generating items.
+   *
+   * Returns the same array passed in as parameter, but with an array of uids
+   * for the key 'users'.
    *
    * @param array $results
    *   The input values from the settings form.

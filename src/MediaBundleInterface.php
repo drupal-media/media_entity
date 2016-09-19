@@ -22,13 +22,13 @@ interface MediaBundleInterface extends ConfigEntityInterface, RevisionableEntity
   public static function getLabel(MediaInterface $media);
 
   /**
-   * Returns the media bundle ID.
+   * Checks if the bundle exists.
    *
    * @param int $id
    *   The Media bundle ID.
    *
    * @return bool
-   *   Returns the media bundle ID.
+   *   TRUE if the bundle with the given ID exists, FALSE otherwise.
    */
   public static function exists($id);
 

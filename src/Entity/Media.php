@@ -163,7 +163,7 @@ class Media extends ContentEntityBase implements MediaInterface {
     parent::postCreate($storage);
 
     /** @var MediaBundleInterface $bundle */
-    $bundle = $this->entityTypeManager()->getStorage('media_bundle')->load($this->bundle());;
+    $bundle = $this->entityTypeManager()->getStorage('media_bundle')->load($this->bundle());
     $this->setPublished($bundle->getStatus());
   }
 

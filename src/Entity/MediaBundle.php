@@ -145,7 +145,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    * {@inheritdoc}
    */
   public static function getLabel(MediaInterface $media) {
-    $bundle = entity_load('media_bundle', $media->bundle());
+    $bundle = static::load($media->bundle());
     return $bundle ? $bundle->label() : FALSE;
   }
 

@@ -9,6 +9,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\media_entity\Entity\MediaBundle;
 
 /**
  * Implements hook_token_info().
@@ -124,7 +125,7 @@ function media_entity_tokens($type, $tokens, array $data, array $options, Bubble
           break;
 
         case 'bundle-name':
-          $bundle_name = entity_load('media_bundle', $media->bundle())->label();
+          $bundle_name = MediaBundle::load($media->bundle())->label();
           $replacements[$original] = $sanitize ? Html::escape($bundle_name) : $bundle_name;
           break;
 
@@ -143,11 +144,11 @@ function media_entity_tokens($type, $tokens, array $data, array $options, Bubble
           break;
 
         case 'url':
-          $replacements[$original] = $media->url('canonical', $url_options);
+          $replacements[$original] = $media->toUrl('canonical', $url_options);
           break;
 
         case 'edit-url':
-          $replacements[$original] = $media->url('edit-form', $url_options);
+          $replacements[$original] = $media->toUrl('edit-form', $url_options);
           break;
 
         // Default values for the chained tokens handled below.

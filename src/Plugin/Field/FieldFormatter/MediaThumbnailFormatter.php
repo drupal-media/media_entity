@@ -140,7 +140,7 @@ class MediaThumbnailFormatter extends ImageFormatter {
     if ($image_link_setting == 'content') {
       $entity = $items->getEntity();
       if (!$entity->isNew()) {
-        $url = $entity->urlInfo();
+        $url = $entity->toUrl();
       }
     }
     elseif ($image_link_setting == 'media') {
@@ -149,9 +149,10 @@ class MediaThumbnailFormatter extends ImageFormatter {
 
     $image_style_setting = $this->getSetting('image_style');
 
+    /** @var \Drupal\media_entity\MediaInterface $media_item */
     foreach ($media as $delta => $media_item) {
       if (isset($link_media)) {
-        $url = $media_item->url();
+        $url = $media_item->toUrl();
       }
 
       $elements[$delta] = [

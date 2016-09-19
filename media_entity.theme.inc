@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
-use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\Component\Utility\Html;
 
 /**
@@ -25,7 +25,7 @@ function template_preprocess_media_add_list(&$variables) {
       /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
       $variables['bundles'][$bundle->id()] = [
         'type' => $bundle->id(),
-        'add_link' => \Drupal::l($bundle->label(), new Url('media.add', ['media_bundle' => $bundle->id()])),
+        'add_link' => Link::createFromRoute($bundle->label(), 'media.add', ['media_bundle' => $bundle->id()]),
         'description' => [
           '#markup' => $bundle->getDescription(),
         ],

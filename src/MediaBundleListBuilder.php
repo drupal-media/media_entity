@@ -30,7 +30,7 @@ class MediaBundleListBuilder extends ConfigEntityListBuilder implements EntityHa
    */
   public function buildRow(EntityInterface $entity) {
     $row['title'] = [
-      'data' => $this->getLabel($entity),
+      'data' => $entity->label(),
       'class' => ['menu-label'],
     ];
     $row['description'] = Xss::filterAdmin($entity->getDescription());

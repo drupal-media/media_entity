@@ -44,7 +44,7 @@ class MediaForm extends RevisionableContentEntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    // Node author information for administrators.
+    // Media author information for administrators.
     if (isset($form['uid']) || isset($form['created'])) {
       $form['author'] = [
         '#type' => 'details',

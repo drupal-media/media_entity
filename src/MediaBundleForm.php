@@ -361,10 +361,10 @@ class MediaBundleForm extends EntityForm {
 
     $t_args = ['%name' => $bundle->label()];
     if ($status == SAVED_UPDATED) {
-      drupal_set_message(t('The media bundle %name has been updated.', $t_args));
+      drupal_set_message($this->t('The media bundle %name has been updated.', $t_args));
     }
     elseif ($status == SAVED_NEW) {
-      drupal_set_message(t('The media bundle %name has been added.', $t_args));
+      drupal_set_message($this->t('The media bundle %name has been added.', $t_args));
       $this->logger('media')->notice('Added bundle %name.', $t_args);
     }
 
