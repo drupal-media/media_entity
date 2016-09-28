@@ -13,6 +13,10 @@ media ecosystem.
 
 Project page: https://drupal.org/project/media_entity
 
+## Official documentation
+
+You will find all the documentation about this module on the [official handbook](https://drupal-media.gitbooks.io/drupal8-guide/content/modules/media_entity/intro.html).
+
 ## Contribute
 
 Our current development focus can be seen in [the roadmap issue](https://www.drupal.org/node/2577453).
@@ -33,9 +37,15 @@ Media entity:
 - [Image](https://drupal.org/project/media_entity_image)
 - [Audio](https://drupal.org/project/media_entity_audio)
 - [Slideshow](https://drupal.org/project/media_entity_slideshow)
-- [Embeddable video](https://drupal.org/project/media_entity_embeddable_video)
+- [Video embed field](https://drupal.org/project/video_embed_field)
 - [Twitter](https://drupal.org/project/media_entity_twitter)
 - [Instagram](https://drupal.org/project/media_entity_instagram)
+- [Document](https://drupal.org/project/media_entity_document)
+- [Slideshare](https://drupal.org/project/media_entity_slideshare)
+- [Video (local)](https://drupal.org/project/media_entity_video)
+- [Tumblr](https://drupal.org/project/media_entity_tumblr)
+- [Facebook](https://drupal.org/project/media_entity_facebook)
+- [Audio embed field (sandbox)](https://drupal.org/sandbox/vilepickle/2784301)
 
 ## Other modules that integrate with media entity
 
@@ -44,6 +54,10 @@ Media entity:
 - [DropzoneJS](https://drupal.org/project/dropzonejs): Extends entity browser [image
   upload widget](https://drupal.org/project/media_entity_image) with [DropzoneJS
   upload library](http://www.dropzonejs.com).
+- [Slick media](https://drupal.org/project/slick_media): Provides integration
+between [Slick carousel](https://drupal.org/project/slick) and Media entity. Slick media allows richer slideshows/carousel
+  with a mix of text, image and video.
+- [Brightcove](https://github.com/dawehner/media_entity_brightcove)
 
 ## Maintainers
 - Janez Urevc ([@slashrsm](https://github.com/slashrsm)) https://drupal.org/user/744628
