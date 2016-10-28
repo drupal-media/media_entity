@@ -256,8 +256,8 @@ class MediaUITest extends WebTestBase {
     // empty (see #2750697).
     // Make the "Publisher ID" and "Created" fields hidden.
     $edit = [
-      'fields[created][type]' => 'hidden',
-      'fields[uid][type]' => 'hidden',
+      'fields[created][parent]' => 'hidden',
+      'fields[uid][parent]' => 'hidden',
     ];
     $this->drupalPostForm('/admin/structure/media/manage/' . $bundle->id . '/form-display', $edit, t('Save'));
     // Assure we are testing with a user without permission to manage revisions.
