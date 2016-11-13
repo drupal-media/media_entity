@@ -4,6 +4,7 @@ namespace Drupal\media_entity\Tests;
 
 use Drupal\Component\Utility\Xss;
 use Drupal\media_entity\Entity\Media;
+use Drupal\media_entity\MediaInterface;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -109,6 +110,7 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('description', $bundle['description'], 'Description field has a correct value.');
     $this->assertFieldByName('type', $bundle['type'], 'Generic plugin is selected.');
     $this->assertNoFieldChecked('edit-options-new-revision', 'Revision checkbox is not checked.');
+    $this->assertFieldChecked('edit-options-status', 'Status checkbox is checked.');
     $this->assertNoFieldChecked('edit-options-queue-thumbnail-downloads', 'Queue thumbnail checkbox is not checked.');
     $this->assertText('Create new revision', 'Revision checkbox label found.');
     $this->assertText('Create new revision: Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.', 'Revision help text found');
@@ -155,6 +157,7 @@ class MediaUITest extends WebTestBase {
     $bundle['type_configuration[test_type][test_config_value]'] = 'This is new config value.';
     $bundle['field_mapping[field_1]'] = 'name';
     $bundle['options[new_revision]'] = TRUE;
+    $bundle['options[status]'] = FALSE;
     $bundle['options[queue_thumbnail_downloads]'] = TRUE;
 
     $this->drupalPostForm(NULL, $bundle, t('Save media bundle'));
@@ -166,6 +169,7 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldByName('type', $bundle['type'], 'Test type is selected.');
     $this->assertFieldChecked('edit-options-new-revision', 'Revision checkbox is checked.');
     $this->assertFieldChecked('edit-options-queue-thumbnail-downloads', 'Queue thumbnail checkbox is checked.');
+    $this->assertNoFieldChecked('edit-options-status', 'Status checkbox is not checked.');
     $this->assertFieldByName('type_configuration[test_type][test_config_value]', 'This is new config value.');
     $this->assertText('Field 1', 'First metadata field found.');
     $this->assertText('Field 2', 'Second metadata field found.');
@@ -183,7 +187,14 @@ class MediaUITest extends WebTestBase {
     $this->assertEqual($loaded_bundle->getType()->getConfiguration()['test_config_value'], $bundle['type_configuration[test_type][test_config_value]'], 'Media bundle type configuration saved correctly.');
     $this->assertTrue($loaded_bundle->shouldCreateNewRevision(), 'New revisions are configured to be created.');
     $this->assertTrue($loaded_bundle->getQueueThumbnailDownloads(), 'Thumbnails are created through queues.');
+    $this->assertFalse($loaded_bundle->getStatus(), 'Default status is unpublished.');
     $this->assertEqual($loaded_bundle->field_map, ['field_1' => $bundle['field_mapping[field_1]']], 'Field mapping was saved correctly.');
+
+    // Test that a media being created with default status to "FALSE" will be
+    // created unpublished.
+    /** @var MediaInterface $unpublished_media */
+    $unpublished_media = Media::create(['name' => 'unpublished test media', 'bundle' => $loaded_bundle->id()]);
+    $this->assertFalse($unpublished_media->isPublished(), 'Unpublished media correctly created.');
 
     // Tests media bundle delete form.
     $this->clickLink(t('Delete'));

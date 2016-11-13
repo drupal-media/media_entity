@@ -368,6 +368,14 @@ class MediaBundleForm extends EntityForm {
       $this->logger('media')->notice('Added bundle %name.', $t_args);
     }
 
+    // Override the "status" base field default value, for this bundle.
+    $fields = $this->entityFieldManager->getFieldDefinitions('media', $bundle->id());
+    $media = $this->entityTypeManager->getStorage('media')->create(array('bundle' => $bundle->id()));
+    $value = (bool) $form_state->getValue(['options', 'status']);
+    if ($media->status->value != $value) {
+      $fields['status']->getConfig($bundle->id())->setDefaultValue($value)->save();
+    }
+
     $form_state->setRedirectUrl($bundle->toUrl('collection'));
   }
 

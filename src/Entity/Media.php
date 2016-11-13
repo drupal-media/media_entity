@@ -159,17 +159,6 @@ class Media extends ContentEntityBase implements MediaInterface {
   /**
    * {@inheritdoc}
    */
-  public function postCreate(EntityStorageInterface $storage) {
-    parent::postCreate($storage);
-
-    /** @var MediaBundleInterface $bundle */
-    $bundle = $this->entityTypeManager()->getStorage('media_bundle')->load($this->bundle());
-    $this->setPublished($bundle->getStatus());
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
@@ -375,7 +364,8 @@ class Media extends ContentEntityBase implements MediaInterface {
       ->setLabel(t('Publishing status'))
       ->setDescription(t('A boolean indicating whether the media is published.'))
       ->setTranslatable(TRUE)
-      ->setRevisionable(TRUE);
+      ->setRevisionable(TRUE)
+      ->setDefaultValue(TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))

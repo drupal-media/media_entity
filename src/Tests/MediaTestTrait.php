@@ -34,7 +34,6 @@ trait MediaTestTrait {
       'type' => $type_name,
       'type_configuration' => [],
       'field_map' => [],
-      'status' => 1,
       'new_revision' => FALSE,
     ];
 
