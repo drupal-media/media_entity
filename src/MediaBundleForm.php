@@ -103,6 +103,7 @@ class MediaBundleForm extends EntityForm {
       '#description' => $this->t('The human-readable name of this media bundle.'),
       '#required' => TRUE,
       '#size' => 30,
+      '#weight' => -100,
     ];
 
     // @todo: '#disabled' not always FALSE.
@@ -116,6 +117,7 @@ class MediaBundleForm extends EntityForm {
         'source' => ['label'],
       ],
       '#description' => $this->t('A unique machine-readable name for this media bundle.'),
+      '#weight' => -90,
     ];
 
     $form['description'] = [
@@ -123,6 +125,7 @@ class MediaBundleForm extends EntityForm {
       '#type' => 'textarea',
       '#default_value' => $bundle->getDescription(),
       '#description' => $this->t('Describe this media bundle. The text will be displayed on the <em>Add new media</em> page.'),
+      '#weight' => -80,
     ];
 
     $plugins = $this->mediaTypeManager->getDefinitions();
@@ -137,6 +140,7 @@ class MediaBundleForm extends EntityForm {
       '#default_value' => $bundle->getType()->getPluginId(),
       '#options' => $options,
       '#description' => $this->t('Media type provider plugin that is responsible for additional logic related to this media.'),
+      '#weight' => -70,
       '#ajax' => [
         'callback' => '::ajaxTypeProviderData',
         'progress' => [
@@ -151,6 +155,7 @@ class MediaBundleForm extends EntityForm {
       '#type' => 'fieldset',
       '#title' => $this->t('Type provider configuration'),
       '#tree' => TRUE,
+      '#weight' => -60,
     ];
 
     /** @var \Drupal\media_entity\MediaTypeInterface $plugin */
@@ -181,6 +186,7 @@ class MediaBundleForm extends EntityForm {
         '#tag' => 'p',
         '#value' => $this->t('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured below. Information will only be mapped if the entity field is empty.'),
       ],
+      '#weight' => -50,
     ];
 
     if (empty($plugin) || empty($plugin->providedFields())) {
@@ -225,6 +231,7 @@ class MediaBundleForm extends EntityForm {
       '#attached' => [
         'library' => ['node/drupal.content_types'],
       ],
+      '#weight' => 100,
     ];
 
     $form['workflow'] = [
