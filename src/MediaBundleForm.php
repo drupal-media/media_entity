@@ -229,7 +229,7 @@ class MediaBundleForm extends EntityForm {
     $form['additional_settings'] = [
       '#type' => 'vertical_tabs',
       '#attached' => [
-        'library' => ['node/drupal.content_types'],
+        'library' => ['media_entity/media_bundle_form'],
       ],
       '#weight' => 100,
     ];
