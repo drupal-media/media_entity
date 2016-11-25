@@ -113,9 +113,9 @@ class MediaUITest extends WebTestBase {
     $this->assertFieldChecked('edit-options-status', 'Status checkbox is checked.');
     $this->assertNoFieldChecked('edit-options-queue-thumbnail-downloads', 'Queue thumbnail checkbox is not checked.');
     $this->assertText('Create new revision', 'Revision checkbox label found.');
-    $this->assertText('Create new revision: Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.', 'Revision help text found');
-    $this->assertText('Queue thumbnail downloads: Download thumbnails via a queue.', 'Queue thumbnails help text found');
-    $this->assertText('Published: Entities will be automatically published when they are created.', 'Published help text found');
+    $this->assertText('Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.', 'Revision help text found');
+    $this->assertText('Download thumbnails via a queue.', 'Queue thumbnails help text found');
+    $this->assertText('Entities will be automatically published when they are created.', 'Published help text found');
     $this->assertText("This type provider doesn't need configuration.");
     $this->assertText('No metadata fields available.');
     $this->assertText('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured below. Information will only be mapped if the entity field is empty.');

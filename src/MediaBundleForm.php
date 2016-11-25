@@ -257,15 +257,11 @@ class MediaBundleForm extends EntityForm {
         'new_revision' => $this->t('Create new revision'),
         'queue_thumbnail_downloads' => $this->t('Queue thumbnail downloads'),
       ],
-      '#description' => [
-        '#theme' => 'item_list',
-        '#items' => [
-          ['#markup' => '<strong>' . $this->t('Published') . ':</strong> ' . $this->t('Entities will be automatically published when they are created.')],
-          ['#markup' => '<strong>' . $this->t('Create new revision') . ':</strong> ' . $this->t('Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.')],
-          ['#markup' => '<strong>' . $this->t('Queue thumbnail downloads') . ':</strong> ' . $this->t('Download thumbnails via a queue.')],
-        ],
-      ],
     ];
+
+    $form['workflow']['options']['status']['#description'] = $this->t('Entities will be automatically published when they are created.');
+    $form['workflow']['options']['new_revision']['#description'] = $this->t('Automatically create a new revision of media entities. Users with the Administer media permission will be able to override this option.');
+    $form['workflow']['options']['queue_thumbnail_downloads']['#description'] = $this->t('Download thumbnails via a queue.');
 
     if ($this->moduleHandler->moduleExists('language')) {
       $form['language'] = [
