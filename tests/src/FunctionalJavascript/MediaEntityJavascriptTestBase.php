@@ -56,25 +56,6 @@ abstract class MediaEntityJavascriptTestBase extends JavascriptTestBase {
   ];
 
   /**
-   * Permissions for the non-admin user that will be logged-in for test.
-   *
-   * @var array
-   */
-  protected static $nonAdminUserPermissions = [
-    // Media entity permissions.
-    'view media',
-    'create media',
-    'update media',
-    'update any media',
-    'delete media',
-    'delete any media',
-    'access media overview',
-    // Other permissions.
-    'administer views',
-    'access content overview',
-  ];
-
-  /**
    * An admin test user account.
    *
    * @var \Drupal\Core\Session\AccountInterface;
@@ -96,7 +77,7 @@ abstract class MediaEntityJavascriptTestBase extends JavascriptTestBase {
 
     // Have two users ready to be used in tests.
     $this->adminUser = $this->drupalCreateUser(static::$adminUserPermissions);
-    $this->nonAdminUser = $this->drupalCreateUser(static::$nonAdminUserPermissions);
+    $this->nonAdminUser = $this->drupalCreateUser([]);
     // Start off logged in as admin.
     $this->drupalLogin($this->adminUser);
   }

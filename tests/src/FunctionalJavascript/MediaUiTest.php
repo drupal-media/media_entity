@@ -230,7 +230,6 @@ class MediaUiTest extends MediaEntityJavascriptTestBase {
     $page->selectFieldOption('fields[uid][parent]', 'hidden');
     $page->pressButton('Save');
     // Assure we are testing with a user without permission to manage revisions.
-    $this->drupalLogout();
     $this->drupalLogin($this->nonAdminUser);
     // Check the container is not present.
     $this->drupalGet('media/' . $media_id . '/edit');
@@ -238,7 +237,6 @@ class MediaUiTest extends MediaEntityJavascriptTestBase {
     $raw_html = '<div data-drupal-selector="edit-advanced" data-vertical-tabs-panes><input class="vertical-tabs__active-tab" data-drupal-selector="edit-advanced-active-tab" type="hidden" name="advanced__active_tab" value="" />' . "\n" . '</div>';
     $assert_session->responseNotContains($raw_html);
     // Continue testing as admin.
-    $this->drupalLogout();
     $this->drupalLogin($this->adminUser);
 
     // Enable revisions by default.
