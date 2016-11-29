@@ -1,15 +1,33 @@
 <?php
 
-namespace Drupal\Tests\media_entity\FunctionalJavascript;
+namespace Drupal\Tests\media_entity\Kernel;
 
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\media_entity\Entity\Media;
+use Drupal\media_entity\Entity\MediaBundle;
 
 /**
  * Tests creation of Media Bundles and Media Entities.
  *
  * @group media_entity
  */
-class BasicCreationTest extends MediaEntityJavascriptTestBase {
+class BasicCreationTest extends KernelTestBase {
+
+  /**
+   * Modules to install.
+   *
+   * @var array
+   */
+  public static $modules = [
+    'media_entity',
+    'entity',
+    'image',
+    'user',
+    'field',
+    'system',
+    'file',
+  ];
+
 
   /**
    * The test media bundle.
@@ -23,7 +41,25 @@ class BasicCreationTest extends MediaEntityJavascriptTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->testBundle = $this->drupalCreateMediaBundle();
+
+    $this->installEntitySchema('user');
+    $this->installEntitySchema('file');
+    $this->installSchema('file', 'file_usage');
+    $this->installEntitySchema('media');
+    $this->installConfig(['field', 'system', 'image', 'file']);
+
+    // Create a test bundle.
+    $id = strtolower($this->randomMachineName());
+    $this->testBundle = MediaBundle::create([
+      'id' => $id,
+      'label' => $id,
+      'type' => 'generic',
+      'type_configuration' => [],
+      'field_map' => [],
+      'new_revision' => FALSE,
+    ]);
+    $this->testBundle->save();
+
   }
 
   /**

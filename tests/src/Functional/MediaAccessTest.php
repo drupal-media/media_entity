@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\media_entity\FunctionalJavascript;
+namespace Drupal\Tests\media_entity\Functional;
 
 use Drupal\media_entity\Entity\Media;
 use Drupal\user\Entity\Role;
@@ -10,7 +10,7 @@ use Drupal\user\Entity\Role;
  *
  * @group media_entity
  */
-class MediaAccessTest extends MediaEntityJavascriptTestBase {
+class MediaAccessTest extends MediaEntityFunctionalTestBase {
 
   /**
    * The test media bundle.
@@ -32,8 +32,6 @@ class MediaAccessTest extends MediaEntityJavascriptTestBase {
    */
   public function testMediaAccess() {
 
-    $session = $this->getSession();
-    $page = $session->getPage();
     $assert_session = $this->assertSession();
 
     // Create media.

@@ -22,13 +22,10 @@ class MediaIefTest extends MediaEntityJavascriptTestBase {
   public static $modules = ['inline_entity_form'];
 
   /**
-   * Tests inline_entity_form integration with media entities.
+   * {@inheritdoc}
    */
-  public function testMediaIefIntegration() {
-
-    $session = $this->getSession();
-    $page = $session->getPage();
-    $assert_session = $this->assertSession();
+  protected function setUp() {
+    parent::setUp();
 
     /** @var \Drupal\media_entity\MediaBundleInterface $media_bundle */
     $media_bundle = $this->drupalCreateMediaBundle();
@@ -81,11 +78,22 @@ class MediaIefTest extends MediaEntityJavascriptTestBase {
       'settings' => [],
     ])->save();
 
+  }
+
+  /**
+   * Tests inline_entity_form integration with media entities.
+   */
+  public function testMediaIefIntegration() {
+
+    $session = $this->getSession();
+    $page = $session->getPage();
+    $assert_session = $this->assertSession();
+
     // Open up a node form and check the IEF widget.
     $this->drupalGet('/node/add/media_entity_ct');
     $assert_session->buttonExists('edit-ref-media-entities-actions-ief-add');
     $page->pressButton('edit-ref-media-entities-actions-ief-add');
-    $this->waitForAjaxToFinish();
+    $assert_session->assertWaitOnAjaxRequest();
 
     // Check the presence of the entity's label field.
     $page->findField('ref_media_entities[form][inline_entity_form][name][0][value]')->isVisible();
@@ -96,7 +104,7 @@ class MediaIefTest extends MediaEntityJavascriptTestBase {
     $page->fillField('ref_media_entities[form][inline_entity_form][name][0][value]', $media_name);
     $page->fillField('ref_media_entities[form][inline_entity_form][uid][0][target_id]', $this->adminUser->getDisplayName() . ' (' . $this->adminUser->id() . ')');
     $page->pressButton('Create media');
-    $this->waitForAjaxToFinish();
+    $assert_session->assertWaitOnAjaxRequest();
 
     // We need to save the node in order for IEF to do its thing.
     $page->fillField('title[0][value]', $this->randomString());

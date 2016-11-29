@@ -20,17 +20,18 @@ class MediaViewsWizardTest extends MediaEntityJavascriptTestBase {
   public function testMediaWizard() {
     $session = $this->getSession();
     $page = $session->getPage();
+    $assert_session = $this->assertSession();
 
     $view_id = strtolower($this->randomMachineName(16));
     $this->drupalGet('admin/structure/views/add');
     $page->fillField('label', $view_id);
     $session->wait(2000);
     $page->selectFieldOption('show[wizard_key]', 'media');
-    $this->waitForAjaxToFinish();
+    $assert_session->assertWaitOnAjaxRequest();
     $page->checkField('page[create]');
     $page->fillField('page[path]', $this->randomMachineName(16));
     $page->pressButton('Save and edit');
-    $this->waitForAjaxToFinish();
+    $assert_session->assertWaitOnAjaxRequest();
     $this->assertEquals($session->getCurrentUrl(), $this->baseUrl . '/admin/structure/views/view/' . $view_id);
 
     $view = Views::getView($view_id);
@@ -53,17 +54,18 @@ class MediaViewsWizardTest extends MediaEntityJavascriptTestBase {
   public function testMediaRevisionWizard() {
     $session = $this->getSession();
     $page = $session->getPage();
+    $assert_session = $this->assertSession();
 
     $view_id = strtolower($this->randomMachineName(16));
     $this->drupalGet('admin/structure/views/add');
     $page->fillField('label', $view_id);
     $session->wait(2000);
     $page->selectFieldOption('show[wizard_key]', 'media_revision');
-    $this->waitForAjaxToFinish();
+    $assert_session->assertWaitOnAjaxRequest();
     $page->checkField('page[create]');
     $page->fillField('page[path]', $this->randomMachineName(16));
     $page->pressButton('Save and edit');
-    $this->waitForAjaxToFinish();
+    $assert_session->assertWaitOnAjaxRequest();
     $this->assertEquals($session->getCurrentUrl(), $this->baseUrl . '/admin/structure/views/view/' . $view_id);
 
     $view = Views::getView($view_id);

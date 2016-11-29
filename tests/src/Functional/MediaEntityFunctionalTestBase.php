@@ -1,16 +1,15 @@
 <?php
 
-namespace Drupal\Tests\media_entity\FunctionalJavascript;
+namespace Drupal\Tests\media_entity\Functional;
 
-use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
-use Drupal\Tests\media_entity\Functional\MediaEntityFunctionalTestTrait;
+use Drupal\Tests\BrowserTestBase;
 
 /**
- * Base class for Media Entity Javascript functional tests.
+ * Base class for Media Entity functional tests.
  *
- * @package Drupal\Tests\media_entity\FunctionalJavascript
+ * @package Drupal\Tests\media_entity\Functional
  */
-abstract class MediaEntityJavascriptTestBase extends JavascriptTestBase {
+abstract class MediaEntityFunctionalTestBase extends BrowserTestBase {
 
   use MediaEntityFunctionalTestTrait;
 
@@ -91,21 +90,6 @@ abstract class MediaEntityJavascriptTestBase extends JavascriptTestBase {
     $this->drupalLogin($this->adminUser);
 
     $this->storage = $this->container->get('entity_type.manager')->getStorage('media');
-  }
-
-  /**
-   * Waits and asserts that a given element is visible.
-   *
-   * @param string $selector
-   *   The CSS selector.
-   * @param int $timeout
-   *   (Optional) Timeout in milliseconds, defaults to 1000.
-   * @param string $message
-   *   (Optional) Message to pass to assertJsCondition().
-   */
-  protected function waitUntilVisible($selector, $timeout = 1000, $message = '') {
-    $condition = "jQuery('" . $selector . ":visible').length > 0";
-    $this->assertJsCondition($condition, $timeout, $message);
   }
 
 }

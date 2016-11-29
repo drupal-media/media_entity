@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\media_entity\FunctionalJavascript;
+namespace Drupal\Tests\media_entity\Functional;
 
 use Drupal\media_entity\Entity\Media;
 use Drupal\views\Views;
@@ -10,8 +10,7 @@ use Drupal\views\Views;
  *
  * @group media_entity
  */
-class MediaBulkFormTest extends MediaEntityJavascriptTestBase {
-
+class MediaBulkFormTest extends MediaEntityFunctionalTestBase {
 
   /**
    * Modules to be enabled.
@@ -89,7 +88,7 @@ class MediaBulkFormTest extends MediaEntityJavascriptTestBase {
     $page->pressButton('Apply to selected items');
     $assert_session->pageTextContains('Unpublish media was applied to 3 items');
     for ($i = 1; $i <= 3; $i++) {
-      $this->assertFalse($this->loadMedia($i)->isPublished(), 'The unpublish action failed in some of the media entities.');
+      $this->assertFalse($this->storage->loadUnchanged($i)->isPublished(), 'The unpublish action failed in some of the media entities.');
     }
 
     // Test publishing in bulk.
@@ -99,7 +98,7 @@ class MediaBulkFormTest extends MediaEntityJavascriptTestBase {
     $page->pressButton('Apply to selected items');
     $assert_session->pageTextContains('Publish media was applied to 2 items');
     for ($i = 1; $i <= 2; $i++) {
-      $this->assertTrue($this->loadMedia($i)->isPublished(), 'The publish action failed in some of the media entities.');
+      $this->assertTrue($this->storage->loadUnchanged($i)->isPublished(), 'The publish action failed in some of the media entities.');
     }
 
     // Test deletion in bulk.
@@ -111,24 +110,9 @@ class MediaBulkFormTest extends MediaEntityJavascriptTestBase {
     $page->pressButton('Delete');
     $assert_session->pageTextContains('Deleted 2 media entities.');
     for ($i = 1; $i <= 2; $i++) {
-      $this->assertNull($this->loadMedia($i), 'Could not delete some of the media entities.');
+      $this->assertNull($this->storage->loadUnchanged($i), 'Could not delete some of the media entities.');
     }
 
-  }
-
-  /**
-   * Load the specified media from the storage.
-   *
-   * @param int $id
-   *   The media identifier.
-   *
-   * @return \Drupal\media_entity\MediaInterface
-   *   The loaded media entity.
-   */
-  protected function loadMedia($id) {
-    /** @var \Drupal\media_entity\MediaStorage $storage */
-    $storage = $this->container->get('entity_type.manager')->getStorage('media');
-    return $storage->loadUnchanged($id);
   }
 
 }
