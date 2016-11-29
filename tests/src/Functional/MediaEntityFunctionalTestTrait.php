@@ -1,16 +1,18 @@
 <?php
 
-namespace Drupal\media_entity\Tests;
+namespace Drupal\Tests\media_entity\Functional;
 
 use Drupal\media_entity\Entity\MediaBundle;
 
 /**
- * Provides common functionality for media entity test classes.
+ * Trait with helpers for Media Entity functional tests.
+ *
+ * @package Drupal\Tests\media_entity\Functional
  */
-trait MediaTestTrait {
+trait MediaEntityFunctionalTestTrait {
 
   /**
-   * Creates media bundle.
+   * Creates a media bundle.
    *
    * @param array $values
    *   The media bundle values.
@@ -40,7 +42,7 @@ trait MediaTestTrait {
     $bundle = MediaBundle::create($values);
     $status = $bundle->save();
 
-    $this->assertEqual($status, SAVED_NEW, t('Created media bundle %bundle.', ['%bundle' => $bundle->id()]));
+    $this->assertEquals($status, SAVED_NEW, 'Could not create a media bundle of type ' . $type_name . '.');
 
     return $bundle;
   }
