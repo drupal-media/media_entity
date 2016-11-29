@@ -12,7 +12,7 @@ use Drupal\media_entity\Entity\Media;
  *
  * @group media_entity
  */
-class MediaIefTest extends MediaEntityJavascriptTestBase {
+class MediaIefIntegrationTest extends MediaEntityJavascriptTestBase {
 
   /**
    * Modules to enable.
