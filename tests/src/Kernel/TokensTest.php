@@ -10,9 +10,6 @@ use Drupal\media_entity\Entity\MediaBundle;
 /**
  * Tests token handling.
  *
- * @requires module token
- * @requires module entity
- *
  * @group media_entity
  */
 class TokensTest extends EntityKernelTestBase {
@@ -72,7 +69,6 @@ class TokensTest extends EntityKernelTestBase {
 
     $token_service = $this->container->get('token');
 
-    // @TODO Extend this to cover also the other tokens, if necessary.
     $replaced_value = $token_service->replace('[media:name]', ['media' => $media]);
     $this->assertEquals($media->label(), $replaced_value, 'Token replacement for the media label was sucessful.');
 
