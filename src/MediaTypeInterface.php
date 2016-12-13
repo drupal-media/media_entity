@@ -2,8 +2,8 @@
 
 namespace Drupal\media_entity;
 
-use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 
 /**

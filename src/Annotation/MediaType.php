@@ -40,4 +40,11 @@ class MediaType extends Plugin {
    */
   public $description = '';
 
+  /**
+   * The field types that can be used as a source field for this type.
+   *
+   * @var string[]
+   */
+  public $allowed_field_types = [];
+
 }

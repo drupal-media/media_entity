@@ -140,6 +140,11 @@ class MediaUiJavascriptTest extends MediaEntityJavascriptTestBase {
     $this->assertFalse($loaded_bundle->getStatus());
     $this->assertEquals($loaded_bundle->field_map, ['field_1' => 'name']);
 
+    // We need to clear the statically cached field definitions to account for
+    // fields that have been created by API calls in this test, since they exist
+    // in a separate memory space from the web server.
+    $this->container->get('entity_field.manager')->clearCachedFieldDefinitions();
+
     // Test that a media being created with default status to "FALSE" will be
     // created unpublished.
     /** @var \Drupal\media_entity\MediaInterface $unpublished_media */
