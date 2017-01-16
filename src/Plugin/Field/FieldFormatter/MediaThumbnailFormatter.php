@@ -17,7 +17,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *
  * @FieldFormatter(
  *   id = "media_thumbnail",
- *   label = @Translation("Thumbnail"),
+ *   label = @Translation("Image Style"),
  *   field_types = {
  *     "entity_reference"
  *   }
