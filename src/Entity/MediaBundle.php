@@ -2,15 +2,12 @@
 
 namespace Drupal\media_entity\Entity;
 
-use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 use Drupal\Core\Entity\EntityDescriptionInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
-use Drupal\field\FieldStorageConfigInterface;
 use Drupal\media_entity\MediaBundleInterface;
 use Drupal\media_entity\MediaInterface;
-use Drupal\media_entity\SourceFieldInterface;
 
 /**
  * Defines the Media bundle configuration entity.
@@ -124,7 +121,7 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
   /**
    * Default status of this media bundle.
    *
-   * @var bool
+   * @var array
    */
   public $status = TRUE;
 
@@ -242,74 +239,6 @@ class MediaBundle extends ConfigEntityBundleBase implements MediaBundleInterface
    */
   public function setNewRevision($new_revision) {
     $this->new_revision = $new_revision;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function preSave(EntityStorageInterface $storage) {
-    parent::preSave($storage);
-
-    // If the handler uses a source field, we'll need to store its name before
-    // saving. We'd need to double-save if we did this in postSave().
-    $handler = $this->getType();
-    if ($handler instanceof SourceFieldInterface) {
-      $storage = $handler->getSourceField($this)->getFieldStorageDefinition();
-      // If the field storage is a new (unsaved) config entity, save it.
-      if ($storage instanceof FieldStorageConfigInterface && $storage->isNew()) {
-        $storage->save();
-      }
-      // Store the field name. We always want to update this value because the
-      // field name may have changed, or a new field may have been created,
-      // depending on the user's actions or the handler's behavior.
-      $configuration = $handler->getConfiguration();
-      $configuration['source_field'] = $storage->getName();
-      $this->setTypeConfiguration($configuration);
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
-    parent::postSave($storage, $update);
-
-    // If the handler is using a source field, we may need to save it if it's
-    // new. The field storage is guaranteed to exist already because preSave()
-    // took care of that.
-    $handler = $this->getType();
-    if ($handler instanceof SourceFieldInterface) {
-      $field = $handler->getSourceField($this);
-
-      // If the field is new, save it and add it to this bundle's view and form
-      // displays.
-      if ($field->isNew()) {
-        // Ensure the field is saved correctly before adding it to the displays.
-        $field->save();
-
-        $entity_type = $field->getTargetEntityTypeId();
-        $bundle = $field->getTargetBundle();
-
-        if ($field->isDisplayConfigurable('form')) {
-          // Use the default widget and settings.
-          $component = \Drupal::service('plugin.manager.field.widget')
-            ->prepareConfiguration($field->getType(), []);
-
-          entity_get_form_display($entity_type, $bundle, 'default')
-            ->setComponent($field->getName(), $component)
-            ->save();
-        }
-        if ($field->isDisplayConfigurable('view')) {
-          // Use the default formatter and settings.
-          $component = \Drupal::service('plugin.manager.field.formatter')
-            ->prepareConfiguration($field->getType(), []);
-
-          entity_get_display($entity_type, $bundle, 'default')
-            ->setComponent($field->getName(), $component)
-            ->save();
-        }
-      }
-    }
   }
 
 }

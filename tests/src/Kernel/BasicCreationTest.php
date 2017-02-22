@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\media_entity\Kernel;
 
-use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\media_entity\Entity\Media;
 use Drupal\media_entity\Entity\MediaBundle;
@@ -80,7 +79,7 @@ class BasicCreationTest extends KernelTestBase {
     $this->assertEquals($test_bundle->get('label'), 'Test bundle', 'Could not assure the correct bundle label.');
     $this->assertEquals($test_bundle->get('description'), 'Test bundle.', 'Could not assure the correct bundle description.');
     $this->assertEquals($test_bundle->get('type'), 'generic', 'Could not assure the correct bundle plugin type.');
-    $this->assertEquals($test_bundle->get('type_configuration'), ['source_field' => 'field_media_generic_1'], 'Could not assure the correct plugin configuration.');
+    $this->assertEquals($test_bundle->get('type_configuration'), [], 'Could not assure the correct plugin configuration.');
     $this->assertEquals($test_bundle->get('field_map'), [], 'Could not assure the correct field map.');
   }
 
@@ -111,53 +110,6 @@ class BasicCreationTest extends KernelTestBase {
     $expected_name = 'media' . ':' . $this->testBundle->id() . ':' . $media->uuid();
     $this->assertEquals($media->bundle(), $this->testBundle->id(), 'The media was not created with correct bundle.');
     $this->assertEquals($media->label(), $expected_name, 'The media was not created with a default name.');
-  }
-
-  /**
-   * Tests creating and updating bundles programmatically.
-   */
-  public function testProgrammaticBundleManipulation() {
-    // Creating a bundle programmatically without specifying a source field
-    // should create one automagically.
-    /** @var FieldConfig $field */
-    $field = $this->testBundle->getType()->getSourceField($this->testBundle);
-    $this->assertInstanceOf(FieldConfig::class, $field);
-    $this->assertEquals('field_media_generic', $field->getName());
-    $this->assertFalse($field->isNew());
-
-    // Saving with a non-existent source field should create it.
-    $this->testBundle->setTypeConfiguration([
-      'source_field' => 'field_magick',
-    ]);
-    $this->testBundle->save();
-    $field = $this->testBundle->getType()->getSourceField($this->testBundle);
-    $this->assertInstanceOf(FieldConfig::class, $field);
-    $this->assertEquals('field_magick', $field->getName());
-    $this->assertFalse($field->isNew());
-
-    // Trying to save without a source field should create a new, de-duped one.
-    $this->testBundle->setTypeConfiguration([]);
-    $this->testBundle->save();
-    $field = $this->testBundle->getType()->getSourceField($this->testBundle);
-    $this->assertInstanceOf(FieldConfig::class, $field);
-    $this->assertEquals('field_media_generic_1', $field->getName());
-    $this->assertFalse($field->isNew());
-
-    // Trying to reuse an existing field should, well, reuse the existing field.
-    $this->testBundle->setTypeConfiguration([
-      'source_field' => 'field_magick',
-    ]);
-    $this->testBundle->save();
-    $field = $this->testBundle->getType()->getSourceField($this->testBundle);
-    $this->assertInstanceOf(FieldConfig::class, $field);
-    $this->assertEquals('field_magick', $field->getName());
-    $this->assertFalse($field->isNew());
-    // No new de-duped fields should have been created.
-    $duplicates = FieldConfig::loadMultiple([
-      'media.' . $this->testBundle->id() . '.field_magick_1',
-      'media.' . $this->testBundle->id() . '.field_media_generic_2',
-    ]);
-    $this->assertEmpty($duplicates);
   }
 
 }

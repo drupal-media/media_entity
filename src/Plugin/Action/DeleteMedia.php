@@ -84,7 +84,7 @@ class DeleteMedia extends ActionBase implements ContainerFactoryPluginInterface 
    * {@inheritdoc}
    */
   public function execute($object = NULL) {
-    $this->executeMultiple([$object]);
+    $this->executeMultiple(array($object));
   }
 
   /**

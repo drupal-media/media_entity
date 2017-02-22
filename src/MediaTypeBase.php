@@ -3,19 +3,19 @@
 namespace Drupal\media_entity;
 
 use Drupal\Component\Plugin\PluginBase;
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Component\Utility\NestedArray;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Base implementation of media type plugin.
  */
-abstract class MediaTypeBase extends PluginBase implements SourceFieldInterface, ContainerFactoryPluginInterface {
+abstract class MediaTypeBase extends PluginBase implements MediaTypeInterface, ContainerFactoryPluginInterface {
   use StringTranslationTrait;
 
   /**
@@ -105,9 +105,7 @@ abstract class MediaTypeBase extends PluginBase implements SourceFieldInterface,
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [
-      'source_field' => NULL,
-    ];
+    return [];
   }
 
   /**
@@ -140,28 +138,7 @@ abstract class MediaTypeBase extends PluginBase implements SourceFieldInterface,
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $options = [];
-
-    foreach ($this->entityFieldManager->getFieldStorageDefinitions('media') as $field_name => $field) {
-      $allowed_type = in_array($field->getType(), $this->pluginDefinition['allowed_field_types'], TRUE);
-      if ($allowed_type && !$field->isBaseField()) {
-        $options[$field_name] = $field->getLabel();
-      }
-    }
-
-    // If there are existing fields to choose from, allow the user to reuse one.
-    if ($options) {
-      $form['source_field'] = [
-        '#type' => 'select',
-        '#title' => $this->t('Field with source information.'),
-        '#default_value' => $this->configuration['source_field'],
-        '#empty_option' => $this->t('- Create -'),
-        '#empty_value' => NULL,
-        '#options' => $options,
-        '#description' => $this->t('The field on media items of this type that will store the source information.'),
-      ];
-    }
-    return $form;
+    return [];
   }
 
   /**
@@ -179,92 +156,6 @@ abstract class MediaTypeBase extends PluginBase implements SourceFieldInterface,
    */
   public function getDefaultName(MediaInterface $media) {
     return 'media:' . $media->bundle() . ':' . $media->uuid();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSourceField(MediaBundleInterface $bundle) {
-    // If we don't know the name of the source field, we definitely need to
-    // create it.
-    if (empty($this->configuration['source_field'])) {
-      return $this->createSourceField($bundle);
-    }
-    // Even if we do know the name of the source field, there is no guarantee
-    // that it already exists. So check for the field and create it if needed.
-    $field = $this->configuration['source_field'];
-    $fields = $this->entityFieldManager->getFieldDefinitions('media', $bundle->id());
-    return isset($fields[$field]) ? $fields[$field] : $this->createSourceField($bundle);
-  }
-
-  /**
-   * Returns the source field storage definition.
-   *
-   * @return \Drupal\Core\Field\FieldStorageDefinitionInterface
-   *   The field storage definition. Will be unsaved if new.
-   */
-  protected function getSourceFieldStorage() {
-    // If we don't know the name of the source field, we definitely need to
-    // create its storage.
-    if (empty($this->configuration['source_field'])) {
-      return $this->createSourceFieldStorage();
-    }
-    // Even if we do know the name of the source field, we cannot guarantee that
-    // its storage exists. So check for the storage and create it if needed.
-    $field = $this->configuration['source_field'];
-    $fields = $this->entityFieldManager->getFieldStorageDefinitions('media');
-    return isset($fields[$field]) ? $fields[$field] : $this->createSourceFieldStorage();
-  }
-
-  /**
-   * Creates the source field storage definition.
-   *
-   * @return \Drupal\field\FieldStorageConfigInterface
-   *   The unsaved field storage definition.
-   */
-  abstract protected function createSourceFieldStorage();
-
-  /**
-   * Creates the source field definition for a bundle.
-   *
-   * @param \Drupal\media_entity\MediaBundleInterface $bundle
-   *   The bundle.
-   *
-   * @return \Drupal\field\FieldConfigInterface
-   *   The unsaved field definition. The field storage definition, if new,
-   *   should also be unsaved.
-   */
-  abstract protected function createSourceField(MediaBundleInterface $bundle);
-
-  /**
-   * Determine the name of the source field.
-   *
-   * @return string
-   *   The source field name. If one is already stored in configuration, it is
-   *   returned. Otherwise, a new, unused one is generated.
-   */
-  protected function getSourceFieldName() {
-    if ($this->configuration['source_field']) {
-      return $this->configuration['source_field'];
-    }
-
-    $base_id = 'field_media_' . $this->getPluginId();
-    $tries = 0;
-    $storage = $this->entityTypeManager->getStorage('field_storage_config');
-
-    // Iterate at least once, until no field with the generated ID is found.
-    do {
-      $id = $base_id;
-      // If we've tried before, increment and append the suffix.
-      if ($tries) {
-        $id .= '_' . $tries;
-      }
-      $field = $storage->load('media.' . $id);
-      $tries++;
-    }
-    while ($field);
-
-    return $id;
   }
 
 }

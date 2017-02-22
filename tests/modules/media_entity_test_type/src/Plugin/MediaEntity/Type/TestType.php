@@ -11,8 +11,7 @@ use Drupal\media_entity\Plugin\MediaEntity\Type\Generic;
  * @MediaType(
  *   id = "test_type",
  *   label = @Translation("Test type"),
- *   description = @Translation("Test media type."),
- *   allowed_field_types = {"string"},
+ *   description = @Translation("Test media type.")
  * )
  */
 class TestType extends Generic {
@@ -31,7 +30,7 @@ class TestType extends Generic {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return parent::defaultConfiguration() + [
+    return [
       'test_config_value' => 'This is default value.',
     ];
   }
@@ -40,8 +39,6 @@ class TestType extends Generic {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form = parent::buildConfigurationForm($form, $form_state);
-
     $form['test_config_value'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Test config value'),

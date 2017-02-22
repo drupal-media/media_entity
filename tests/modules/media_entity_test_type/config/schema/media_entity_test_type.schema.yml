@@ -5,6 +5,3 @@ media_entity.bundle.type.test_type:
     test_config_value:
       type: string
       label: 'Test config value'
-    source_field:
-      type: string
-      label: 'Source field'
