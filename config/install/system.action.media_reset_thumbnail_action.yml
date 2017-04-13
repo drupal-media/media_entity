@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - media_entity
+id: media_reset_thumbnail_action
+label: 'Reset media thumbnail'
+type: media
+plugin: media_reset_thumbnail_action
+configuration: {  }
