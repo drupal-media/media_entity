@@ -458,14 +458,14 @@ class Media extends ContentEntityBase implements MediaInterface {
    * {@inheritdoc}
    */
   public function getRevisionUserId() {
-    return $this->revision_user->target_id;
+    return $this->revision_uid->target_id;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setRevisionUserId($user_id) {
-    $this->revision_user->target_id = $user_id;
+    $this->revision_uid->target_id = $user_id;
     return $this;
   }
 
