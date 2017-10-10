@@ -1,4 +1,4 @@
-name: Media entity
+name: Media entity (2.x)
 description: 'Media entity API.'
 type: module
 package: Media
@@ -9,6 +9,3 @@ dependencies:
   - drupal:views
   - entity:entity
   - drupal:system
-test_dependencies:
-  - entity:entity
-  - inline_entity_form:inline_entity_form

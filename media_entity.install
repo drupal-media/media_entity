@@ -5,6 +5,10 @@
  * Install, uninstall and update hooks for Media entity module.
  */
 
+use \Drupal\user\Entity\Role;
+use \Drupal\Core\Url;
+use \Drupal\Core\Database\Database;
+
 /**
  * Checks if required version of the Entity API is installed.
  *
@@ -23,6 +27,128 @@ function _media_entity_check_entity_version() {
 }
 
 /**
+ * Checks if all contrib modules depending on media_entity were updated.
+ *
+ * @return array
+ *   An empty array if all modules that depend on media_entity were updated, or
+ *   an array of incompatible modules otherwise. This array will be keyed by
+ *   either "providers" or "modules", depending if the incompatible module is a
+ *   contrib module that provides a type plugin (in which case it is expected to
+ *   have been upgraded to its 2.x branch) or just a module that depends on
+ *   "media_entity", respectively.
+ */
+function _media_entity_get_incompatible_modules() {
+  $incompatible_modules = [];
+  // Modules that provide provider plugins need to have ben updated and be
+  // implementing now @MediaSource instead of @MediaType plugins.
+  $old_plugins = \Drupal::service('plugin.manager.media_entity.type')->getDefinitions();
+  // The main media_entity module defines a "generic" type. We are directly
+  // handling this provider's configs in the update hook.
+  unset($old_plugins['generic']);
+  foreach ($old_plugins as $plugin => $definition) {
+    $incompatible_modules['providers'][$definition['provider']] = $definition['provider'];
+  }
+  // None of the enabled modules in the system should at this point depend on
+  // media_entity anymore.
+  /** @var \Drupal\Core\Extension\Extension[] $module_list */
+  $module_list = \Drupal::moduleHandler()->getModuleList();
+  foreach (array_keys($module_list) as $module_name) {
+    $info = system_get_info('module', $module_name);
+    foreach ($info['dependencies'] as $dependency) {
+      if ($dependency === 'media_entity' || $dependency === 'media_entity:media_entity') {
+        $incompatible_modules['modules'][$module_name] = $module_name;
+      }
+    }
+  }
+
+  // Disregard "media_entity_document" and "media_entity_image", once we will
+  // uninstall them ourselves as part of the update hook.
+  unset($incompatible_modules['providers']['media_entity_document']);
+  unset($incompatible_modules['modules']['media_entity_document']);
+  unset($incompatible_modules['providers']['media_entity_image']);
+  unset($incompatible_modules['modules']['media_entity_image']);
+  if (empty($incompatible_modules['providers'])) {
+    unset($incompatible_modules['providers']);
+  }
+  if (empty($incompatible_modules['modules'])) {
+    unset($incompatible_modules['modules']);
+  }
+
+  return $incompatible_modules;
+}
+
+/**
+ * Helper function to rename config dependencies.
+ *
+ * @param string $dependency_type
+ *   The type of the dependency, such as "module" or "config".
+ * @param string $dependency_id
+ *   The name of the dependency to be updated.
+ * @param callable $map
+ *   A callback to be passed to array_map() to actually perform the config name
+ *   substitution.
+ */
+function _media_entity_fix_dependencies($dependency_type, $dependency_id, callable $map) {
+  $dependents = \Drupal::service('config.manager')
+    ->findConfigEntityDependents($dependency_type, [$dependency_id]);
+
+  $key = 'dependencies.' . $dependency_type;
+
+  foreach (array_keys($dependents) as $config) {
+    $config = \Drupal::configFactory()->getEditable($config);
+    $dependencies = $config->get($key);
+    if (is_array($dependencies)) {
+      $config->set($key, array_map($map, $dependencies))->save();
+    }
+  }
+}
+
+/**
+ * Helper function to determine the name of a source field.
+ *
+ * @return string
+ *   The source field name. If one is already stored in configuration, it is
+ *   returned. Otherwise, a new, unused one is generated.
+ */
+function _media_get_source_field_name($plugin_id) {
+  $base_id = 'field_media_' . $plugin_id;
+  $tries = 0;
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+
+  // Iterate at least once, until no field with the generated ID is found.
+  do {
+    $id = $base_id;
+    // If we've tried before, increment and append the suffix.
+    if ($tries) {
+      $id .= '_' . $tries;
+    }
+    $field = $storage->load('media.' . $id);
+    $tries++;
+  } while ($field);
+
+  return $id;
+}
+
+/**
+ * Gets the names of all media bundles that use a particular type plugin.
+ *
+ * @param string $plugin_id
+ *   The type plugin ID.
+ *
+ * @return string[]
+ *   The media bundle IDs which use the specified plugin.
+ */
+function _media_entity_get_bundles_by_plugin($plugin_id) {
+  $types = [];
+  foreach (\Drupal::configFactory()->listAll('media_entity.bundle') as $name) {
+    if (\Drupal::config($name)->get('type') == $plugin_id) {
+      $types[] = explode('.', $name, 3)[2];
+    }
+  }
+  return $types;
+}
+
+/**
  * Implements hook_requirements().
  */
 function media_entity_requirements($phase) {
@@ -38,6 +164,101 @@ function media_entity_requirements($phase) {
       'severity' => REQUIREMENT_ERROR,
     ];
   }
+
+  // Prevent this branch from being installed on new sites.
+  if ($phase == 'install') {
+    $requirements['media_entity_update_only'] = [
+      'title' => t('Media entity'),
+      'description' => t('This branch of Media Entity is intended for site upgrades only. Please use the 1.x branch or Drupal core >= 8.4.x if you are building a new site.'),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+  }
+
+  if ($phase == 'update') {
+    // Here we want to ensure that a series of requirements are met before
+    // letting the DB updates continue. However, the batch processing of
+    // hook_update_N() triggers this validation again during the update process.
+    // Because of that, we want to make sure that these requirements checks are
+    // only evaluated once, and we use a state variable for that.
+    if (!\Drupal::state()->get('media_entity_core_upgrade_started')) {
+      // This update only makes sense with core >= 8.4.x.
+      $version = explode('.', \Drupal::VERSION);
+      if ($version[1] < 4) {
+        $requirements['media_module_core_incompatibility'] = [
+          'title' => t('Media Entity'),
+          'value' => t('The Media Entity 2.x upgrade path only works with Drupal core >= 8.4.x'),
+          'description' => t('In order to run the Media Entity 2.x upgrade, please upgrade first Drupal core to at least 8.4.x.'),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+      // This update can't proceed if there is an already enabled module called
+      // "media".
+      if (\Drupal::moduleHandler()->moduleExists('media')) {
+        $requirements['media_module_exists'] = [
+          'title' => t('Media Entity'),
+          'value' => t('Existing Media module detected.'),
+          'description' => t('In order to run the Media Entity 2.x upgrade, please uninstall and remove from the codebase the contributed Media module.'),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+      // Prevent the updates from running if there is a type-provider that is
+      // still on the 1.x branch.
+      $incompatible_modules = _media_entity_get_incompatible_modules();
+      if (!empty($incompatible_modules)) {
+        $provider_modules = !empty($incompatible_modules['providers']) ? implode(", ", $incompatible_modules['providers']) : '';
+        $additional_msg_providers = !empty($provider_modules) ? ' ' . t('The following modules provide source plugins and need to be upgraded: @provider_modules.', [
+          '@provider_modules' => $provider_modules,
+        ]) : '';
+        $dependent_modules = !empty($incompatible_modules['modules']) ? implode(", ", $incompatible_modules['modules']) : '';
+        $additional_msg_dependent = !empty($dependent_modules) ? ' ' . t('The following modules depend on media entity and need to be either upgraded or uninstalled: @dependent_modules.', [
+          '@dependent_modules' => $dependent_modules,
+        ]) : '';
+        $requirements['media_entity_modules_compatibility'] = [
+          'title' => t('Media entity'),
+          'value' => t('Some modules that depend on media entity were not updated or uninstalled.'),
+          'description' => t('In order to run the Media Entity updates, please make sure all modules that provide plugins for Media Entity (or depend on it) have their code updated to their respective 2.x branches. Note that you will probably need to revert to the 1.x branch of the Media Entity module if you want to uninstall existing plugin modules.') . $additional_msg_providers . $additional_msg_dependent,
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+
+      $generic_types = _media_entity_get_bundles_by_plugin('generic');
+      if ($generic_types) {
+        $module_data = system_rebuild_module_data();
+        if (!isset($module_data['media_entity_generic'])) {
+          $requirements['media_entity_generic'] = [
+            'title' => t('Media entity generic'),
+            'description' => t('One or more of your existing media types are using the Generic source, which has been moved into a separate Media Entity Generic module. You need to download this module before continuing.'),
+            'severity' => REQUIREMENT_ERROR,
+          ];
+        }
+      }
+    }
+
+  }
+
+  if ($phase == 'runtime') {
+    if (drupal_get_installed_schema_version('media_entity') < 8201) {
+      $requirements['media_entity_update_status'] = [
+        'title' => t('Media Entity'),
+        'value' => t('DB updates for Media Entity pending.'),
+        'description' => t('After updating the Media Entity code, you need to run the <a href=":update">database update script</a> as soon as possible.', [
+          ':update' => Url::fromRoute('system.db_update')->toString(),
+        ]),
+        'severity' => REQUIREMENT_WARNING,
+      ];
+    }
+    else {
+      $requirements['media_entity_update_status'] = [
+        'title' => t('Media Entity'),
+        'value' => t('DB updates for Media Entity were run.'),
+        // @TODO There are cases where media_entity will need to stay enabled.
+        // @TODO Tweak this message to account for that.
+        'description' => t('The Media Entity upgrade path was executed, you can now uninstall and remove the Media Entity module from the codebase.'),
+        'severity' => REQUIREMENT_OK,
+      ];
+    }
+  }
+
   return $requirements;
 }
 
@@ -100,4 +321,125 @@ function media_entity_update_8003() {
   if (!_media_entity_check_entity_version()) {
     throw new \Drupal\Core\Utility\UpdateException('Entity API >= 8.x-1.0-alpha3 (drupal.org/project/entity) module is now a dependency and needs to be installed before running updates.');
   }
+}
+
+/**
+ * Replace Media Entity with Media.
+ */
+function media_entity_update_8201() {
+  \Drupal::state()->set('media_entity_core_upgrade_started', TRUE);
+
+  \Drupal::service('module_installer')->install(['media']);
+
+  // Fix the schema.
+  /** @var \Drupal\Core\Field\FieldStorageDefinitionInterface[] $field_definitions */
+  $field_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('media');
+  Database::getConnection()->schema()->changeField('media_revision', 'revision_uid', 'revision_user', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
+  Database::getConnection()->schema()->changeField('media_revision', 'revision_timestamp', 'revision_created', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
+  Database::getConnection()->schema()->changeField('media_revision', 'revision_log', 'revision_log_message', $field_definitions['revision_log_message']->getColumns()[$field_definitions['revision_log_message']->getMainPropertyName()]);
+
+  // Delete file/image media types automatically created by core media.
+  $auto_created_types = \Drupal::entityTypeManager()->getStorage('media_type')
+    ->loadMultiple(['file', 'image']);
+  foreach ($auto_created_types as $created_type) {
+    $created_type->delete();
+  }
+
+  // Move all module dependencies on existing config entities from
+  // "media_entity" to "media".
+  _media_entity_fix_dependencies('module', 'media_entity', function ($module) {
+    return $module === 'media_entity' ? 'media' : $module;
+  });
+
+  $config_factory = \Drupal::configFactory();
+
+  // Move media_entity.settings to media.settings. Note that we don't read and
+  // save in bulk because the key "icon_base" moved to "icon_base_uri".
+  $config_factory->getEditable('media.settings')
+    ->set('icon_base_uri', $config_factory->get('media_entity.settings')->get('icon_base'))
+    ->save();
+  $config_factory->getEditable('media_entity.settings')->delete();
+
+  // Move all bundle configs to the new plugin namespace. This means moving all
+  // "media_entity.bundle.*" to "media.type.*".
+  foreach ($config_factory->listAll('media_entity.bundle.') as $original_name) {
+    $search = '/^media_entity\.bundle\./';
+    $replace = 'media.type.';
+
+    $new_name = preg_replace($search, $replace, $original_name);
+    $config_factory->rename($original_name, $new_name);
+
+    $config = $config_factory->getEditable($new_name);
+    $source_id = $config->get('type');
+    $config
+      ->set('source_configuration', $config->get('type_configuration'))
+      ->clear('type_configuration')
+      ->set('source', $source_id == 'document' ? 'file' : $source_id)
+      ->clear('type')
+      ->save();
+
+    _media_entity_fix_dependencies('config', $original_name, function ($bundle_id) use ($search, $replace) {
+      return preg_replace($search, $replace, $bundle_id);
+    });
+
+    /** @var \Drupal\media\MediaTypeInterface $media_type */
+    $media_type = \Drupal::entityTypeManager()->getStorage('media_type')
+      ->load($config->get('id'));
+    $media_source = $media_type->getSource();
+    if (!$media_source->getConfiguration()['source_field']) {
+      // Create custom storage for our new base field.
+      /** @var \Drupal\field\FieldStorageConfigInterface $storage */
+      $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config')
+        ->create([
+          'entity_type' => 'media',
+          'field_name' => _media_get_source_field_name($media_source->getPluginId()),
+          'type' => reset($media_source->getPluginDefinition()['allowed_field_types']),
+        ]);
+      $storage->save();
+      /** @var \Drupal\field\FieldConfigInterface $source_field */
+      $source_field = \Drupal::entityTypeManager()->getStorage('field_config')
+        ->create([
+          'field_storage' => $storage,
+          'bundle' => $media_type->id(),
+          'label' => $media_source->getPluginDefinition()['label'],
+          'required' => TRUE,
+        ]);
+      $source_field->save();
+
+      $media_type
+        ->set('source_configuration', [
+          'source_field' => $source_field->getName(),
+        ])
+        ->save();
+    }
+  }
+
+  /** @var \Drupal\user\Entity\Role $role */
+  foreach (Role::loadMultiple() as $role) {
+    if ($role->hasPermission('administer media bundles')) {
+      $role
+        ->revokePermission('administer media bundles')
+        ->grantPermission('administer media types')
+        ->save();
+    }
+  }
+
+  // Install media_entity_generic if available. It stands to reason that this
+  // module will only be available if you have at least one media type that uses
+  // the generic plugin, since it has been split out into its own module and is
+  // only requested if there are media bundles that use it.
+  // See media_entity_requirements().
+  $module_data = system_rebuild_module_data();
+  if (isset($module_data['media_entity_generic'])) {
+    \Drupal::service('module_installer')->install(['media_entity_generic']);
+  }
+
+  // Disable media_entity_image and media_entity_document straight away.
+  $uninstall = ['media_entity_image', 'media_entity_document'];
+  foreach ($uninstall as $module) {
+    if (\Drupal::moduleHandler()->moduleExists($module)) {
+      \Drupal::service('module_installer')->uninstall([$module]);
+    }
+  }
+
 }
