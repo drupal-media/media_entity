@@ -7,3 +7,51 @@
 
 // This empty file needs to be here so that drush commands that automatically
 // include .module files on enabled modules don't complain.
+
+use Drupal\Core\Config\Entity\ConfigEntityType;
+use Drupal\Core\Entity\ContentEntityType;
+use Drupal\media_entity\Media;
+use Drupal\media_entity\MediaBundle;
+
+/**
+ * Implements hook_entity_type_build().
+ */
+function media_entity_entity_type_build(array &$entity_types) {
+  if (!\Drupal::moduleHandler()->moduleExists('media')) {
+    $entity_types['media'] = new ContentEntityType([
+      'id' => 'media',
+      'provider' => 'media_entity',
+      'class' => Media::class,
+      'base_table' => 'media',
+      'data_table' => 'media_field_data',
+      'revision_table' => 'media_revision',
+      'revision_data_table' => 'media_field_revision',
+      'translatable' => TRUE,
+      'entity_keys' => [
+        'id' => 'mid',
+        'revision' => 'vid',
+        'bundle' => 'bundle',
+        'label' => 'name',
+        'langcode' => 'langcode',
+        'uuid' => 'uuid',
+        'published' => 'status',
+      ],
+      'revision_metadata_keys' => [
+        'revision_user' => 'revision_user',
+        'revision_created' => 'revision_created',
+        'revision_log_message' => 'revision_log_message',
+      ],
+      'bundle_entity_type' => 'media_bundle',
+    ]);
+    $entity_types['media_bundle'] = new ConfigEntityType([
+      'id' => 'media_bundle',
+      'provider' => 'media_entity',
+      'class' => MediaBundle::class,
+      'bundle_of' => 'media',
+      'entity_keys' => [
+        'id' => 'id',
+        'label' => 'label',
+      ],
+    ]);
+  }
+}

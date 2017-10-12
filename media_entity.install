@@ -327,16 +327,41 @@ function media_entity_update_8003() {
  * Replace Media Entity with Media.
  */
 function media_entity_update_8201() {
+  $config_factory = \Drupal::configFactory();
+
   \Drupal::state()->set('media_entity_core_upgrade_started', TRUE);
 
-  \Drupal::service('module_installer')->install(['media']);
+  $snapshots = _media_entity_snapshot_config([
+    'core.entity_form_display.media.file.default',
+    'core.entity_form_display.media.image.default',
+    'core.entity_view_display.media.file.default',
+    'core.entity_view_display.media.image.default',
+  ], TRUE);
+
+  $install = ['media'];
+  // Install media_entity_generic if available. It stands to reason that this
+  // module will only be available if you have at least one media type that uses
+  // the generic plugin, since it has been split out into its own module and is
+  // only requested if there are media bundles that use it.
+  // See media_entity_requirements().
+  $module_data = system_rebuild_module_data();
+  if (isset($module_data['media_entity_generic'])) {
+    $install[] = 'media_entity_generic';
+  }
+  \Drupal::service('module_installer')->install($install);
+
+  foreach ($snapshots as $name => $data) {
+    $config_factory->getEditable($name)->setData($data)->save(TRUE);
+  }
+  unset($snapshots);
 
   // Fix the schema.
   /** @var \Drupal\Core\Field\FieldStorageDefinitionInterface[] $field_definitions */
   $field_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('media');
-  Database::getConnection()->schema()->changeField('media_revision', 'revision_uid', 'revision_user', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
-  Database::getConnection()->schema()->changeField('media_revision', 'revision_timestamp', 'revision_created', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
-  Database::getConnection()->schema()->changeField('media_revision', 'revision_log', 'revision_log_message', $field_definitions['revision_log_message']->getColumns()[$field_definitions['revision_log_message']->getMainPropertyName()]);
+  $db = Database::getConnection()->schema();
+  $db->changeField('media_revision', 'revision_uid', 'revision_user', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
+  $db->changeField('media_revision', 'revision_timestamp', 'revision_created', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
+  $db->changeField('media_revision', 'revision_log', 'revision_log_message', $field_definitions['revision_log_message']->getColumns()[$field_definitions['revision_log_message']->getMainPropertyName()]);
 
   // Delete file/image media types automatically created by core media.
   $auto_created_types = \Drupal::entityTypeManager()->getStorage('media_type')
@@ -350,8 +375,16 @@ function media_entity_update_8201() {
   _media_entity_fix_dependencies('module', 'media_entity', function ($module) {
     return $module === 'media_entity' ? 'media' : $module;
   });
-
-  $config_factory = \Drupal::configFactory();
+  // Move all module dependencies on existing config entities from
+  // "media_entity_document" to "media".
+  _media_entity_fix_dependencies('module', 'media_entity_document', function ($module) {
+    return $module === 'media_entity_document' ? 'media' : $module;
+  });
+  // Move all module dependencies on existing config entities from
+  // "media_entity_image" to "media".
+  _media_entity_fix_dependencies('module', 'media_entity_image', function ($module) {
+    return $module === 'media_entity_image' ? 'media' : $module;
+  });
 
   // Move media_entity.settings to media.settings. Note that we don't read and
   // save in bulk because the key "icon_base" moved to "icon_base_uri".
@@ -386,24 +419,10 @@ function media_entity_update_8201() {
     $media_type = \Drupal::entityTypeManager()->getStorage('media_type')
       ->load($config->get('id'));
     $media_source = $media_type->getSource();
-    if (!$media_source->getConfiguration()['source_field']) {
-      // Create custom storage for our new base field.
-      /** @var \Drupal\field\FieldStorageConfigInterface $storage */
-      $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config')
-        ->create([
-          'entity_type' => 'media',
-          'field_name' => _media_get_source_field_name($media_source->getPluginId()),
-          'type' => reset($media_source->getPluginDefinition()['allowed_field_types']),
-        ]);
-      $storage->save();
-      /** @var \Drupal\field\FieldConfigInterface $source_field */
-      $source_field = \Drupal::entityTypeManager()->getStorage('field_config')
-        ->create([
-          'field_storage' => $storage,
-          'bundle' => $media_type->id(),
-          'label' => $media_source->getPluginDefinition()['label'],
-          'required' => TRUE,
-        ]);
+    $source_field = $media_source->getSourceFieldDefinition($media_type);
+    if (!$source_field) {
+      $source_field = $media_source->createSourceField($media_type);
+      $source_field->getFieldStorageDefinition()->save();
       $source_field->save();
 
       $media_type
@@ -424,16 +443,6 @@ function media_entity_update_8201() {
     }
   }
 
-  // Install media_entity_generic if available. It stands to reason that this
-  // module will only be available if you have at least one media type that uses
-  // the generic plugin, since it has been split out into its own module and is
-  // only requested if there are media bundles that use it.
-  // See media_entity_requirements().
-  $module_data = system_rebuild_module_data();
-  if (isset($module_data['media_entity_generic'])) {
-    \Drupal::service('module_installer')->install(['media_entity_generic']);
-  }
-
   // Disable media_entity_image and media_entity_document straight away.
   $uninstall = ['media_entity_image', 'media_entity_document'];
   foreach ($uninstall as $module) {
@@ -441,5 +450,32 @@ function media_entity_update_8201() {
       \Drupal::service('module_installer')->uninstall([$module]);
     }
   }
+}
 
+/**
+ * Collects snapshots of config objects.
+ *
+ * @param string[] $names
+ *   The names of the config objects to snapshot.
+ * @param bool $delete
+ *   (optional) Whether to delete the original config objects. Defaults to
+ *   FALSE.
+ *
+ * @return array
+ *   The config data, keyed by object name.
+ */
+function _media_entity_snapshot_config(array $names, $delete = FALSE) {
+  $snapshots = [];
+  foreach ($names as $name) {
+    $config = \Drupal::configFactory()->getEditable($name);
+
+    if (!$config->isNew()) {
+      $snapshots[$name] = $config->get();
+
+      if ($delete) {
+        $config->delete();
+      }
+    }
+  }
+  return $snapshots;
 }
