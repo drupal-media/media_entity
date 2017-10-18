@@ -42,6 +42,15 @@ class CoreMediaUpdatePathTest extends UpdatePathTestBase {
     $this->runUpdates();
     $assert = $this->assertSession();
 
+    // As with all translatable, versionable content entity types, media
+    // entities should have the revision_translation_affected base field.
+    // This may have been created during the update path by system_update_8402,
+    // so we should check for it here.
+    /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+    $field_manager = $this->container->get('entity_field.manager');
+    $this->assertArrayHasKey('revision_translation_affected', $field_manager->getBaseFieldDefinitions('media'));
+    $field_manager->clearCachedFieldDefinitions();
+
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('/admin/modules');
     $assert->checkboxNotChecked('modules[media_entity_document][enable]');

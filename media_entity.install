@@ -325,6 +325,13 @@ function media_entity_update_8003() {
 }
 
 /**
+ * Clears the module handler's hook implementation cache.
+ */
+function media_entity_update_8200() {
+  \Drupal::moduleHandler()->resetImplementations();
+}
+
+/**
  * Replace Media Entity with Media.
  */
 function media_entity_update_8201() {
@@ -447,12 +454,10 @@ function media_entity_update_8201() {
   }
 
   // Disable media_entity_image and media_entity_document straight away.
-  $uninstall = ['media_entity_image', 'media_entity_document'];
-  foreach ($uninstall as $module) {
-    if (\Drupal::moduleHandler()->moduleExists($module)) {
-      \Drupal::service('module_installer')->uninstall([$module]);
-    }
-  }
+  \Drupal::service('module_installer')->uninstall([
+    'media_entity_image',
+    'media_entity_document',
+  ]);
 }
 
 /**
@@ -481,4 +486,20 @@ function _media_entity_snapshot_config(array $names, $delete = FALSE) {
     }
   }
   return $snapshots;
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function media_entity_update_dependencies() {
+  $dependencies = [];
+
+  // Ensure that system_update_8402 is aware of the media entity type, which is
+  // declared dynamically in hook_entity_type_build(). We need to clear the
+  // module handler's hook implementation cache so as to guarantee that it is
+  // aware of media_entity_entity_type_build().
+  $dependencies['system'][8402]['media_entity'] = 8200;
+  $dependencies['media_entity'][8201]['system'] = 8402;
+
+  return $dependencies;
 }
