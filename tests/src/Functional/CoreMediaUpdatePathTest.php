@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\media_entity\Functional;
 
+use Drupal\Core\Config\Entity\Query\QueryFactory;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 /**
@@ -78,6 +79,12 @@ class CoreMediaUpdatePathTest extends UpdatePathTestBase {
       $this->container->get('config.factory')->listAll('media_entity.bundle')
     );
 
+    $this->activateModule();
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
+    $storage = $this->container
+      ->get('entity_type.manager')
+      ->getStorage('media_type');
+
     foreach (['file', 'image', 'generic'] as $type) {
       $config = $this->config("media.type.$type");
       $this->assertFalse($config->isNew());
@@ -86,7 +93,20 @@ class CoreMediaUpdatePathTest extends UpdatePathTestBase {
       $this->assertInternalType('string', $config->get('source'));
       $this->assertInternalType('array', $config->get('source_configuration'));
       $this->assertInternalType('string', $config->get('source_configuration.source_field'));
+
+      // Ensure that the media type can be queried by UUID.
+      $uuid = $config->get('uuid');
+      $this->assertNotEmpty($uuid);
+      $result = $storage->getQuery()->condition('uuid', $uuid)->execute();
+      $this->assertEquals($result[$type], $type);
     }
+
+    // The UUID map for legacy media bundles should be cleared out.
+    $old_uuid_map = $this->container
+      ->get('keyvalue')
+      ->get(QueryFactory::CONFIG_LOOKUP_PREFIX . 'media_bundle')
+      ->getAll();
+    $this->assertEmpty($old_uuid_map);
   }
 
   protected function assertFrontPageMedia($link, $assert_selectors) {
@@ -97,6 +117,23 @@ class CoreMediaUpdatePathTest extends UpdatePathTestBase {
     foreach ((array) $assert_selectors as $selector) {
       $assert->elementExists('css', $selector);
     }
+  }
+
+  /**
+   * Activates the Media module in PHPUnit's memory space.
+   */
+  protected function activateModule() {
+    $this->container
+      ->get('module_handler')
+      ->addModule('media', 'core/modules/media');
+
+    /** @var \ArrayObject $namespaces */
+    $namespaces = $this->container->get('container.namespaces');
+    $namespaces['Drupal\\media'] = 'core/modules/media/src';
+
+    $this->container
+      ->get('entity_type.manager')
+      ->clearCachedDefinitions();
   }
 
 }

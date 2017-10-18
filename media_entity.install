@@ -8,6 +8,7 @@
 use \Drupal\user\Entity\Role;
 use \Drupal\Core\Url;
 use \Drupal\Core\Database\Database;
+use Drupal\Core\Config\Entity\Query\QueryFactory;
 
 /**
  * Checks if required version of the Entity API is installed.
@@ -428,10 +429,12 @@ function media_entity_update_8201() {
       $media_type
         ->set('source_configuration', [
           'source_field' => $source_field->getName(),
-        ])
-        ->save();
+        ]);
     }
+    $media_type->save();
   }
+  // Clear the old UUID map.
+  \Drupal::keyValue(QueryFactory::CONFIG_LOOKUP_PREFIX . 'media_bundle')->deleteAll();
 
   /** @var \Drupal\user\Entity\Role $role */
   foreach (Role::loadMultiple() as $role) {
