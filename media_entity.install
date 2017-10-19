@@ -367,7 +367,7 @@ function media_entity_update_8201() {
   /** @var \Drupal\Core\Field\FieldStorageDefinitionInterface[] $field_definitions */
   $field_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('media');
   $db = Database::getConnection()->schema();
-  $db->changeField('media_revision', 'revision_uid', 'revision_user', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
+  $db->changeField('media_revision', 'revision_uid', 'revision_user', $field_definitions['revision_user']->getColumns()[$field_definitions['revision_user']->getMainPropertyName()]);
   $db->changeField('media_revision', 'revision_timestamp', 'revision_created', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
   $db->changeField('media_revision', 'revision_log', 'revision_log_message', $field_definitions['revision_log_message']->getColumns()[$field_definitions['revision_log_message']->getMainPropertyName()]);
 
