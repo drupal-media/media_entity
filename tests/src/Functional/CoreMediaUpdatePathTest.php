@@ -55,7 +55,6 @@ class CoreMediaUpdatePathTest extends UpdatePathTestBase {
     $this->drupalGet('/admin/modules');
     $assert->checkboxNotChecked('modules[media_entity_document][enable]');
     $assert->checkboxNotChecked('modules[media_entity_image][enable]');
-    $assert->checkboxNotChecked('modules[media_entity][enable]');
     $assert->checkboxChecked('modules[media_entity_generic][enable]');
     // Media is not currently displayed on the Modules page.
     $this->assertArrayHasKey('media', $this->config('core.extension')->get('module'));
