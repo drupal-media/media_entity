@@ -1,0 +1,6 @@
+services:
+  media_entity.drush.commands:
+    class: \Drupal\media_entity\Commands\DrushCommands
+    arguments: ['@media_entity.cli']
+    tags:
+      - { name: drush.command }

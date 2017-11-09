@@ -5,6 +5,7 @@
  * Install, uninstall and update hooks for Media entity module.
  */
 
+use Drupal\Core\Utility\UpdateException;
 use Drupal\Core\Config\Entity\Query\QueryFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Url;
@@ -182,59 +183,16 @@ function media_entity_requirements($phase) {
     // Because of that, we want to make sure that these requirements checks are
     // only evaluated once, and we use a state variable for that.
     if (!\Drupal::state()->get('media_entity_core_upgrade_started')) {
-      // This update only makes sense with core >= 8.4.x.
-      $version = explode('.', \Drupal::VERSION);
-      if ($version[1] < 4) {
-        $requirements['media_module_core_incompatibility'] = [
+      $checks = \Drupal::service('media_entity.cli')->validateDbUpdateRequirements();
+      foreach ($checks['errors'] as $key => $error_msg) {
+        $requirements['media_entity_upgrade_' . $key] = [
           'title' => t('Media Entity'),
-          'value' => t('The Media Entity 2.x upgrade path only works with Drupal core >= 8.4.x'),
-          'description' => t('In order to run the Media Entity 2.x upgrade, please upgrade first Drupal core to at least 8.4.x.'),
+          'value' => t('Please fix the error below and try again.'),
+          'description' => $error_msg,
           'severity' => REQUIREMENT_ERROR,
         ];
-      }
-      // This update can't proceed if there is an already enabled module called
-      // "media".
-      if (\Drupal::moduleHandler()->moduleExists('media')) {
-        $requirements['media_module_exists'] = [
-          'title' => t('Media Entity'),
-          'value' => t('Existing Media module detected.'),
-          'description' => t('In order to run the Media Entity 2.x upgrade, please uninstall and remove from the codebase the contributed Media module.'),
-          'severity' => REQUIREMENT_ERROR,
-        ];
-      }
-      // Prevent the updates from running if there is a type-provider that is
-      // still on the 1.x branch.
-      $incompatible_modules = _media_entity_get_incompatible_modules();
-      if (!empty($incompatible_modules)) {
-        $provider_modules = !empty($incompatible_modules['providers']) ? implode(", ", $incompatible_modules['providers']) : '';
-        $additional_msg_providers = !empty($provider_modules) ? ' ' . t('The following modules provide source plugins and need to be upgraded: @provider_modules.', [
-          '@provider_modules' => $provider_modules,
-        ]) : '';
-        $dependent_modules = !empty($incompatible_modules['modules']) ? implode(", ", $incompatible_modules['modules']) : '';
-        $additional_msg_dependent = !empty($dependent_modules) ? ' ' . t('The following modules depend on media entity and need to be either upgraded or uninstalled: @dependent_modules.', [
-          '@dependent_modules' => $dependent_modules,
-        ]) : '';
-        $requirements['media_entity_modules_compatibility'] = [
-          'title' => t('Media entity'),
-          'value' => t('Some modules that depend on media entity were not updated or uninstalled.'),
-          'description' => t('In order to run the Media Entity updates, please make sure all modules that provide plugins for Media Entity (or depend on it) have their code updated to their respective 2.x branches. Note that you will probably need to revert to the 1.x branch of the Media Entity module if you want to uninstall existing plugin modules.') . $additional_msg_providers . $additional_msg_dependent,
-          'severity' => REQUIREMENT_ERROR,
-        ];
-      }
-
-      $generic_types = _media_entity_get_bundles_by_plugin('generic');
-      if ($generic_types) {
-        $module_data = system_rebuild_module_data();
-        if (!isset($module_data['media_entity_generic'])) {
-          $requirements['media_entity_generic'] = [
-            'title' => t('Media entity generic'),
-            'description' => t('One or more of your existing media types are using the Generic source, which has been moved into a separate Media Entity Generic module. You need to download this module before continuing.'),
-            'severity' => REQUIREMENT_ERROR,
-          ];
-        }
       }
     }
-
   }
 
   if ($phase == 'runtime') {
@@ -320,7 +278,7 @@ function media_entity_update_8002() {
  */
 function media_entity_update_8003() {
   if (!_media_entity_check_entity_version()) {
-    throw new \Drupal\Core\Utility\UpdateException('Entity API >= 8.x-1.0-alpha3 (drupal.org/project/entity) module is now a dependency and needs to be installed before running updates.');
+    throw new UpdateException('Entity API >= 8.x-1.0-alpha3 (drupal.org/project/entity) module is now a dependency and needs to be installed before running updates.');
   }
 }
 

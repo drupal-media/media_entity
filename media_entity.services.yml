@@ -2,3 +2,6 @@ services:
   plugin.manager.media_entity.type:
     class: Drupal\media_entity\MediaTypeManager
     parent: default_plugin_manager
+  media_entity.cli:
+    class: Drupal\media_entity\CliService
+    arguments: ['@module_handler']
