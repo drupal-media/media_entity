@@ -18,6 +18,15 @@ function drush_media_entity_updatedb_validate() {
   // the "updatedb/updb" command by returning FALSE to this hook if any of them
   // is not met.
   drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+
+  // Normally users should remove Media Entity from the codebase after the
+  // upgrade. However, if they don't do so, this function will be called on
+  // subsequent DB upgrades, even if ME is not enabled. Don't proceed on those
+  // circumstances.
+  if (!\Drupal::moduleHandler()->moduleExists('media_entity')) {
+    return TRUE;
+  }
+
   $checks = \Drupal::service('media_entity.cli')->validateDbUpdateRequirements();
   if (empty($checks['errors'])) {
     return TRUE;
