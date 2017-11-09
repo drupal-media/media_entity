@@ -5,10 +5,10 @@
  * Install, uninstall and update hooks for Media entity module.
  */
 
-use \Drupal\user\Entity\Role;
-use \Drupal\Core\Url;
-use \Drupal\Core\Database\Database;
 use Drupal\Core\Config\Entity\Query\QueryFactory;
+use Drupal\Core\Database\Database;
+use Drupal\Core\Url;
+use Drupal\user\Entity\Role;
 
 /**
  * Checks if required version of the Entity API is installed.
@@ -443,6 +443,9 @@ function media_entity_update_8201() {
   // Clear the old UUID map.
   \Drupal::keyValue(QueryFactory::CONFIG_LOOKUP_PREFIX . 'media_bundle')->deleteAll();
 
+  // Update any views that use the entity:media_bundle argument validator.
+  _media_entity_update_views();
+
   /** @var \Drupal\user\Entity\Role $role */
   foreach (Role::loadMultiple() as $role) {
     if ($role->hasPermission('administer media bundles')) {
@@ -460,6 +463,36 @@ function media_entity_update_8201() {
     'media_entity_document',
     'media_entity',
   ]);
+}
+
+/**
+ * Updates any views that use the entity:media_bundle argument validator.
+ */
+function _media_entity_update_views() {
+  $config_factory = \Drupal::configFactory();
+
+  foreach ($config_factory->listAll('views.view') as $name) {
+    $view = $config_factory->getEditable($name);
+    $changed = FALSE;
+
+    foreach ($view->get('display') as $display_id => $display) {
+      $key = "display.$display_id.display_options.arguments";
+
+      // If there are no arguments, get() will return NULL, which is [] when
+      // cast to an array.
+      $arguments = (array) $view->get($key);
+
+      foreach ($arguments as $id => $argument) {
+        if ($argument['validate']['type'] == 'entity:media_bundle') {
+          $view->set("$key.$id.validate.type", 'entity:media_type');
+          $changed = TRUE;
+        }
+      }
+    }
+    if ($changed) {
+      $view->save();
+    }
+  }
 }
 
 /**
