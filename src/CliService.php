@@ -85,17 +85,27 @@ class CliService {
       $checks['passes'][] = $this->t('All provider plugins and modules depending on media_entity are up-to-date.');
     }
 
+    $module_data = system_rebuild_module_data();
+
     // Generic media types should now live in the contrib Media Entity Generic
     // module, which should be available at the codebase.
     $generic_types = _media_entity_get_bundles_by_plugin('generic');
     if ($generic_types) {
-      $module_data = system_rebuild_module_data();
       if (!isset($module_data['media_entity_generic'])) {
-        $checks['errors'][] = $this->t('One or more of your existing media types are using the Generic source, which has been moved into a separate Media Entity Generic module. You need to download this module to your codebase before continuing.');
+        $checks['errors'][] = $this->t('One or more of your existing media types are using the Generic source, which has been moved into a separate "Media Entity Generic" module. You need to download this module to your codebase before continuing.');
       }
       else {
-        $checks['passes'][] = $this->t('The media_entity_generic module is available.');
+        $checks['passes'][] = $this->t('The "Media Entity Generic" module is available.');
       }
+    }
+
+    // Actions now live in the contributed media_entity_actions, until generic
+    // entity actions are part of Drupal core (2916740).
+    if (!isset($module_data['media_entity_actions'])) {
+      $checks['errors'][] = $this->t('Media Actions (for example, for bulk operations) have been moved into a separate "Media Entity Actions" module. You need to download this module to your codebase before continuing.');
+    }
+    else {
+      $checks['passes'][] = $this->t('The "Media Entity Actions" module is available.');
     }
 
     return $checks;

@@ -40,6 +40,7 @@ function _media_entity_check_entity_version() {
  *   "media_entity", respectively.
  */
 function _media_entity_get_incompatible_modules() {
+  \Drupal::service('plugin.cache_clearer')->clearCachedDefinitions();
   $incompatible_modules = [];
   // Modules that provide provider plugins need to have ben updated and be
   // implementing now @MediaSource instead of @MediaType plugins.
@@ -47,7 +48,7 @@ function _media_entity_get_incompatible_modules() {
   // The main media_entity module defines a "generic" type. We are directly
   // handling this provider's configs in the update hook.
   unset($old_plugins['generic']);
-  foreach ($old_plugins as $plugin => $definition) {
+  foreach ($old_plugins as $definition) {
     $incompatible_modules['providers'][$definition['provider']] = $definition['provider'];
   }
   // None of the enabled modules in the system should at this point depend on
@@ -287,6 +288,7 @@ function media_entity_update_8003() {
  */
 function media_entity_update_8200() {
   \Drupal::moduleHandler()->resetImplementations();
+  \Drupal::service('plugin.cache_clearer')->clearCachedDefinitions();
 }
 
 /**
