@@ -316,6 +316,12 @@ function media_entity_update_8201() {
   if (isset($module_data['media_entity_generic'])) {
     $install[] = 'media_entity_generic';
   }
+  // Install media_entity_actions, if not enabled yet. Actions were not included
+  // in Media core, so we need this module to fill that gap until generic entity
+  // actions are part of core, likely in 8.5.x.
+  if (isset($module_data['media_entity_actions'])) {
+    $install[] = 'media_entity_actions';
+  }
   \Drupal::service('module_installer')->install($install);
 
   foreach ($snapshots as $name => $data) {
