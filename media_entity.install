@@ -306,6 +306,17 @@ function media_entity_update_8201() {
     'core.entity_view_display.media.image.default',
   ], TRUE);
 
+  // When Media is installed, it assumes that it needs to create media bundles
+  // and fields. Because this is an upgrade from Media Entity, that's not the
+  // case. Track existing media types and fields, so that later when we delete
+  // the auto-created ones, we don't throw the baby out with the bathwater.
+  $preexisting_media_config = [];
+  foreach (['media.type.', 'field.field.media.', 'field.storage.media.'] as $prefix) {
+    foreach ($config_factory->listAll($prefix) as $name) {
+      $preexisting_media_config[] = $name;
+    }
+  }
+
   $install = ['media'];
   // Install media_entity_generic if available. It stands to reason that this
   // module will only be available if you have at least one media type that uses
@@ -337,11 +348,14 @@ function media_entity_update_8201() {
   $db->changeField('media_revision', 'revision_timestamp', 'revision_created', $field_definitions['revision_created']->getColumns()[$field_definitions['revision_created']->getMainPropertyName()]);
   $db->changeField('media_revision', 'revision_log', 'revision_log_message', $field_definitions['revision_log_message']->getColumns()[$field_definitions['revision_log_message']->getMainPropertyName()]);
 
-  // Delete file/image media types automatically created by core media.
-  $auto_created_types = \Drupal::entityTypeManager()->getStorage('media_type')
-    ->loadMultiple(['file', 'image']);
-  foreach ($auto_created_types as $created_type) {
-    $created_type->delete();
+  // Delete file/image media types automatically created by core media and
+  // associated fields.
+  foreach (['media.type.', 'field.field.media.', 'field.storage.media.'] as $prefix) {
+    foreach ($config_factory->listAll($prefix) as $name) {
+      if (!in_array($name, $preexisting_media_config)) {
+        $config_factory->getEditable($name)->delete();
+      }
+    }
   }
 
   // Move all module dependencies on existing config entities from
