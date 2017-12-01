@@ -101,7 +101,7 @@ class CliService {
 
     // Actions now live in the contributed media_entity_actions, until generic
     // entity actions are part of Drupal core (2916740).
-    if (!isset($module_data['media_entity_actions'])) {
+    if (!isset($module_data['media_entity_actions']) && !file_exists(\Drupal::root() . '/core/modules/media/src/Plugin/Action/PublishMedia.php')) {
       $checks['errors'][] = $this->t('Media Actions (for example, for bulk operations) have been moved into a separate "Media Entity Actions" module. You need to download this module to your codebase before continuing.');
     }
     else {
