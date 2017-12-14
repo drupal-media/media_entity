@@ -57,9 +57,11 @@ function _media_entity_get_incompatible_modules() {
   $module_list = \Drupal::moduleHandler()->getModuleList();
   foreach (array_keys($module_list) as $module_name) {
     $info = system_get_info('module', $module_name);
-    foreach ($info['dependencies'] as $dependency) {
-      if ($dependency === 'media_entity' || $dependency === 'media_entity:media_entity') {
-        $incompatible_modules['modules'][$module_name] = $module_name;
+    if (!empty($info['dependencies'])) {
+      foreach ($info['dependencies'] as $dependency) {
+        if ($dependency === 'media_entity' || $dependency === 'media_entity:media_entity') {
+          $incompatible_modules['modules'][$module_name] = $module_name;
+        }
       }
     }
   }
