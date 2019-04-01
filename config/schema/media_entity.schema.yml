@@ -57,6 +57,14 @@ action.configuration.media_unpublish_action:
   type: action_configuration_default
   label: 'Unpublish media configuration'
 
+condition.plugin.media_bundle:
+  type: condition.plugin
+  mapping:
+    bundles:
+      type: sequence
+      sequence:
+        type: string
+
 field.formatter.settings.media_thumbnail:
   type: mapping
   label: 'Media thumbnail field display format settings'
@@ -67,3 +75,4 @@ field.formatter.settings.media_thumbnail:
     image_style:
       type: string
       label: 'Image style'
+
